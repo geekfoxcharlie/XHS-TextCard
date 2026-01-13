@@ -1,0 +1,39 @@
+{
+  "templates": [
+    {
+      "id": "minimalist-magazine",
+      "name": "极简杂志",
+      "featured": true
+    },
+    {
+      "id": "ios-memo",
+      "name": "苹果备忘录",
+      "featured": true
+    },
+    {
+      "id": "creamy-latte",
+      "name": "奶油拿铁",
+      "featured": true
+    },
+    {
+      "id": "aura-gradient",
+      "name": "弥散极光",
+      "featured": true
+    },
+    {
+      "id": "deep-night",
+      "name": "暗夜深思",
+      "featured": true
+    },
+    {
+      "id": "pro-doc",
+      "name": "大厂文档",
+      "featured": true
+    },
+    {
+      "id": "blank",
+      "name": "空白模板",
+      "featured": true
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+/* ========================================
+ * 主网格布局系统
+ * ======================================== */
+
+/* === 主容器 === */
+.main-container {
+  display: grid;
+  grid-template-columns: var(--left-panel-width) 1fr var(--right-panel-width);
+  grid-template-rows: 1fr;
+  gap: var(--panel-gap);
+  height: 100vh;
+  padding: var(--container-padding);
+  background-color: var(--color-background);
+}
+
+/* === 面板基础样式 === */
+.left-panel,
+.preview-panel,
+.right-panel {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === 左侧面板 === */
+.left-panel {
+  min-width: 280px;
+  overflow-y: auto;
+  gap: var(--panel-gap);
+}
+
+/* === 中间预览面板 === */
+.preview-panel {
+  overflow-y: auto;
+  padding-right: var(--spacing-sm);
+}
+
+/* === 右侧面板 === */
+.right-panel {
+  min-width: 280px;
+  overflow-y: auto;
+  padding-bottom: var(--spacing-xl);
+}
+
+/* === 响应式设计 === */
+@media (max-width: 1200px) {
+  .main-container {
+    grid-template-columns: 280px 1fr 280px;
+    gap: var(--spacing-md);
+  }
+  
+  :root {
+    --left-panel-width: 280px;
+    --right-panel-width: 280px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .left-panel,
+  .right-panel {
+    min-width: auto;
+    max-height: 300px;
+  }
+  
+  .preview-panel {
+    min-height: 500px;
+  }
+}

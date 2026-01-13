@@ -1,0 +1,25 @@
+{
+    "name": "空白模板",
+    "description": "纯净白色背景，便于测试分页效果",
+    "author": "system",
+    "version": "1.0",
+    "featured": true,
+    "config": {
+        "bgColor": "#FFFFFF",
+        "textColor": "#333333",
+        "fontSize": 16,
+        "lineHeight": 1.8,
+        "letterSpacing": 0.5,
+        "textPadding": 40,
+        "fontFamily": "inherit",
+        "hasWatermark": false,
+        "watermarkText": "极客狐",
+        "watermarkColor": "rgba(0,0,0,0.1)",
+        "hasSignature": true,
+        "signatureText": "极客狐",
+        "signatureColor": "#555555",
+        "signaturePosition": "bottom",
+        "signatureStyle": "modern-pill"
+    },
+    "cssFile": "blank.css"
+}

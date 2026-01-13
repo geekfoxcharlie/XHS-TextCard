@@ -1,0 +1,123 @@
+/* ========================================
+ * 预览区域布局样式
+ * ======================================== */
+
+/* === 预览图片容器 === */
+.image-container {
+  width: var(--preview-width);
+  height: var(--preview-height);
+  position: relative;
+  background: var(--template-bg-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin: 0 auto;
+}
+
+/* === 加载状态 === */
+.loading {
+  display: none;
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.loading.active {
+  display: block;
+}
+
+/* === 空状态 === */
+.empty-state {
+  text-align: center;
+  padding: 60px var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.5;
+}
+
+.empty-state div {
+  font-size: var(--font-size-base);
+  margin-top: var(--spacing-md);
+}
+
+/* === 操作按钮 === */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
+}
+
+.action-buttons.horizontal {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* === 响应式预览 === */
+@media (max-width: 768px) {
+  :root {
+    --preview-width: 300px;
+    --preview-height: 400px;
+    --text-area-width: 220px;
+    --text-area-height: 320px;
+  }
+  
+  .image-container {
+    transform: scale(0.8);
+    transform-origin: center;
+  }
+}
+
+/* === 预览模式切换 === */
+.preview-mode-grid .preview-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+.preview-mode-grid .preview-item {
+  margin: 0;
+  transform: scale(0.6);
+  transform-origin: top center;
+  transition: all var(--transition-normal);
+}
+
+.preview-mode-grid .preview-item:hover {
+  transform: scale(0.65);
+  z-index: 10;
+}
+
+.preview-mode-grid .preview-item-header {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-sm);
+}
+
+/* === 滚动优化 === */
+.preview-list {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.preview-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.preview-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.preview-list::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 3px;
+  transition: background-color var(--transition-normal);
+}
+
+.preview-list::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-secondary);
+}

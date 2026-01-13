@@ -1,0 +1,886 @@
+@charset "UTF-8";
+/* ========================================
+ * 全局样式重置
+ * ======================================== */
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #f5f5f5;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+/* ========================================
+ * 主布局
+ * ======================================== */
+.main-container {
+    display: flex;
+    height: 100vh;
+    gap: 16px;
+    padding: 16px;
+}
+
+/* ========================================
+ * 左侧：输入区域
+ * ======================================== */
+.left-panel {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.input-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#text-input {
+    width: 100%;
+    min-height: 200px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    font-family: inherit;
+    resize: vertical;
+}
+
+#text-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.template-selector {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.template-categories {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.template-category {
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+}
+
+.template-category.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    font-weight: 600;
+}
+
+.template-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.template-item {
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    position: relative;
+}
+
+.template-item:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.template-item.active {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+
+.template-item.featured::after {
+    content: '\2605';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #ffd700;
+    font-size: 12px;
+}
+
+.template-item-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+}
+
+.template-item-desc {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ========================================
+ * 中间：预览区域
+ * ======================================== */
+.preview-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.preview-header {
+    background: white;
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.preview-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.preview-count {
+    font-size: 14px;
+    color: #666;
+}
+
+.preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.preview-item {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.preview-item-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.preview-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.preview-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #f0f0f0;
+    color: #333;
+    transition: all 0.2s;
+}
+
+.btn-small:hover {
+    background: #e0e0e0;
+}
+
+/* 图片容器 - 小红书标准尺寸 */
+.image-container {
+    width: 450px;
+    height: 600px;
+    position: relative;
+    background: var(--bg-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --font-size: 16px;
+    --line-height: 1.8;
+    --letter-spacing: 0.5px;
+    --padding: 40px;
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.image-content {
+    width: 100%;
+    height: 100%;
+    padding: var(--padding);
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    letter-spacing: var(--letter-spacing);
+    font-family: var(--font-family);
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.image-content p {
+    margin: 0 0 1em 0;
+}
+
+.image-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Markdown 样式支持 */
+.image-content h1, .image-content h2, .image-content h3 {
+    margin-top: 0.6em;
+    margin-bottom: 0.4em;
+    line-height: 1.3;
+    color: inherit;
+    width: 100%;
+}
+
+.image-content p {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    line-height: inherit;
+}
+
+.image-content em {
+    font-style: italic;
+    color: inherit;
+}
+
+.image-content u {
+    text-decoration: underline;
+    text-decoration-color: inherit;
+    text-underline-offset: 2px;
+}
+
+.image-content ul, .image-content ol {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    padding-left: 1.5em;
+}
+
+.image-content li {
+    margin-bottom: 0.3em;
+}
+
+.image-content blockquote {
+    margin: 0 0 0.8em 0;
+    padding-left: 1em;
+    border-left: 4px solid rgba(0,0,0,0.1);
+    color: rgba(0,0,0,0.6);
+}
+
+.image-content code {
+    background: rgba(0,0,0,0.05);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.image-content pre {
+    background: rgba(0,0,0,0.05);
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: 0.8em;
+}
+
+/* 针对深色背景的适配 */
+.image-container.template-deep-night .image-content blockquote {
+    border-left-color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+}
+
+.image-container.template-deep-night .image-content code,
+.image-container.template-deep-night .image-content pre {
+    background: rgba(255,255,255,0.1);
+}
+
+/* 消除首尾元素的间距 */
+.image-content > *:first-child {
+    margin-top: 0 !important;
+}
+
+.image-content > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+.image-content h1 { 
+    font-size: 1.6em; 
+    font-weight: 800;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding-bottom: 0.2em;
+}
+
+.image-content h2 { 
+    font-size: 1.4em; 
+    font-weight: 750;
+}
+
+.image-content h3 { 
+    font-size: 1.2em; 
+    font-weight: 700;
+}
+
+/* 针对深色背景模板的标题边框适配 */
+.image-container.template-deep-night h1 {
+    border-bottom-color: rgba(255,255,255,0.15);
+}
+
+.image-content strong {
+    font-weight: 700;
+    color: inherit;
+}
+
+.image-content .highlight {
+    background: linear-gradient(180deg, transparent 60%, #fff3bf 60%, #fff3bf 90%, transparent 90%);
+    padding: 0 2px;
+    color: inherit;
+    border-radius: 2px;
+}
+
+/* 如果文字颜色较浅，调整高亮颜色 */
+.image-container[style*="--text-color: #ffffff"] .highlight,
+.image-container[style*="--text-color: #f5f5f5"] .highlight {
+    background: linear-gradient(180deg, transparent 60%, rgba(255, 255, 255, 0.3) 60%, rgba(255, 255, 255, 0.3) 90%, transparent 90%);
+}
+
+/* ========================================
+ * 右侧：模板编辑器
+ * ======================================== */
+.right-panel {
+    width: 315px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+.editor-section {
+    background: white;
+    border-radius: 8px;
+    padding: 15px 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.editor-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.editor-tab {
+    padding: 8px 14px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+}
+
+.editor-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    font-weight: 600;
+}
+
+.editor-content {
+    display: none;
+}
+
+.editor-content.active {
+    display: block;
+}
+
+/* (Form styles moved to components.css) */
+
+.form-label i {
+    margin-right: 4px;
+    color: #667eea;
+    width: 16px;
+    text-align: center;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    background: #764ba2;
+}
+
+.color-presets {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    align-items: center;
+    padding: 2px 0;
+    width: 100%;
+}
+
+.solid-presets, .gradient-presets {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+}
+
+.color-preset {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.color-preset:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.color-preset.active {
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+.color-preset.active::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 8px;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+/* 如果是浅色背景，勾选框显示黑色 */
+.color-preset.active[data-color="#ffffff"]::after,
+.color-preset.active[data-color="#f5f5f5"]::after,
+.color-preset.active[data-color="#E8D5C4"]::after,
+.color-preset.active[data-color="#F5E8DD"]::after,
+.color-preset.active[data-color="#fff9db"]::after {
+    color: #333;
+    text-shadow: none;
+}
+
+.color-picker-wrapper {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.color-picker-wrapper:hover {
+    border-color: #667eea;
+    border-style: solid;
+    background: #f8f9ff;
+}
+
+/* 隐藏 Pickr 默认按钮，使用我们的 + 号 */
+.color-picker-wrapper .pickr {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.color-picker-wrapper.small {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.color-picker-wrapper.small i {
+    font-size: 12px;
+    color: #999;
+}
+
+.color-picker-wrapper.small:hover {
+    border-color: #667eea;
+}
+
+/* 水印和签名颜色选择器在 Pickr 内部的适配 */
+.watermark-color-col .pickr,
+.signature-color-col .pickr {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.watermark-color-col .pcr-button,
+.signature-color-col .pcr-button {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    background: none !important;
+    opacity: 0.2; /* 让下方的调色盘图标透出来 */
+}
+
+.watermark-color-col .pcr-button:hover,
+.signature-color-col .pcr-button:hover {
+    opacity: 0.4;
+}
+
+.color-picker-wrapper .pickr button {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.color-picker-wrapper i {
+    font-size: 9px;
+    color: #999;
+    position: relative;
+    z-index: 0;
+}
+
+.color-picker-wrapper:hover i {
+    color: #667eea;
+}
+
+/* 渐变弹出面板样式 */
+.editor-popup {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    margin: 10px 0;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #333;
+}
+
+.close-popup {
+    cursor: pointer;
+    color: #999;
+    padding: 4px;
+}
+
+.close-popup:hover {
+    color: #666;
+}
+
+.popup-form-group {
+    margin-bottom: 10px !important;
+    padding-bottom: 8px !important;
+}
+
+/* 覆盖 Pickr 内部的一些样式使之更契合 */
+.pcr-app {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15) !important;
+    border-radius: 8px !important;
+}
+
+/* ========================================
+ * 弹窗 (Modal)
+ * ======================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: white;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.close-modal {
+    cursor: pointer;
+    color: #999;
+    font-size: 18px;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #666;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #fcfcfc;
+}
+
+.modal-footer .btn {
+    padding: 8px 20px;
+}
+
+/* ========================================
+ * 覆盖原有样式
+ * ======================================== */
+.bg-mode-selector {
+    display: flex;
+    gap: 6px;
+    background: #f0f0f0;
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.bg-mode-btn {
+    flex: 1;
+    padding: 6px;
+    border: none;
+    background: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.bg-mode-btn.active {
+    background: white;
+    color: #667eea;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* (Action buttons and Switch moved to components.css) */
+
+.sub-label {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.form-col {
+    flex: 1;
+}
+
+/* ========================================
+ * 背景水印效果
+ * ======================================== */
+.watermark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    transform: rotate(-30deg) scale(1.5);
+}
+
+.watermark-text {
+    font-size: 14px;
+    color: var(--watermark-color, var(--text-color));
+    white-space: nowrap;
+    padding: 20px;
+    user-select: none;
+}
+
+/* (Signature bar styles moved to components.css) */
+
+#code-editor {
+    width: 100%;
+    min-height: 300px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    resize: vertical;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.loading.active {
+    display: block;
+}

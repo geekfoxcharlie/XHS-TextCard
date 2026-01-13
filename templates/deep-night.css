@@ -1,0 +1,70 @@
+/* 暗夜深思 模板样式 */
+
+.template-layer.template-deep-night {
+    background: var(--template-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 35px 40px 48px;
+}
+
+.template-layer.template-deep-night::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background-color: #39FF14;
+}
+
+.template-layer.template-deep-night .text-layer {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.template-layer.template-deep-night .text-layer strong,
+.template-layer.template-deep-night .text-layer .highlight {
+    color: #39FF14;
+    font-weight: 600;
+    background: transparent;
+}
+
+.template-layer.template-deep-night .text-layer blockquote {
+    border-left: 3px solid rgba(57, 255, 20, 0.5);
+    padding-left: 16px;
+    margin: 1.2em 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.template-layer.template-deep-night .text-layer code {
+    background: rgba(57, 255, 20, 0.1);
+    color: #39FF14;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.template-layer.template-deep-night .signature-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    z-index: 10;
+}
+
+.template-layer.template-deep-night .signature-bar.style-terminal {
+    background-color: rgba(255, 255, 255, 0.06);
+    padding: 12px 40px;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}

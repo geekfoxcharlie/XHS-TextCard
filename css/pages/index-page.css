@@ -1,0 +1,381 @@
+/* ========================================
+ * text.html页面专用样式
+ * ======================================== */
+
+/* === 导入基础样式 === */
+@import '../base/reset.css';
+@import '../base/variables.css';
+@import '../base/typography.css';
+@import '../layout/grid.css';
+@import '../layout/panels.css';
+@import '../layout/preview-layout.css';
+@import '../components/forms.css';
+@import '../components/buttons.css';
+@import '../components/modals.css';
+@import '../components/signature-system.css';
+@import '../layers/template-layer.css';
+@import '../layers/text-layer.css';
+@import '../layers/watermark.css';
+
+/* === 页面特定样式 === */
+
+/* 背景模式选择器 */
+.bg-mode-selector {
+  display: flex;
+  gap: var(--spacing-xs);
+  background: var(--color-secondary);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+}
+
+.bg-mode-btn {
+  flex: 1;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-normal);
+  font-weight: 500;
+}
+
+.bg-mode-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.bg-mode-btn.active {
+  background: white;
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.bg-mode-btn i {
+  font-size: var(--font-size-base);
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+/* === 颜色预设容器 === */
+.color-presets {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-xs);
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.color-presets::-webkit-scrollbar {
+  display: none;
+}
+
+.solid-presets,
+.gradient-presets {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-xs);
+  min-width: max-content;
+}
+
+/* === 颜色预设项 === */
+.color-preset {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--transition-normal);
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.color-preset:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.color-preset.active {
+  border-color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+.color-preset.active::after {
+  content: '\2713';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 8px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  font-weight: bold;
+}
+
+/* 浅色背景时的勾选框适配 */
+.color-preset.active[data-color="#ffffff"]::after,
+.color-preset.active[data-color="#f5f5f5"]::after,
+.color-preset.active[data-color="#E8D5C4"]::after,
+.color-preset.active[data-color="#F5E8DD"]::after,
+.color-preset.active[data-color="#fff9db"]::after {
+  color: var(--color-text-primary);
+  text-shadow: none;
+}
+
+/* === 颜色选择器包装器 === */
+.color-picker-wrapper {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-normal);
+  background: white;
+  flex-shrink: 0;
+}
+
+.color-picker-wrapper:hover {
+  border-color: var(--color-primary);
+  border-style: solid;
+  background: #f8f9ff;
+}
+
+.color-picker-wrapper.small {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.color-picker-wrapper.small i {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.color-picker-wrapper.small:hover {
+  border-color: var(--color-primary);
+}
+
+/* === Pickr 样式覆盖 === */
+.color-picker-wrapper .pickr {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
+}
+
+.color-picker-wrapper .pickr button {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.color-picker-wrapper i {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  position: relative;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.color-picker-wrapper:hover i {
+  color: var(--color-primary);
+}
+
+/* 水印和签名颜色选择器适配 */
+.watermark-options .pickr,
+.signature-options .pickr {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.watermark-options .pcr-button,
+.signature-options .pcr-button {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  background: none !important;
+  opacity: 0.2;
+}
+
+.watermark-options .pcr-button:hover,
+.signature-options .pcr-button:hover {
+  opacity: 0.4;
+}
+
+/* === 渐变编辑面板 === */
+.editor-popup {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-lg);
+  margin: var(--spacing-sm) 0;
+  animation: slideDown 0.3s ease;
+  z-index: 100;
+  position: relative;
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.close-popup {
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-normal);
+}
+
+.close-popup:hover {
+  color: var(--color-text-primary);
+  background: var(--color-secondary);
+}
+
+.popup-form-group {
+  margin-bottom: var(--spacing-sm) !important;
+  padding-bottom: var(--spacing-sm) !important;
+}
+
+.popup-form-group:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* === Pickr 弹窗样式覆盖 === */
+.pcr-app {
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.pcr-app .pcr-interaction {
+  border-top: 1px solid var(--color-border) !important;
+}
+
+.pcr-app .pcr-result {
+  background: var(--color-secondary) !important;
+  color: var(--color-text-primary) !important;
+  font-family: var(--font-family-system) !important;
+}
+
+/* === 水印和签名选项容器 === */
+.watermark-options,
+.signature-options {
+  display: flex;
+  margin-top: var(--spacing-sm);
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.watermark-options.hidden,
+.signature-options.hidden {
+  display: none;
+}
+
+/* === 兼容性保持 === */
+.image-container {
+  /* 保持向后兼容 */
+  width: var(--preview-width);
+  height: var(--preview-height);
+  position: relative;
+  background: var(--template-bg-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.image-content {
+  /* 保持向后兼容 */
+  width: 100%;
+  height: 100%;
+  padding: var(--template-padding);
+  color: var(--template-text-color);
+  font-size: var(--template-font-size);
+  line-height: var(--template-line-height);
+  letter-spacing: var(--template-letter-spacing);
+  font-family: var(--template-font-family);
+  overflow: hidden;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+/* === 响应式适配 === */
+@media (max-width: 1200px) {
+  .color-presets {
+    gap: 2px;
+  }
+  
+  .color-preset {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .color-picker-wrapper {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bg-mode-btn {
+    padding: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+  }
+  
+  .bg-mode-btn i {
+    font-size: var(--font-size-sm);
+    margin-bottom: 2px;
+  }
+  
+  .color-preset {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .color-picker-wrapper {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .color-picker-wrapper.small {
+    width: 28px;
+    height: 28px;
+  }
+}

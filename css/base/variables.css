@@ -1,0 +1,80 @@
+/* ========================================
+ * CSS变量和设计令牌系统
+ * ======================================== */
+
+:root {
+  /* === 布局常量 === */
+  --preview-width: 450px;
+  --preview-height: 600px;
+  --output-width: 1242px;
+  --output-height: 1656px;
+  --preview-aspect-ratio: 450/600;
+  
+  /* === 文字区域常量 === */
+  --text-area-width: 370px;
+  --text-area-height: 480px;
+  --text-area-padding: 40px;
+  
+  /* === 面板尺寸 === */
+  --left-panel-width: 320px;
+  --right-panel-width: 315px;
+  --panel-gap: 16px;
+  --container-padding: 16px;
+  
+  /* === 设计令牌 === */
+  --color-primary: #667eea;
+  --color-primary-dark: #764ba2;
+  --color-secondary: #f0f0f0;
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-border: #e0e0e0;
+  --color-background: #f5f5f5;
+  
+  /* === 间距系统 === */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-xxl: 24px;
+  
+  /* === 字体系统 === */
+  --font-family-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-size-xs: 11px;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-xxl: 20px;
+  
+  /* === 阴影系统 === */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.2);
+  
+  /* === 边框半径 === */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-xxl: 16px;
+  
+  /* === 动画系统 === */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+}
+
+/* === 模板配置变量（动态设置）=== */
+:root {
+  --template-bg-color: #ffffff;
+  --template-text-color: #333333;
+  --template-font-size: 16px;
+  --template-line-height: 1.8;
+  --template-letter-spacing: 0.5px;
+  --template-font-family: var(--font-family-system);
+  --template-layer-padding: 0px;
+  --text-padding: 40px;
+  --template-signature-color: #555555;
+  --template-watermark-color: rgba(0, 0, 0, 0.1);
+}

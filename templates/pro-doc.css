@@ -1,0 +1,55 @@
+/* 大厂文档 模板样式 */
+
+.template-layer.template-pro-doc {
+    background: var(--template-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 50px 40px 55px;
+}
+
+.template-layer.template-pro-doc .text-layer {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.05);
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.template-layer.template-pro-doc .text-layer::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #FF5F56;
+    box-shadow: 24px 0 0 #FFBD2E, 48px 0 0 #27C93F;
+}
+
+.template-layer.template-pro-doc .text-layer strong {
+    color: #0066FF;
+    font-weight: 700;
+    background: rgba(0, 102, 255, 0.05);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.template-layer.template-pro-doc .text-layer .highlight {
+    background: rgba(0, 102, 255, 0.1);
+    color: #0066FF;
+    padding: 0 4px;
+    border-radius: 4px;
+}
+
+.template-layer.template-pro-doc .signature-bar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}

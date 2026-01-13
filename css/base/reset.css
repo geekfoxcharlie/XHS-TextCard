@@ -1,0 +1,76 @@
+/* ========================================
+ * CSS 重置和基础样式
+ * ======================================== */
+
+/* === 现代CSS重置 === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* === 基础HTML样式 === */
+body {
+  background-color: var(--color-background);
+  font-family: var(--font-family-system);
+  color: var(--color-text-primary);
+  overflow-x: hidden;
+}
+
+/* === 滚动条样式 === */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* === 选择文本样式 === */
+::selection {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+/* === 焦点样式 === */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

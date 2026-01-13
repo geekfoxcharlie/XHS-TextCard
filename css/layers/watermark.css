@@ -1,0 +1,165 @@
+/* ========================================
+ * 水印系统样式
+ * ======================================== */
+
+/* === 水印容器 === */
+.watermark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    transform: rotate(-30deg) scale(1.5);
+    opacity: 0.8;
+}
+
+/* === 水印文字 === */
+.watermark-text {
+    font-size: 14px;
+    color: var(--template-watermark-color);
+    white-space: nowrap;
+    padding: 20px;
+    user-select: none;
+    line-height: 1;
+}
+
+/* === 水印变体样式 === */
+
+/* 默认水印 */
+.watermark-overlay.style-default {
+  transform: rotate(-30deg) scale(1.5);
+}
+
+/* 轻量水印 */
+.watermark-overlay.style-light {
+  transform: rotate(-15deg) scale(1.2);
+  opacity: 0.5;
+}
+
+.watermark-overlay.style-light .watermark-text {
+  font-size: 12px;
+  padding: 15px;
+}
+
+/* 重度水印 */
+.watermark-overlay.style-heavy {
+  transform: rotate(-45deg) scale(2);
+  opacity: 0.9;
+}
+
+.watermark-overlay.style-heavy .watermark-text {
+  font-size: 16px;
+  padding: 25px;
+}
+
+/* 对角线水印 */
+.watermark-overlay.style-diagonal {
+  transform: rotate(-45deg) scale(1.8);
+  opacity: 0.6;
+}
+
+/* 水平水印 */
+.watermark-overlay.style-horizontal {
+  transform: rotate(0deg) scale(1);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+
+.watermark-overlay.style-horizontal .watermark-text {
+  font-size: 18px;
+  padding: 10px 20px;
+  transform: rotate(-90deg);
+  transform-origin: left center;
+  position: absolute;
+  left: 10px;
+}
+
+/* === 动态水印 === */
+.watermark-overlay.style-animated {
+  animation: watermarkFloat 20s ease-in-out infinite;
+}
+
+@keyframes watermarkFloat {
+  0%, 100% { 
+    transform: rotate(-30deg) scale(1.5) translate(0, 0); 
+  }
+  25% { 
+    transform: rotate(-25deg) scale(1.6) translate(5px, -3px); 
+  }
+  50% { 
+    transform: rotate(-35deg) scale(1.4) translate(-3px, 5px); 
+  }
+  75% { 
+    transform: rotate(-30deg) scale(1.5) translate(-5px, -2px); 
+  }
+}
+
+/* === 渐变水印 === */
+.watermark-overlay.style-gradient {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    var(--template-watermark-color) 30%,
+    var(--template-watermark-color) 32%,
+    transparent 32%,
+    transparent 68%,
+    var(--template-watermark-color) 68%,
+    var(--template-watermark-color) 70%,
+    transparent 70%
+  );
+  background-size: 60px 60px;
+  opacity: 0.3;
+}
+
+.watermark-overlay.style-gradient .watermark-text {
+  display: none;
+}
+
+/* === 响应式水印 === */
+@media (max-width: 768px) {
+  .watermark-overlay {
+    transform: rotate(-30deg) scale(1.2);
+  }
+  
+  .watermark-overlay.style-light {
+    transform: rotate(-15deg) scale(1);
+  }
+  
+  .watermark-overlay.style-heavy {
+    transform: rotate(-45deg) scale(1.5);
+  }
+}
+
+/* === 性能优化 === */
+.watermark-overlay {
+  will-change: transform;
+}
+
+.watermark-overlay.style-animated {
+  will-change: transform, opacity;
+}
+
+/* === 水印颜色适配 === */
+.template-layer[data-bg-light="true"] .watermark-overlay .watermark-text {
+  color: rgba(0, 0, 0, 0.1);
+}
+
+.template-layer[data-bg-dark="true"] .watermark-overlay .watermark-text {
+  color: rgba(255, 255, 255, 0.15);
+}
+
+/* === 打印适配 === */
+@media print {
+  .watermark-overlay {
+    opacity: 0.3 !important;
+    transform: rotate(-30deg) scale(1.2) !important;
+  }
+}

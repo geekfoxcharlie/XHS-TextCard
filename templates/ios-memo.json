@@ -1,0 +1,24 @@
+{
+  "name": "苹果备忘录",
+  "description": "原生UI亲切感，适合日常碎碎念与情感共鸣",
+  "author": "System",
+  "version": "1.0",
+  "config": {
+    "bgColor": "#F2F2F7",
+    "textColor": "#000000",
+    "fontSize": 16,
+    "lineHeight": 1.6,
+    "letterSpacing": 0,
+    "textPadding": 40,
+    "fontFamily": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif",
+    "hasWatermark": false,
+    "watermarkText": "极客狐",
+    "watermarkColor": "rgba(0, 0, 0, 0.1)",
+    "hasSignature": true,
+    "signatureText": "极客狐",
+    "signatureColor": "#8E8E93",
+    "signaturePosition": "bottom",
+    "signatureStyle": "modern-pill"
+  },
+  "cssFile": "ios-memo.css"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "奶油拿铁",
+  "description": "温柔治愈系，适合生活方式与家居分享",
+  "author": "System",
+  "version": "1.0",
+  "config": {
+    "bgColor": "#FDFBF7",
+    "textColor": "#4A4036",
+    "fontSize": 17,
+    "lineHeight": 1.6,
+    "letterSpacing": 0.3,
+    "textPadding": 40,
+    "fontFamily": "'Rounded Mplus 1c', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+    "hasWatermark": false,
+    "watermarkText": "极客狐",
+    "watermarkColor": "rgba(0, 0, 0, 0.1)",
+    "hasSignature": true,
+    "signatureText": "极客狐",
+    "signatureColor": "#A69B8F",
+    "signaturePosition": "bottom",
+    "signatureStyle": "modern-pill"
+  },
+  "cssFile": "creamy-latte.css"
+}

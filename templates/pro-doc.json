@@ -1,0 +1,24 @@
+{
+  "name": "大厂文档",
+  "description": "秩序感清单，适合教程、攻略与结构化内容",
+  "author": "System",
+  "version": "1.0",
+  "config": {
+    "bgColor": "#F5F7FA",
+    "textColor": "#1D2129",
+    "fontSize": 16,
+    "lineHeight": 1.6,
+    "letterSpacing": 0,
+    "textPadding": 50,
+    "fontFamily": "'PingFang SC', 'Helvetica Neue', sans-serif",
+    "hasWatermark": false,
+    "watermarkText": "极客狐",
+    "watermarkColor": "rgba(0, 0, 0, 0.1)",
+    "hasSignature": true,
+    "signatureText": "极客狐",
+    "signatureColor": "#0066FF",
+    "signaturePosition": "top",
+    "signatureStyle": "modern-pill"
+  },
+  "cssFile": "pro-doc.css"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "弥散极光",
+  "description": "光影氛围感，适合情感语录与艺术分享",
+  "author": "System",
+  "version": "1.0",
+  "config": {
+    "bgColor": "#FFFFFF",
+    "textColor": "#2C3E50",
+    "fontSize": 17,
+    "lineHeight": 1.6,
+    "letterSpacing": 0.5,
+    "textPadding": 40,
+    "fontFamily": "'PingFang SC', 'Helvetica Neue', sans-serif",
+    "hasWatermark": false,
+    "watermarkText": "极客狐",
+    "watermarkColor": "rgba(0, 0, 0, 0.08)",
+    "hasSignature": true,
+    "signatureText": "极客狐",
+    "signatureColor": "#2C3E50",
+    "signaturePosition": "bottom",
+    "signatureStyle": "glass-minimal"
+  },
+  "cssFile": "aura-gradient.css"
+}

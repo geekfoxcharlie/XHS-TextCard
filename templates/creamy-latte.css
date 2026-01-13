@@ -1,0 +1,30 @@
+/* 奶油拿铁 模板样式 */
+
+.template-layer.template-creamy-latte {
+    background: var(--template-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 40px 40px 60px;
+}
+
+.template-layer.template-creamy-latte .text-layer {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.template-layer.template-creamy-latte .text-layer .highlight {
+    background: linear-gradient(180deg, transparent 60%, #E8D5C4 60%, #E8D5C4 90%, transparent 90%);
+}
+
+.template-layer.template-creamy-latte .signature-bar {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}

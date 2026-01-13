@@ -1,0 +1,24 @@
+{
+  "name": "暗夜深思",
+  "description": "冷静深度感，适合极简思维与深度观点",
+  "author": "System",
+  "version": "1.0",
+  "config": {
+    "bgColor": "#1A1A1A",
+    "textColor": "#B8B8B8",
+    "fontSize": 17,
+    "lineHeight": 1.7,
+    "letterSpacing": 0.6,
+    "textPadding": 35,
+    "fontFamily": "Inter, -apple-system, sans-serif",
+    "hasWatermark": false,
+    "watermarkText": "极客狐",
+    "watermarkColor": "rgba(255, 255, 255, 0.08)",
+    "hasSignature": true,
+    "signatureText": "极客狐",
+    "signatureColor": "#39FF14",
+    "signaturePosition": "bottom",
+    "signatureStyle": "terminal"
+  },
+  "cssFile": "deep-night.css"
+}

@@ -1,0 +1,56 @@
+/* 极简杂志 模板样式 */
+
+.template-layer.template-minimalist-magazine {
+    background: var(--template-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 45px 40px 60px;
+}
+
+.template-layer.template-minimalist-magazine::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    background-color: var(--template-text-color);
+    opacity: 0.4;
+}
+
+.template-layer.template-minimalist-magazine::after {
+    content: 'EDITORIAL / ISSUE 01';
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    letter-spacing: 4px;
+    color: #CCC;
+    font-family: 'Arial', sans-serif;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.template-layer.template-minimalist-magazine .text-layer {
+    text-align: justify;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.template-layer.template-minimalist-magazine .text-layer strong {
+    color: #000;
+    font-weight: 800;
+    background: linear-gradient(transparent 70%, rgba(0,0,0,0.08) 70%);
+}
+
+.template-layer.template-minimalist-magazine .signature-bar {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
