@@ -1,13 +1,13 @@
 {
   "templates": [
     {
-      "id": "minimalist-magazine",
-      "name": "极简杂志",
+      "id": "ios-memo",
+      "name": "苹果备忘录",
       "featured": true
     },
     {
-      "id": "ios-memo",
-      "name": "苹果备忘录",
+      "id": "minimalist-magazine",
+      "name": "极简杂志",
       "featured": true
     },
     {

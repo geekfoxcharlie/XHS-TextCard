@@ -63,38 +63,33 @@
     <div class="main-container">
         <!-- 左侧：输入区域 -->
         <div class="left-panel">
-            <div class="input-section">
+            <div class="input-section" style="flex: 1; display: flex; flex-direction: column; position: relative;">
                 <div class="section-title">
                     <i class="fas fa-edit"></i>
                     输入文字
+                    <div class="help-trigger" id="syntax-help-trigger">
+                        <i class="far fa-question-circle"></i>
+                        <div class="help-tooltip" id="syntax-help-tooltip">
+                            <div class="help-title">语法速查</div>
+                            <ul class="help-list">
+                                <li><span># 标题</span> <span>一级标题</span></li>
+                                <li><span>## 标题</span> <span>二级标题</span></li>
+                                <li><span>---</span> <span>分割线 (强制分页)</span></li>
+                                <li><span>**文本**</span> <span>加粗</span></li>
+                                <li><span>==文本==</span> <span>高亮</span></li>
+                                <li><span>> 文本</span> <span>引用</span></li>
+                                <li><span>`文本`</span> <span>行内代码</span></li>
+                                <li><span>- 列表</span> <span>无序列表</span></li>
+                                <li><span>1. 列表</span> <span>有序列表</span></li>
+                                <li><span>↵↵</span> <span>双回车 (建议分页点)</span></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <textarea id="text-input"></textarea>
+                <textarea id="text-input" style="flex: 1;"></textarea>
             </div>
 
-            <div class="template-selector">
-                <div class="section-title">
-                    <i class="fas fa-palette"></i>
-                    选择模板
-                </div>
-                <div class="template-categories">
-                    <button class="template-category active" data-category="featured">推荐模板</button>
-                    <button class="template-category" data-category="custom">自定义模板</button>
-                </div>
-                <div class="template-list" id="template-list">
-                    <!-- 模板列表将通过 JavaScript 动态生成 -->
-                </div>
-            </div>
-
-            <div class="input-section">
-                <div class="action-buttons">
-                    <button class="btn btn-secondary" id="download-all-btn" disabled>
-                        <i class="fas fa-download"></i>
-                        打包下载全部
-                    </button>
-                </div>
-            </div>
-
-            <div class="input-section author-info" style="margin-top: auto; padding-bottom: var(--spacing-md); border-top: 1px solid var(--color-border);">
+            <div class="input-section author-info" style="padding-bottom: var(--spacing-md); border-top: 1px solid var(--color-border);">
                 <div class="section-title" style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: var(--spacing-xs);">
                     <i class="fas fa-at"></i>
                     联系作者
@@ -120,17 +115,41 @@
             <div class="loading" id="loading">生成中...</div>
         </div>
 
-        <!-- 右侧：模板编辑器 -->
-        <div class="right-panel">
+        <!-- 右侧1：模板选择 -->
+        <div class="template-panel">
+            <div class="template-selector">
+                <div class="section-title">
+                    <i class="fas fa-palette"></i>
+                    选择模板
+                </div>
+                <div class="template-categories">
+                    <button class="template-category active" data-category="featured">推荐模板</button>
+                    <button class="template-category" data-category="custom">自定义模板</button>
+                </div>
+                <div class="template-list" id="template-list">
+                    <!-- 模板列表将通过 JavaScript 动态生成 -->
+                </div>
+            </div>
+            
+            <div class="download-section" style="margin-top: auto; padding: var(--spacing-lg); border-top: 1px solid var(--color-border);">
+                <button class="btn btn-primary" id="download-all-btn" disabled style="width: 100%; height: 44px; font-weight: 600;">
+                    <i class="fas fa-download"></i>
+                    打包下载全部图片
+                </button>
+            </div>
+        </div>
+
+        <!-- 右侧2：模板编辑器 -->
+        <div class="editor-panel">
             <div class="editor-section">
                 <div class="section-title">
                     <i class="fas fa-tools"></i>
-                    模板编辑器
+                    样式调整
                 </div>
                 <div class="editor-tabs">
                     <button class="editor-tab active" data-tab="visual">
-                        <i class="fas fa-palette"></i>
-                        样式调整
+                        <i class="fas fa-magic"></i>
+                        基础配置
                     </button>
                 </div>
 
@@ -315,14 +334,14 @@
                         </div>
                     </div>
 
-                    <div class="action-buttons" style="margin-top: 20px;">
-                        <button class="btn btn-secondary" id="reset-template-btn">
+                    <div class="action-buttons" style="margin-top: 20px; flex-direction: row; gap: var(--spacing-sm);">
+                        <button class="btn btn-secondary" id="reset-template-btn" style="flex: 1;">
                             <i class="fas fa-undo"></i>
-                            重置为模板默认
+                            重置
                         </button>
-                        <button class="btn btn-primary" id="save-template-btn">
+                        <button class="btn btn-primary" id="save-template-btn" style="flex: 1.5;">
                             <i class="fas fa-save"></i>
-                            保存当前模板
+                            保存模板
                         </button>
                     </div>
                 </div>

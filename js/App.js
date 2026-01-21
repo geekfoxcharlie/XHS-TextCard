@@ -10,7 +10,7 @@ class App {
         this.downloadManager = new DownloadManager();
         this.editorController = new EditorController();
 
-        this.currentTemplate = 'minimalist-magazine';
+        this.currentTemplate = 'ios-memo';
         this.currentTemplateConfig = null;
         this.currentCategory = 'featured';
         this.splitTexts = [];
@@ -185,7 +185,7 @@ class App {
     async loadTemplates() {
         await this.templateManager.init();
         this.renderTemplateList();
-        await this.selectTemplate('minimalist-magazine');
+        await this.selectTemplate('ios-memo');
     }
 
     renderTemplateList() {
@@ -250,6 +250,8 @@ class App {
 
         if (!this.currentTemplateConfig) return;
 
+        const scrollTop = this.elements.previewList.scrollTop;
+
         this.elements.loading.classList.add('active');
         this.elements.previewList.innerHTML = '';
 
@@ -283,6 +285,8 @@ class App {
         });
 
         this.elements.loading.classList.remove('active');
+
+        this.elements.previewList.scrollTop = scrollTop;
     }
 
     downloadSingleImage(index) {

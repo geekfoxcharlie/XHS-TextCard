@@ -45,6 +45,14 @@ class TextSplitter {
         let currentPage = '';
 
         for (const node of nodes) {
+            if (node.nodeName === 'HR') {
+                if (currentPage) {
+                    pages.push(currentPage.trim());
+                    currentPage = '';
+                }
+                continue;
+            }
+
             let nodeHtml = this.getNodeHtml(node);
             if (!nodeHtml || !nodeHtml.trim()) continue;
 

@@ -5,7 +5,7 @@
 /* === 主容器 === */
 .main-container {
   display: grid;
-  grid-template-columns: var(--left-panel-width) 1fr var(--right-panel-width);
+  grid-template-columns: var(--left-panel-width) 1fr var(--template-panel-width) var(--editor-panel-width);
   grid-template-rows: 1fr;
   gap: var(--panel-gap);
   height: 100vh;
@@ -16,7 +16,8 @@
 /* === 面板基础样式 === */
 .left-panel,
 .preview-panel,
-.right-panel {
+.template-panel,
+.editor-panel {
   background: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -27,34 +28,56 @@
 
 /* === 左侧面板 === */
 .left-panel {
-  min-width: 280px;
+  min-width: 300px;
   overflow-y: auto;
-  gap: var(--panel-gap);
 }
 
 /* === 中间预览面板 === */
 .preview-panel {
   overflow-y: auto;
-  padding-right: var(--spacing-sm);
+  padding-right: var(--spacing-xs);
+  background-color: var(--color-background);
+  box-shadow: none; 
 }
 
-/* === 右侧面板 === */
-.right-panel {
-  min-width: 280px;
-  overflow-y: auto;
-  padding-bottom: var(--spacing-xl);
+.template-panel {
+  min-width: 200px;
+}
+
+.editor-panel {
+  min-width: 240px;
 }
 
 /* === 响应式设计 === */
+@media (max-width: 1600px) {
+  :root {
+    --left-panel-width: 380px;
+    --template-panel-width: 220px;
+    --editor-panel-width: 260px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .main-container {
+    grid-template-columns: 320px 1fr 200px 240px;
+  }
+  :root {
+    --left-panel-width: 320px;
+    --template-panel-width: 200px;
+    --editor-panel-width: 240px;
+  }
+}
+
 @media (max-width: 1200px) {
   .main-container {
-    grid-template-columns: 280px 1fr 280px;
-    gap: var(--spacing-md);
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+    overflow: auto;
   }
   
-  :root {
-    --left-panel-width: 280px;
-    --right-panel-width: 280px;
+  .left-panel, .preview-panel, .template-panel, .editor-panel {
+    height: 600px;
   }
 }
 

@@ -4,22 +4,23 @@
 
 :root {
   /* === 布局常量 === */
-  --preview-width: 450px;
-  --preview-height: 600px;
+  --preview-width: 500px;
+  --preview-height: 667px;
   --output-width: 1242px;
   --output-height: 1656px;
-  --preview-aspect-ratio: 450/600;
+  --preview-aspect-ratio: 500/667;
   
   /* === 文字区域常量 === */
-  --text-area-width: 370px;
-  --text-area-height: 480px;
+  --text-area-width: 410px;
+  --text-area-height: 540px;
   --text-area-padding: 40px;
   
   /* === 面板尺寸 === */
-  --left-panel-width: 320px;
-  --right-panel-width: 315px;
-  --panel-gap: 16px;
-  --container-padding: 16px;
+  --left-panel-width: 420px;
+  --template-panel-width: 240px;
+  --editor-panel-width: 280px;
+  --panel-gap: 12px;
+  --container-padding: 12px;
   
   /* === 设计令牌 === */
   --color-primary: #667eea;
