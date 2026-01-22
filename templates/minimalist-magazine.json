@@ -1,24 +1,25 @@
 {
-  "name": "极简杂志",
-  "description": "留白产生高级感，适合职场干货与观点输出",
-  "author": "System",
-  "version": "1.0",
-  "config": {
-    "bgColor": "#FAFAFA",
-    "textColor": "#2A2A2A",
-    "fontSize": 17,
-    "lineHeight": 1.7,
-    "letterSpacing": 0.8,
-    "textPadding": 45,
-    "fontFamily": "'Source Han Serif SC', 'Noto Serif CJK SC', 'Songti SC', serif",
-    "hasWatermark": false,
-    "watermarkText": "极客狐",
-    "watermarkColor": "rgba(0, 0, 0, 0.12)",
-    "hasSignature": true,
-    "signatureText": "极客狐",
-    "signatureColor": "#4A4A4A",
-    "signaturePosition": "bottom",
-    "signatureStyle": "elegant-serif"
-  },
-  "cssFile": "minimalist-magazine.css"
+    "name": "极简杂志",
+    "description": "现代社论排版美学，让文字拥有纸质出版物的质感",
+    "author": "system",
+    "version": "1.2",
+    "featured": true,
+    "config": {
+        "bgColor": "#FFFFFF",
+        "textColor": "#1A1A1A",
+        "fontSize": 17,
+        "lineHeight": 1.7,
+        "letterSpacing": 0.3,
+        "textPadding": 45,
+        "fontFamily": "Georgia, 'Source Han Serif SC', 'Noto Serif CJK SC', serif",
+        "hasWatermark": false,
+        "watermarkText": "极客狐",
+        "watermarkColor": "rgba(0,0,0,0.03)",
+        "hasSignature": true,
+        "signatureText": "极客狐",
+        "signatureColor": "#1A1A1A",
+        "signaturePosition": "bottom",
+        "signatureStyle": "elegant-serif"
+    },
+    "cssFile": "minimalist-magazine.css"
 }

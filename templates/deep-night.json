@@ -1,24 +1,25 @@
 {
-  "name": "暗夜深思",
-  "description": "冷静深度感，适合极简思维与深度观点",
-  "author": "System",
-  "version": "1.0",
-  "config": {
-    "bgColor": "#1A1A1A",
-    "textColor": "#B8B8B8",
-    "fontSize": 17,
-    "lineHeight": 1.7,
-    "letterSpacing": 0.6,
-    "textPadding": 35,
-    "fontFamily": "Inter, -apple-system, sans-serif",
-    "hasWatermark": false,
-    "watermarkText": "极客狐",
-    "watermarkColor": "rgba(255, 255, 255, 0.08)",
-    "hasSignature": true,
-    "signatureText": "极客狐",
-    "signatureColor": "#39FF14",
-    "signaturePosition": "bottom",
-    "signatureStyle": "terminal"
-  },
-  "cssFile": "deep-night.css"
+    "name": "暗夜深思",
+    "description": "深夜里的理性能量，沉浸式深度思考空间",
+    "author": "system",
+    "version": "1.2",
+    "featured": true,
+    "config": {
+        "bgColor": "#0D0D0D",
+        "textColor": "#E5E5E5",
+        "fontSize": 17,
+        "lineHeight": 1.7,
+        "letterSpacing": 0.4,
+        "textPadding": 40,
+        "fontFamily": "-apple-system, system-ui, sans-serif",
+        "hasWatermark": false,
+        "watermarkText": "极客狐",
+        "watermarkColor": "rgba(255,255,255,0.03)",
+        "hasSignature": true,
+        "signatureText": "极客狐",
+        "signatureColor": "#00F5FF",
+        "signaturePosition": "bottom",
+        "signatureStyle": "terminal"
+    },
+    "cssFile": "deep-night.css"
 }

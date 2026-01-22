@@ -1,16 +1,12 @@
-/**
- * EditorController
- * 模板编辑器控制器 - 负责模板参数的交互与同步
- * @version 1.0
- */
 class EditorController {
     constructor() {
         this.elements = {};
         this.currentConfig = null;
         this.onConfigChange = null;
         this.pickrs = {};
+        this.lastSolidColor = '#ffffff';
+        this.lastGradientColor = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
         
-        // 莫兰迪色系预设
         this.swatches = [
             '#ffffff', '#E8D5C4', '#B5C0D0', '#CCD3CA', 
             '#F5E8DD', '#9290C3', '#7C9D96', '#1a1a1b',
@@ -18,7 +14,6 @@ class EditorController {
             '#d6336c', '#37b24d', '#f08c00'
         ];
 
-        // 核心配置项映射，用于自动化绑定和更新
         this.configMap = [
             { key: 'fontSize', type: 'range', isInt: true },
             { key: 'lineHeight', type: 'range', isFloat: true },
@@ -36,7 +31,6 @@ class EditorController {
         this.elements = elements;
         
         if (typeof Pickr === 'undefined') {
-            console.error('Pickr library not loaded!');
             this.initBgModeSelector();
             this.bindEvents();
             return;
@@ -73,12 +67,13 @@ class EditorController {
                     this.currentConfig[cfg.key] = hex;
                     if (cfg.type === 'bg') {
                         this.currentConfig.bgMode = 'solid';
+                        this.lastSolidColor = hex;
                         this.updateActivePreset('bg-color', hex);
                     } else if (cfg.type === 'text') {
                         this.updateActivePreset('text-color', hex);
                     }
                 }
-                this.notifyConfigChange(false);
+                this.notifyConfigChange();
             });
         });
     }
@@ -132,7 +127,7 @@ class EditorController {
 
     parseCurrentGradient() {
         const bg = this.currentConfig.bgColor;
-        if (!bg.startsWith('linear-gradient')) return;
+        if (!bg || typeof bg !== 'string' || !bg.startsWith('linear-gradient')) return;
         
         const colors = bg.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}|rgba?\(.*?\)/g);
         if (colors?.length >= 2) {
@@ -152,16 +147,18 @@ class EditorController {
         const start = this.pickrs.gradStart.getColor().toHEXA().toString();
         const end = this.pickrs.gradEnd.getColor().toHEXA().toString();
         const deg = document.getElementById('gradient-angle')?.value || 135;
-        this.currentConfig.bgColor = `linear-gradient(${deg}deg, ${start} 0%, ${end} 100%)`;
+        const gradString = `linear-gradient(${deg}deg, ${start} 0%, ${end} 100%)`;
+        this.currentConfig.bgColor = gradString;
+        this.lastGradientColor = gradString;
         this.currentConfig.bgMode = 'gradient';
-        this.notifyConfigChange(false);
+        this.notifyConfigChange();
     }
 
     initBgModeSelector() {
         document.querySelectorAll('.bg-mode-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 this.setBgMode(btn.dataset.mode);
-                this.notifyConfigChange(false);
+                this.notifyConfigChange();
             });
         });
     }
@@ -182,11 +179,19 @@ class EditorController {
         const gradientPanel = document.getElementById('gradient-editor-panel');
         if (gradientPanel) gradientPanel.style.display = 'none';
 
-        if (this.currentConfig) this.currentConfig.bgMode = mode;
+        if (this.currentConfig) {
+            this.currentConfig.bgMode = mode;
+            
+            const isCurrentGrad = typeof this.currentConfig.bgColor === 'string' && this.currentConfig.bgColor.includes('linear-gradient');
+            if (mode === 'solid' && isCurrentGrad) {
+                this.currentConfig.bgColor = this.lastSolidColor || '#ffffff';
+            } else if (mode === 'gradient' && !isCurrentGrad) {
+                this.currentConfig.bgColor = this.lastGradientColor || 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
+            }
+        }
     }
 
     bindEvents() {
-        // 编辑器标签切换
         this.elements.editorTabs?.forEach(tab => {
             tab.addEventListener('click', () => {
                 this.elements.editorTabs.forEach(t => t.classList.remove('active'));
@@ -195,7 +200,6 @@ class EditorController {
             });
         });
 
-        // 颜色预设
         const presetGroups = [
             { container: '#bg-color-presets', type: 'bg' },
             { container: '#text-color-presets', type: 'text' }
@@ -210,25 +214,29 @@ class EditorController {
                     if (group.type === 'bg') {
                         const isGrad = color.startsWith('linear-gradient');
                         this.currentConfig.bgMode = isGrad ? 'gradient' : 'solid';
-                        if (!isGrad) this.pickrs.bg?.setColor(color);
+                        if (isGrad) {
+                            this.lastGradientColor = color;
+                        } else {
+                            this.pickrs.bgColor?.setColor(color);
+                            this.lastSolidColor = color;
+                        }
                         this.updateActivePreset('bg-color', color);
                     } else {
-                        this.pickrs.text?.setColor(color);
+                        this.pickrs.textColor?.setColor(color);
                         this.updateActivePreset('text-color', color);
                     }
 
                     this.currentConfig[group.type === 'bg' ? 'bgColor' : 'textColor'] = color;
-                    this.notifyConfigChange(false);
+                    this.notifyConfigChange();
                 });
             });
         });
 
-        // 简化：所有配置变更都触发重新分页
         this.configMap.forEach(cfg => {
             const el = this.getControlElement(cfg);
             if (!el) return;
 
-            const eventType = cfg.type === 'range' ? 'change' : (cfg.type === 'checkbox' || cfg.type === 'select' ? 'change' : 'input');
+            const eventType = (cfg.type === 'range' || cfg.type === 'input') ? 'input' : 'change';
             el.addEventListener(eventType, (e) => {
                 const val = cfg.type === 'checkbox' ? e.target.checked : e.target.value;
                 this.updateConfigAndNotify(cfg, val);
@@ -238,8 +246,8 @@ class EditorController {
 
     updateConfigAndNotify(cfg, rawValue) {
         let val = rawValue;
-        if (cfg.isInt) val = parseInt(val);
-        if (cfg.isFloat) val = parseFloat(val);
+        if (cfg.isInt) val = parseInt(val) || 0;
+        if (cfg.isFloat) val = parseFloat(val) || 0;
 
         this.currentConfig[cfg.key] = val;
         this.updateUIControl(cfg, val);
@@ -247,20 +255,18 @@ class EditorController {
     }
 
     getControlElement(cfg) {
-        // 尝试从 this.elements 获取，或直接从 DOM 获取
-        const camelName = cfg.key.charAt(0).toUpperCase() + cfg.key.slice(1);
-        return this.elements[cfg.key + (cfg.type === 'input' ? 'Input' : camelName.replace('Has', 'Check').replace('Font', 'Select'))] 
-            || this.elements[cfg.key + 'Input']
-            || this.elements[cfg.key + 'Select']
-            || document.getElementById(cfg.key.replace(/([A-Z])/g, "-$1").toLowerCase());
+        if (this.elements[cfg.key + 'Input']) return this.elements[cfg.key + 'Input'];
+        if (this.elements[cfg.key + 'Check']) return this.elements[cfg.key + 'Check'];
+        if (this.elements[cfg.key + 'Select']) return this.elements[cfg.key + 'Select'];
+        
+        const fallbackId = cfg.key.replace(/([A-Z])/g, "-$1").toLowerCase();
+        return document.getElementById(fallbackId);
     }
 
     updateUIControl(cfg, val) {
-        // 更新数值标签
         const label = this.elements[cfg.key + 'Value'];
-        if (label) label.textContent = val + (cfg.key === 'lineHeight' ? '' : 'px');
+        if (label) label.textContent = val + (cfg.key === 'lineHeight' ? '' : (cfg.key === 'fontSize' || cfg.key === 'letterSpacing' || cfg.key === 'textPadding' ? 'px' : ''));
 
-        // 处理显示隐藏切换
         if (cfg.type === 'checkbox' && cfg.toggle) {
             document.querySelectorAll(cfg.toggle).forEach(node => {
                 node.style.display = val ? 'flex' : 'none';
@@ -269,22 +275,32 @@ class EditorController {
     }
 
     setConfig(config) {
-        this.currentConfig = { ...config }; // 使用浅拷贝防止污染原始数据
+        this.currentConfig = { ...config };
+        
+        if (config.bgColor) {
+            if (config.bgColor.startsWith('linear-gradient')) {
+                this.lastGradientColor = config.bgColor;
+            } else {
+                this.lastSolidColor = config.bgColor;
+            }
+        }
+        
         this.updateEditorFromConfig();
         
         if (config.bgColor) {
             this.updateActivePreset('bg-color', config.bgColor);
-            if (!config.bgColor.startsWith('linear-gradient')) this.pickrs.bg?.setColor(config.bgColor);
+            if (!config.bgColor.startsWith('linear-gradient')) this.pickrs.bgColor?.setColor(config.bgColor);
         }
         if (config.textColor) {
             this.updateActivePreset('text-color', config.textColor);
-            this.pickrs.text?.setColor(config.textColor);
+            this.pickrs.textColor?.setColor(config.textColor);
         }
-        if (config.watermarkColor) this.pickrs.watermark?.setColor(config.watermarkColor);
-        if (config.signatureColor) this.pickrs.signature?.setColor(config.signatureColor);
+        if (config.watermarkColor) this.pickrs.watermarkColor?.setColor(config.watermarkColor);
+        if (config.signatureColor) this.pickrs.signatureColor?.setColor(config.signatureColor);
     }
 
     updateActivePreset(type, color) {
+        if (!color) return;
         const containerId = type === 'bg-color' ? 'bg-color-presets' : 'text-color-presets';
         document.querySelectorAll(`#${containerId} .color-preset`).forEach(p => {
             p.classList.toggle('active', p.dataset.color.toLowerCase() === color.toLowerCase());
@@ -302,8 +318,6 @@ class EditorController {
             if (el) {
                 if (cfg.type === 'checkbox') el.checked = !!val;
                 else el.value = val || '';
-            } else {
-                console.warn('Element not found for:', cfg.key, 'looking for:', cfg.key.replace(/([A-Z])/g, "-$1").toLowerCase());
             }
             this.updateUIControl(cfg, val);
         });

@@ -1,11 +1,7 @@
-/**
- * DownloadManager
- * 下载管理器 - 负责单张和批量下载功能
- * @version 1.0
- */
 class DownloadManager {
     constructor() {
         this.loadingElement = null;
+        this.renderer = new CanvasRenderer();
     }
 
     setLoadingElement(element) {
@@ -20,15 +16,17 @@ class DownloadManager {
         this.loadingElement?.classList.remove('active');
     }
 
-    getDownloadOptions() {
-        const scale = OUTPUT_WIDTH / PREVIEW_WIDTH;
-        return scale === 1
-            ? { quality: 1 }
-            : { quality: 1, scale };
-    }
-
-    async capture(element) {
-        return await domtoimage.toPng(element, this.getDownloadOptions());
+    async capture(layouts, config, templateId) {
+        const canvas = this.renderer.render({
+            layouts,
+            config,
+            templateId,
+            width: PREVIEW_WIDTH,
+            height: PREVIEW_HEIGHT,
+            scale: OUTPUT_WIDTH / PREVIEW_WIDTH 
+        });
+        
+        return canvas.toDataURL('image/png');
     }
 
     triggerDownload(dataUrl, filename) {
@@ -50,28 +48,27 @@ class DownloadManager {
         }
     }
 
-    async download(element, index) {
-        if (!element) return;
+    async download(layouts, config, templateId, index) {
+        if (!layouts) return;
 
         await this.withLoading(async () => {
-            const dataUrl = await this.capture(element);
+            const dataUrl = await this.capture(layouts, config, templateId);
             this.triggerDownload(dataUrl, `文字转图片-${index + 1}-${Date.now()}.png`);
         });
     }
 
-    async downloadAll(elements, downloadBtn) {
-        if (!elements?.length) return;
+    async downloadAll(pages, config, templateId, downloadBtn) {
+        if (!pages?.length) return;
 
         downloadBtn && (downloadBtn.disabled = true);
 
         await this.withLoading(async () => {
             const zip = new JSZip();
-            const promises = elements.map((el, i) =>
-                this.capture(el).then(url => {
-                    zip.file(`文字转图片-${i + 1}.png`, url.split(',')[1], { base64: true });
-                })
-            );
-            await Promise.all(promises);
+            
+            for (let i = 0; i < pages.length; i++) {
+                const dataUrl = await this.capture(pages[i], config, templateId);
+                zip.file(`文字转图片-${i + 1}.png`, dataUrl.split(',')[1], { base64: true });
+            }
 
             const blob = await zip.generateAsync({ type: 'blob' });
             this.triggerDownload(URL.createObjectURL(blob), `文字转图片-${Date.now()}.zip`);

@@ -1,8 +1,3 @@
-/**
- * App
- * 主应用控制器 - 协调各模块运行
- * @version 1.0
- */
 class App {
     constructor() {
         this.templateManager = new TemplateManager();
@@ -13,9 +8,8 @@ class App {
         this.currentTemplate = 'ios-memo';
         this.currentTemplateConfig = null;
         this.currentCategory = 'featured';
-        this.splitTexts = [];
-        this.previewElements = [];
-
+        this.splitPages = [];
+        
         this.elements = {};
         this.debounceTimer = null;
     }
@@ -48,22 +42,16 @@ class App {
             loading: document.getElementById('loading'),
             templateCategories: document.querySelectorAll('.template-category'),
             visualEditor: document.getElementById('visual-editor'),
-            editorTabs: document.querySelectorAll('.editor-tab'),
             fontSizeInput: document.getElementById('font-size'),
-            fontSizeValue: document.getElementById('font-size-value'),
             lineHeightInput: document.getElementById('line-height'),
-            lineHeightValue: document.getElementById('line-height-value'),
             letterSpacingInput: document.getElementById('letter-spacing'),
-            letterSpacingValue: document.getElementById('letter-spacing-value'),
             textPaddingInput: document.getElementById('text-padding'),
-            textPaddingValue: document.getElementById('text-padding-value'),
             fontFamilySelect: document.getElementById('font-family'),
             resetTemplateBtn: document.getElementById('reset-template-btn'),
             saveTemplateBtn: document.getElementById('save-template-btn'),
             hasWatermarkCheck: document.getElementById('has-watermark'),
             watermarkTextInput: document.getElementById('watermark-text'),
             hasSignatureCheck: document.getElementById('has-signature'),
-            signatureOptions: document.getElementById('signature-options'),
             signatureTextInput: document.getElementById('signature-text'),
             saveModal: document.getElementById('save-modal'),
             modalTplName: document.getElementById('modal-tpl-name'),
@@ -107,9 +95,6 @@ class App {
         this.elements.closeModalBtn.addEventListener('click', () => this.hideSaveModal());
         this.elements.cancelModalBtn.addEventListener('click', () => this.hideSaveModal());
         this.elements.confirmModalBtn.addEventListener('click', () => this.handleSaveTemplate());
-        this.elements.saveModal.addEventListener('click', (e) => {
-            if (e.target === this.elements.saveModal) this.hideSaveModal();
-        });
     }
 
     schedulePreview(delay = 300) {
@@ -117,69 +102,6 @@ class App {
         this.debounceTimer = setTimeout(() => {
             this.generatePreview();
         }, delay);
-    }
-
-    cancelPreview() {
-        clearTimeout(this.debounceTimer);
-    }
-
-    showSaveModal() {
-        this.elements.modalTplName.value = '';
-        this.elements.modalTplDesc.value = '';
-        this.elements.saveModal.style.display = 'flex';
-        this.elements.modalTplName.focus();
-    }
-
-    hideSaveModal() {
-        this.elements.saveModal.style.display = 'none';
-    }
-
-    async handleSaveTemplate() {
-        const name = this.elements.modalTplName.value.trim();
-        const desc = this.elements.modalTplDesc.value.trim();
-
-        if (!name) {
-            alert('请输入模板名称');
-            this.elements.modalTplName.focus();
-            return;
-        }
-
-        this.hideSaveModal();
-
-        const templateId = 'tpl_' + Date.now().toString(36);
-
-        try {
-            const cssText = await this.loadAndReplaceCSS(this.currentTemplate, templateId);
-
-            const templateData = {
-                name: name,
-                description: desc,
-                author: "user",
-                version: "1.0",
-                config: this.currentTemplateConfig,
-                cssFile: `${templateId}.css`
-            };
-
-            const currentIndex = await this.templateManager.loadTemplateIndex();
-            const newTemplates = [...(currentIndex?.templates || [])];
-
-            newTemplates.push({
-                id: templateId,
-                name: name,
-                featured: false
-            });
-
-            const indexData = { templates: newTemplates };
-
-            this.downloadJsonFile(`${templateId}.json`, templateData);
-            this.downloadJsonFile('index.json', indexData);
-            this.downloadTextFile(`${templateId}.css`, cssText);
-
-            alert(`模板已生成！\n\n请手动完成以下步骤：\n1. 将下载的 ${templateId}.json 和 ${templateId}.css 放入 templates 文件夹。\n2. 用下载的 index.json 替换原来的 index.json。\n3. 刷新页面即可看到新模板。`);
-        } catch (error) {
-            console.error('生成模板失败:', error);
-            alert('生成模板失败：' + error.message);
-        }
     }
 
     async loadTemplates() {
@@ -198,9 +120,6 @@ class App {
             if (template.id === this.currentTemplate) {
                 item.classList.add('active');
             }
-            if (template.featured) {
-                item.classList.add('featured');
-            }
 
             item.innerHTML = `
                 <div class="template-item-name">${template.name}</div>
@@ -215,10 +134,7 @@ class App {
 
     async selectTemplate(templateId) {
         const template = await this.templateManager.loadTemplate(templateId);
-        if (!template) {
-            console.error('模板加载失败:', templateId);
-            return;
-        }
+        if (!template) return;
 
         this.currentTemplate = templateId;
         this.currentTemplateConfig = { ...template.config };
@@ -243,25 +159,22 @@ class App {
             this.elements.previewList.innerHTML = '<div class="empty-state">请输入文字内容</div>';
             this.elements.previewCount.textContent = '共 0 张图片';
             this.elements.downloadAllBtn.disabled = true;
-            this.splitTexts = [];
-            this.previewElements = [];
+            this.splitPages = [];
             return;
         }
 
         if (!this.currentTemplateConfig) return;
 
         const scrollTop = this.elements.previewList.scrollTop;
-
         this.elements.loading.classList.add('active');
         this.elements.previewList.innerHTML = '';
 
         const splitter = new TextSplitter(this.currentTemplateConfig);
-        this.splitTexts = splitter.split(text);
-        splitter.destroy();
+        this.splitPages = splitter.split(text);
 
-        this.elements.previewCount.textContent = `共 ${this.splitTexts.length} 张图片`;
+        this.elements.previewCount.textContent = `共 ${this.splitPages.length} 张图片`;
 
-        if (this.splitTexts.length === 0) {
+        if (this.splitPages.length === 0) {
             this.elements.previewList.innerHTML = '<div class="empty-state">没有可生成的内容</div>';
             this.elements.loading.classList.remove('active');
             this.elements.downloadAllBtn.disabled = true;
@@ -269,33 +182,30 @@ class App {
         }
 
         this.elements.downloadAllBtn.disabled = false;
-        this.previewElements = [];
 
-        this.splitTexts.forEach((text, index) => {
+        this.splitPages.forEach((pageLayouts, index) => {
             const previewItem = this.previewGenerator.createPreviewItem(
-                text,
+                pageLayouts,
                 index,
-                this.splitTexts.length,
+                this.splitPages.length,
                 this.currentTemplate,
                 this.currentTemplateConfig,
                 (index) => this.downloadSingleImage(index)
             );
             this.elements.previewList.appendChild(previewItem);
-            this.previewElements.push(previewItem.querySelector('.template-layer'));
         });
 
         this.elements.loading.classList.remove('active');
-
         this.elements.previewList.scrollTop = scrollTop;
     }
 
     downloadSingleImage(index) {
-        const element = this.previewElements[index];
-        this.downloadManager.download(element, index);
+        const pageLayouts = this.splitPages[index];
+        this.downloadManager.download(pageLayouts, this.currentTemplateConfig, this.currentTemplate, index);
     }
 
     downloadAllImages() {
-        this.downloadManager.downloadAll(this.previewElements, this.elements.downloadAllBtn);
+        this.downloadManager.downloadAll(this.splitPages, this.currentTemplateConfig, this.currentTemplate, this.elements.downloadAllBtn);
     }
 
     resetTemplate() {
@@ -307,40 +217,24 @@ class App {
         }
     }
 
-    async loadAndReplaceCSS(sourceTemplateId, newTemplateId) {
-        const response = await fetch(`templates/${sourceTemplateId}.css?t=${Date.now()}`);
-        if (!response.ok) {
-            throw new Error(`无法加载模板CSS: ${sourceTemplateId}.css`);
-        }
-
-        let cssText = await response.text();
-        const sourceClassName = `template-${sourceTemplateId}`;
-        const targetClassName = `template-${newTemplateId}`;
-
-        cssText = cssText.replace(new RegExp(sourceClassName, 'g'), targetClassName);
-
-        return cssText;
+    showSaveModal() {
+        this.elements.modalTplName.value = '';
+        this.elements.modalTplDesc.value = '';
+        this.elements.saveModal.style.display = 'flex';
+        this.elements.modalTplName.focus();
     }
 
-    downloadJsonFile(filename, data) {
-        const content = JSON.stringify(data, null, 2);
-        this.downloadTextFile(filename, content, 'application/json');
+    hideSaveModal() {
+        this.elements.saveModal.style.display = 'none';
     }
 
-    downloadTextFile(filename, content, type = 'text/plain') {
-        const blob = new Blob([content], { type });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        URL.revokeObjectURL(url);
+    async handleSaveTemplate() {
+        alert('模板保存功能稍后更新适配 Canvas 方案');
+        this.hideSaveModal();
     }
 }
 
-// 启动应用
 document.addEventListener('DOMContentLoaded', () => {
     const app = new App();
     app.init();
 });
-

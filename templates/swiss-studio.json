@@ -1,0 +1,25 @@
+{
+    "name": "苏黎世工作室",
+    "description": "瑞士平面设计风格，极致的秩序感与高级感",
+    "author": "system",
+    "version": "1.1",
+    "featured": true,
+    "config": {
+        "bgColor": "#F2F2F2",
+        "textColor": "#1A1A1A",
+        "fontSize": 17,
+        "lineHeight": 1.5,
+        "letterSpacing": 0.2,
+        "textPadding": 50,
+        "fontFamily": "-apple-system, Helvetica, Arial, sans-serif",
+        "hasWatermark": false,
+        "watermarkText": "极客狐",
+        "watermarkColor": "rgba(0,0,0,0.03)",
+        "hasSignature": true,
+        "signatureText": "极客狐",
+        "signatureColor": "#FF4500",
+        "signaturePosition": "bottom",
+        "signatureStyle": "modern-pill"
+    },
+    "cssFile": "swiss-studio.css"
+}
