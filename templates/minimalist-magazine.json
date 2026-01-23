@@ -1,8 +1,8 @@
 {
     "name": "极简杂志",
     "description": "现代社论排版美学，让文字拥有纸质出版物的质感",
-    "author": "system",
-    "version": "1.2",
+    "author": "geekfoxcharlie",
+    "version": "1.3",
     "featured": true,
     "config": {
         "bgColor": "#FFFFFF",
@@ -20,6 +20,5 @@
         "signatureColor": "#1A1A1A",
         "signaturePosition": "bottom",
         "signatureStyle": "elegant-serif"
-    },
-    "cssFile": "minimalist-magazine.css"
+    }
 }

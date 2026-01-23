@@ -7,7 +7,6 @@ class App {
 
         this.currentTemplate = 'ios-memo';
         this.currentTemplateConfig = null;
-        this.currentCategory = 'featured';
         this.splitPages = [];
         
         this.elements = {};
@@ -15,6 +14,9 @@ class App {
     }
 
     init() {
+        if (typeof MarkdownParser !== 'undefined') {
+            MarkdownParser.init();
+        }
         this.initElements();
         this.bindEvents();
         this.loadTemplates();
@@ -40,31 +42,30 @@ class App {
             previewList: document.getElementById('preview-list'),
             previewCount: document.getElementById('preview-count'),
             loading: document.getElementById('loading'),
-            templateCategories: document.querySelectorAll('.template-category'),
             visualEditor: document.getElementById('visual-editor'),
+            editorTabs: document.querySelectorAll('.editor-tab'),
             fontSizeInput: document.getElementById('font-size'),
             lineHeightInput: document.getElementById('line-height'),
             letterSpacingInput: document.getElementById('letter-spacing'),
             textPaddingInput: document.getElementById('text-padding'),
             fontFamilySelect: document.getElementById('font-family'),
             resetTemplateBtn: document.getElementById('reset-template-btn'),
-            saveTemplateBtn: document.getElementById('save-template-btn'),
             hasWatermarkCheck: document.getElementById('has-watermark'),
             watermarkTextInput: document.getElementById('watermark-text'),
             hasSignatureCheck: document.getElementById('has-signature'),
-            signatureTextInput: document.getElementById('signature-text'),
-            saveModal: document.getElementById('save-modal'),
-            modalTplName: document.getElementById('modal-tpl-name'),
-            modalTplDesc: document.getElementById('modal-tpl-desc'),
-            closeModalBtn: document.getElementById('close-save-modal'),
-            cancelModalBtn: document.getElementById('cancel-save-modal'),
-            confirmModalBtn: document.getElementById('confirm-save-modal')
+            signatureTextInput: document.getElementById('signature-text')
         };
 
         this.downloadManager.setLoadingElement(this.elements.loading);
         this.editorController.init(this.elements);
         this.editorController.setOnConfigChange((config) => {
             this.currentTemplateConfig = { ...config };
+            
+            // 实时保存当前模板的配置
+            if (this.currentTemplate) {
+                localStorage.setItem(`xhs_tpl_config_${this.currentTemplate}`, JSON.stringify(config));
+            }
+            
             this.generatePreview();
         });
     }
@@ -78,23 +79,9 @@ class App {
             this.downloadAllImages();
         });
 
-        this.elements.templateCategories.forEach(category => {
-            category.addEventListener('click', () => {
-                this.selectCategory(category.dataset.category);
-            });
-        });
-
         this.elements.resetTemplateBtn.addEventListener('click', () => {
             this.resetTemplate();
         });
-
-        this.elements.saveTemplateBtn.addEventListener('click', () => {
-            this.showSaveModal();
-        });
-
-        this.elements.closeModalBtn.addEventListener('click', () => this.hideSaveModal());
-        this.elements.cancelModalBtn.addEventListener('click', () => this.hideSaveModal());
-        this.elements.confirmModalBtn.addEventListener('click', () => this.handleSaveTemplate());
     }
 
     schedulePreview(delay = 300) {
@@ -112,7 +99,7 @@ class App {
 
     renderTemplateList() {
         this.elements.templateList.innerHTML = '';
-        const templates = this.templateManager.getTemplatesByCategory(this.currentCategory);
+        const templates = this.templateManager.getAllTemplates();
 
         templates.forEach(template => {
             const item = document.createElement('div');
@@ -137,20 +124,24 @@ class App {
         if (!template) return;
 
         this.currentTemplate = templateId;
-        this.currentTemplateConfig = { ...template.config };
+        
+        // 尝试从本地存储加载用户自定义的配置
+        const savedConfig = localStorage.getItem(`xhs_tpl_config_${templateId}`);
+        if (savedConfig) {
+            try {
+                const parsed = JSON.parse(savedConfig);
+                this.currentTemplateConfig = { ...template.config, ...parsed };
+            } catch (e) {
+                this.currentTemplateConfig = { ...template.config };
+            }
+        } else {
+            this.currentTemplateConfig = { ...template.config };
+        }
 
         this.renderTemplateList();
         this.editorController.setConfig(this.currentTemplateConfig);
 
         this.generatePreview();
-    }
-
-    selectCategory(category) {
-        this.currentCategory = category;
-        this.elements.templateCategories.forEach(cat => {
-            cat.classList.toggle('active', cat.dataset.category === category);
-        });
-        this.renderTemplateList();
     }
 
     generatePreview() {
@@ -211,26 +202,13 @@ class App {
     resetTemplate() {
         const template = this.templateManager.getTemplate(this.currentTemplate);
         if (template) {
+            // 清除本地存储的配置
+            localStorage.removeItem(`xhs_tpl_config_${this.currentTemplate}`);
+            
             this.currentTemplateConfig = { ...template.config };
             this.editorController.setConfig(this.currentTemplateConfig);
             this.generatePreview();
         }
-    }
-
-    showSaveModal() {
-        this.elements.modalTplName.value = '';
-        this.elements.modalTplDesc.value = '';
-        this.elements.saveModal.style.display = 'flex';
-        this.elements.modalTplName.focus();
-    }
-
-    hideSaveModal() {
-        this.elements.saveModal.style.display = 'none';
-    }
-
-    async handleSaveTemplate() {
-        alert('模板保存功能稍后更新适配 Canvas 方案');
-        this.hideSaveModal();
     }
 }
 

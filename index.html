@@ -7,389 +7,62 @@
     <meta name="description" content="免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。一键将长文转化为精美图片，提升创作效率。">
     <meta name="keywords" content="小红书,文字转图片,卡片生成,排版工具,创作者工具,XHS-TextCard,自动分页,品牌水印">
     
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.xhs-textcard.site/">
-    <meta property="og:title" content="XHS-TextCard | 小红书智能文字转图片工具">
-    <meta property="og:description" content="免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。">
-    <meta property="og:image" content="https://www.xhs-textcard.site/data/preview-sample.png">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://www.xhs-textcard.site/">
-    <meta property="twitter:title" content="XHS-TextCard | 小红书智能文字转图片工具">
-    <meta property="twitter:description" content="免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。">
-    <meta property="twitter:image" content="https://www.xhs-textcard.site/data/preview-sample.png">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "XHS-TextCard",
-      "url": "https://www.xhs-textcard.site/",
-      "description": "免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。",
-      "applicationCategory": "DesignApplication",
-      "operatingSystem": "Windows, macOS, Linux, iOS, Android",
-      "offers": {
-        "@type": "Offer",
-        "price": "0"
-      }
-    }
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.2.0/dist/dom-to-image-more.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Pickr -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 新的分层CSS架构 -->
     <link rel="stylesheet" href="css/base/reset.css">
     <link rel="stylesheet" href="css/base/variables.css">
-    <link rel="stylesheet" href="css/base/typography.css">
-    <link rel="stylesheet" href="css/layout/grid.css">
-    <link rel="stylesheet" href="css/layout/panels.css">
-    <link rel="stylesheet" href="css/layout/preview-layout.css">
-    <link rel="stylesheet" href="css/components/forms.css">
-    <link rel="stylesheet" href="css/components/buttons.css">
-    <link rel="stylesheet" href="css/components/modals.css">
-    <link rel="stylesheet" href="css/components/signature-system.css">
-    <link rel="stylesheet" href="css/layers/template-layer.css">
-    <link rel="stylesheet" href="css/layers/text-layer.css">
-    <link rel="stylesheet" href="css/layers/watermark.css">
-    <link rel="stylesheet" href="css/pages/index-page.css">
-    <!-- 模板CSS保持动态加载 -->
+    <link rel="stylesheet" href="css/pages/index.css">
 </head>
 <body>
-    <div class="main-container">
-        <!-- 左侧：输入区域 -->
-        <div class="left-panel">
-            <div class="input-section" style="flex: 1; display: flex; flex-direction: column; position: relative;">
-                <div class="section-title">
-                    <i class="fas fa-edit"></i>
-                    输入文字
-                    <div class="help-trigger" id="syntax-help-trigger">
-                        <i class="far fa-question-circle"></i>
-                        <div class="help-tooltip" id="syntax-help-tooltip">
-                            <div class="help-title">语法速查</div>
-                            <ul class="help-list">
-                                <li><span># 标题</span> <span>一级标题</span></li>
-                                <li><span>## 标题</span> <span>二级标题</span></li>
-                                <li><span>---</span> <span>分割线 (强制分页)</span></li>
-                                <li><span>**文本**</span> <span>加粗</span></li>
-                                <li><span>==文本==</span> <span>高亮</span></li>
-                                <li><span>> 文本</span> <span>引用</span></li>
-                                <li><span>`文本`</span> <span>行内代码</span></li>
-                                <li><span>- 列表</span> <span>无序列表</span></li>
-                                <li><span>1. 列表</span> <span>有序列表</span></li>
-                                <li><span>↵↵</span> <span>双回车 (建议分页点)</span></li>
-                            </ul>
-                        </div>
-                    </div>
+    <div id="landing-page" class="landing-page">
+        <div class="landing-content">
+            <nav class="landing-nav">
+                <div class="brand">XHS-TextCard</div>
+                <div class="nav-links">
+                    <a href="https://github.com/geekfoxcharlie/XHS-TextCard" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="mailto:geekfoxcharlie@gmail.com">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <span class="contact-item">
+                        <i class="fas fa-book-open"></i> 极客狐
+                    </span>
                 </div>
-                <textarea id="text-input" style="flex: 1;"></textarea>
-            </div>
-
-            <div class="input-section author-info" style="padding-bottom: var(--spacing-md); border-top: 1px solid var(--color-border);">
-                <div class="section-title" style="font-size: var(--font-size-xs); color: var(--color-text-secondary); margin-bottom: var(--spacing-xs);">
-                    <i class="fas fa-at"></i>
-                    联系作者
-                </div>
-                <div class="author-contact" style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">
-                    <a href="mailto:geekfoxcharlie@gmail.com" style="color: var(--color-text-secondary); text-decoration: none; transition: color 0.3s;">geekfoxcharlie@gmail.com</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 中间：预览区域 -->
-        <div class="preview-panel">
-            <div class="preview-header">
-                <div class="preview-title">预览</div>
-                <div class="preview-count" id="preview-count">共 0 张图片</div>
-            </div>
-            <div class="preview-list" id="preview-list">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📝</div>
-                    <div>输入文字并选择模板后将自动生成预览</div>
-                </div>
-            </div>
-            <div class="loading" id="loading">生成中...</div>
-        </div>
-
-        <!-- 右侧1：模板选择 -->
-        <div class="template-panel">
-            <div class="template-selector">
-                <div class="section-title">
-                    <i class="fas fa-palette"></i>
-                    选择模板
-                </div>
-                <div class="template-categories">
-                    <button class="template-category active" data-category="featured">推荐模板</button>
-                    <button class="template-category" data-category="custom">自定义模板</button>
-                </div>
-                <div class="template-list" id="template-list">
-                    <!-- 模板列表将通过 JavaScript 动态生成 -->
-                </div>
-            </div>
+            </nav>
             
-            <div class="download-section" style="margin-top: auto; padding: var(--spacing-lg); border-top: 1px solid var(--color-border);">
-                <button class="btn btn-primary" id="download-all-btn" disabled style="width: 100%; height: 44px; font-weight: 600;">
-                    <i class="fas fa-download"></i>
-                    打包下载全部图片
-                </button>
-            </div>
+            <main class="hero-section">
+                <h1 class="hero-title">释放文字的力量<br><span class="accent">让排版成为艺术</span></h1>
+                <p class="hero-subtitle">专为小红书创作者打造的极简排版神器，一键生成极具辨识度的深度文字卡片。</p>
+                <div class="hero-actions">
+                    <a href="editor.html" class="btn-hero" style="text-decoration: none;">
+                        立即开始创作
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </main>
+
+            <section class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-magic"></i></div>
+                    <h3>智能自动分页</h3>
+                    <p>自动拆分长文，智能掌控阅读节奏</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-palette"></i></div>
+                    <h3>大师级模板</h3>
+                    <p>内置专业设计，一键开启高级排版</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-fingerprint"></i></div>
+                    <h3>全方位定制</h3>
+                    <p>专属签名与水印，打造独特品牌 IP</p>
+                </div>
+            </section>
         </div>
-
-        <!-- 右侧2：模板编辑器 -->
-        <div class="editor-panel">
-            <div class="editor-section">
-                <div class="section-title">
-                    <i class="fas fa-tools"></i>
-                    样式调整
-                </div>
-                <div class="editor-tabs">
-                    <button class="editor-tab active" data-tab="visual">
-                        <i class="fas fa-magic"></i>
-                        基础配置
-                    </button>
-                </div>
-
-                <!-- 可视化编辑器 -->
-                <div class="editor-content active" id="visual-editor">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-magic"></i> 背景模式
-                        </label>
-                        <div class="bg-mode-selector">
-                            <button class="bg-mode-btn active" data-mode="solid" title="纯色">
-                                <i class="fas fa-square"></i>
-                            </button>
-                            <button class="bg-mode-btn" data-mode="gradient" title="渐变">
-                                <i class="fas fa-layer-group"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-fill-drip"></i> 背景颜色 / 渐变
-                        </label>
-                        <div class="color-presets" id="bg-color-presets">
-                            <!-- 纯色预设 (莫兰迪色系) -->
-                            <div class="solid-presets">
-                                <div class="color-preset" style="background-color: #ffffff;" data-color="#ffffff" title="纯白"></div>
-                                <div class="color-preset" style="background-color: #E8D5C4;" data-color="#E8D5C4" title="浅杏"></div>
-                                <div class="color-preset" style="background-color: #B5C0D0;" data-color="#B5C0D0" title="灰蓝"></div>
-                                <div class="color-preset" style="background-color: #CCD3CA;" data-color="#CCD3CA" title="豆沙绿"></div>
-                                <div class="color-preset" style="background-color: #F5E8DD;" data-color="#F5E8DD" title="浅咖"></div>
-                                <div class="color-preset" style="background-color: #9290C3;" data-color="#9290C3" title="莫兰紫"></div>
-                                <div class="color-preset" style="background-color: #7C9D96;" data-color="#7C9D96" title="灰绿"></div>
-                                <div class="color-preset" style="background-color: #1a1a1b;" data-color="#1a1a1b" title="暗黑"></div>
-                            </div>
-                            <!-- 渐变预设 (初始隐藏) -->
-                            <div class="gradient-presets" style="display: none;">
-                                <div class="color-preset" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);" data-color="linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" title="晨曦"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);" data-color="linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)" title="晴空"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);" data-color="linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" title="蜜桃"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);" data-color="linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" title="梦幻"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);" data-color="linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)" title="木质"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);" data-color="linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" title="素雅"></div>
-                            </div>
-                            <div class="color-picker-wrapper" id="bg-color-picker-container">
-                                <div id="bg-color-picker"></div>
-                                <i class="fas fa-plus"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 渐变配置面板 (初始隐藏) -->
-                    <div id="gradient-editor-panel" class="editor-popup" style="display: none;">
-                        <div class="popup-header">
-                            <span>渐变设置</span>
-                            <i class="fas fa-times close-popup"></i>
-                        </div>
-                        <div class="form-group popup-form-group">
-                            <label class="form-label">起始颜色</label>
-                            <div id="gradient-start-picker"></div>
-                        </div>
-                        <div class="form-group popup-form-group">
-                            <label class="form-label">结束颜色</label>
-                            <div id="gradient-end-picker"></div>
-                        </div>
-                        <div class="form-group popup-form-group">
-                            <label class="form-label">
-                                角度
-                                <span class="form-range-value" id="gradient-angle-value">135deg</span>
-                            </label>
-                            <input type="range" class="form-range" id="gradient-angle" min="0" max="360" value="135">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-font"></i> 文字颜色
-                        </label>
-                        <div class="color-presets" id="text-color-presets">
-                            <div class="color-preset" style="background-color: #333333;" data-color="#333333" title="深灰"></div>
-                            <div class="color-preset" style="background-color: #000000;" data-color="#000000" title="纯黑"></div>
-                            <div class="color-preset" style="background-color: #495057;" data-color="#495057" title="中灰"></div>
-                            <div class="color-preset" style="background-color: #1c7ed6;" data-color="#1c7ed6" title="极光蓝"></div>
-                            <div class="color-preset" style="background-color: #d6336c;" data-color="#d6336c" title="玫瑰红"></div>
-                            <div class="color-preset" style="background-color: #37b24d;" data-color="#37b24d" title="森林绿"></div>
-                            <div class="color-preset" style="background-color: #f08c00;" data-color="#f08c00" title="琥珀橙"></div>
-                            <div class="color-preset" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff" title="纯白"></div>
-                            <div class="color-picker-wrapper">
-                                <div id="text-color-picker"></div>
-                                <i class="fas fa-plus"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span><i class="fas fa-text-height"></i> 字体大小</span>
-                            <span class="form-range-value" id="font-size-value">16px</span>
-                        </label>
-                        <input type="range" class="form-range" id="font-size" min="12" max="32" value="16">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span><i class="fas fa-arrows-alt-v"></i> 行高</span>
-                            <span class="form-range-value" id="line-height-value">1.8</span>
-                        </label>
-                        <input type="range" class="form-range" id="line-height" min="1.2" max="3" step="0.1" value="1.8">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span><i class="fas fa-arrows-alt-h"></i> 字间距</span>
-                            <span class="form-range-value" id="letter-spacing-value">0.5px</span>
-                        </label>
-                        <input type="range" class="form-range" id="letter-spacing" min="0" max="3" step="0.1" value="0.5">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span><i class="fas fa-compress-alt"></i> 内边距</span>
-                            <span class="form-range-value" id="text-padding-value">40px</span>
-                        </label>
-                        <input type="range" class="form-range" id="text-padding" min="20" max="80" step="5" value="40">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-font"></i> 字体族
-                        </label>
-                        <select class="form-input" id="font-family">
-                            <option value="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif" selected>系统默认</option>
-                            <option value="'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif">苹方/思源黑体</option>
-                            <option value="'Microsoft YaHei', '微软雅黑', 'Noto Sans SC', sans-serif">微软雅黑</option>
-                            <option value="'SimSun', '宋体', 'Songti SC', serif">宋体</option>
-                            <option value="'KaiTi', '楷体', 'STKaiti', serif">楷体</option>
-                            <option value="'Heiti SC', '黑体', sans-serif">黑体</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span><i class="fas fa-stamp"></i> 背景水印</span>
-                            <label class="switch">
-                                <input type="checkbox" id="has-watermark">
-                                <span class="slider round"></span>
-                            </label>
-                        </label>
-                        <div class="form-row watermark-options" style="margin-top: 8px; display: none;">
-                            <div class="form-col">
-                                <input type="text" class="form-input" id="watermark-text" placeholder="水印文字 (如: @我的账号)">
-                            </div>
-                            <div class="form-col watermark-color-col" style="flex: 0 0 44px;">
-                                <div class="color-picker-wrapper small" title="水印颜色">
-                                    <div id="watermark-color-picker"></div>
-                                    <i class="fas fa-palette"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span><i class="fas fa-signature"></i> 签名栏</span>
-                            <label class="switch">
-                                <input type="checkbox" id="has-signature">
-                                <span class="slider round"></span>
-                            </label>
-                        </label>
-                        <div id="signature-options" style="display: none; margin-top: 10px;">
-                            <div class="form-row">
-                                <div class="form-col">
-                                    <input type="text" class="form-input" id="signature-text" placeholder="签名内容 (如: 我的名字)">
-                                </div>
-                                <div class="form-col signature-color-col" style="flex: 0 0 44px;">
-                                    <div class="color-picker-wrapper small" title="签名颜色">
-                                        <div id="signature-color-picker"></div>
-                                        <i class="fas fa-palette"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="action-buttons" style="margin-top: 20px; flex-direction: row; gap: var(--spacing-sm);">
-                        <button class="btn btn-secondary" id="reset-template-btn" style="flex: 1;">
-                            <i class="fas fa-undo"></i>
-                            重置
-                        </button>
-                        <button class="btn btn-primary" id="save-template-btn" style="flex: 1.5;">
-                            <i class="fas fa-save"></i>
-                            保存模板
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="landing-bg">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
         </div>
     </div>
-
-    <!-- JavaScript 模块 -->
-    <script src="js/constants.js"></script>
-    <script src="js/utils/markdown.js"></script>
-    <script src="js/utils/canvas-text-engine.js"></script>
-    <script src="js/CanvasRenderer.js"></script>
-    <script src="js/TemplateManager.js"></script>
-    <script src="js/TextSplitter.js"></script>
-    <script src="js/PreviewGenerator.js"></script>
-    <script src="js/DownloadManager.js"></script>
-    <script src="js/EditorController.js"></script>
-    <script src="js/App.js"></script>
-
-    <!-- 模板保存弹窗 -->
-    <div id="save-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>保存模板</h3>
-                <i class="fas fa-times close-modal" id="close-save-modal"></i>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">模板名称 <span style="color: red;">*</span></label>
-                    <input type="text" id="modal-tpl-name" class="form-input" placeholder="请输入模板名称">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">模板描述 (选填)</label>
-                    <textarea id="modal-tpl-desc" class="form-input" style="height: 80px; resize: none;" placeholder="请输入模板描述..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="cancel-save-modal">取消</button>
-                <button class="btn btn-primary" id="confirm-save-modal">确认保存</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Vercel Speed Insights -->
-    <script>
-        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>
-

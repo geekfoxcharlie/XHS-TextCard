@@ -6,7 +6,6 @@
 class TemplateManager {
     constructor() {
         this.templates = {};
-        this.loadedCSS = new Set();
         this.currentCategory = 'featured';
     }
 
@@ -31,14 +30,6 @@ class TemplateManager {
             // 加载模板配置 (同样添加时间戳防止缓存)
             const configResponse = await fetch(`templates/${templateId}.json?t=${Date.now()}`);
             const configData = await configResponse.json();
-
-            // 加载模板样式
-            if (configData.cssFile && !this.loadedCSS.has(templateId)) {
-                const cssResponse = await fetch(`templates/${configData.cssFile}?t=${Date.now()}`);
-                const cssText = await cssResponse.text();
-                this.injectCSS(cssText, templateId);
-                this.loadedCSS.add(templateId);
-            }
 
             // 确保配置项完整（数据迁移与默认值）
             const config = {
@@ -67,7 +58,6 @@ class TemplateManager {
                 author: configData.author,
                 version: configData.version,
                 config: config,
-                cssFile: configData.cssFile,
                 className: `template-${templateId}`
             };
 
@@ -79,43 +69,17 @@ class TemplateManager {
         }
     }
 
-    injectCSS(cssText, templateId) {
-        const style = document.createElement('style');
-        style.setAttribute('data-template', templateId);
-        style.textContent = cssText;
-        document.head.appendChild(style);
-    }
-
     getTemplate(templateId) {
         return this.templates[templateId] || null;
     }
 
-    getTemplatesByCategory(category) {
-        // 按照 templateOrder 的顺序返回模板，确保列表稳定
-        let allTemplates = [];
+    getAllTemplates() {
         if (this.templateOrder) {
-            allTemplates = this.templateOrder
+            return this.templateOrder
                 .map(id => this.templates[id])
                 .filter(t => t !== undefined && t !== null);
-        } else {
-            allTemplates = Object.values(this.templates);
         }
-
-        if (category === 'featured') {
-            // 推荐栏：显示所有标记为 featured 且作者为 system 的模板
-            return allTemplates.filter(t => {
-                const isFeatured = t.featured === true || t.featured === undefined;
-                const author = (t.author || '').toLowerCase();
-                return isFeatured && author === 'system';
-            });
-        } else if (category === 'custom') {
-            // 自定义栏：显示所有非系统作者的模板
-            return allTemplates.filter(t => {
-                const author = (t.author || '').toLowerCase();
-                return author !== 'system';
-            });
-        }
-        return allTemplates;
+        return Object.values(this.templates);
     }
 
     async init() {

@@ -1,8 +1,8 @@
 {
   "name": "苹果备忘录",
   "description": "2026版 iOS 极致还原，每一次记录都像在用真机",
-  "author": "system",
-  "version": "1.2",
+  "author": "geekfoxcharlie",
+  "version": "1.3",
   "config": {
     "bgColor": "#F2F2F7",
     "textColor": "#1C1C1E",
@@ -19,6 +19,5 @@
     "signatureColor": "#8E8E93",
     "signaturePosition": "bottom",
     "signatureStyle": "modern-pill"
-  },
-  "cssFile": "ios-memo.css"
+  }
 }

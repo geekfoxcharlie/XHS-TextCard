@@ -1,0 +1,293 @@
+/* ========================================
+ * Landing Page - Luxury Minimalist Theme
+ * ======================================== */
+
+.landing-page {
+  /* Local Design Tokens */
+  --landing-bg: #fbfbfd;
+  --landing-text-main: #1d1d1f;
+  --landing-text-secondary: #86868b;
+  --landing-accent: #2997ff;
+  --landing-accent-gradient: linear-gradient(135deg, #007aff 0%, #00c6ff 100%);
+  --landing-glass-bg: rgba(255, 255, 255, 0.7);
+  --landing-glass-border: rgba(255, 255, 255, 0.5);
+  --landing-shadow-ambient: 0 4px 24px rgba(0, 0, 0, 0.04);
+  --landing-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --font-serif: "New York", "Times New Roman", Times, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--landing-bg);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 9999;
+  font-family: var(--font-sans);
+  color: var(--landing-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === Background Blobs (Mesh Gradient) === */
+.landing-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.6;
+  animation: float 20s infinite ease-in-out alternate;
+}
+
+.blob-1 {
+  top: -10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(200, 220, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+  animation-delay: -5s;
+}
+
+.blob-2 {
+  bottom: -10%;
+  left: -10%;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(230, 210, 255, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -50px) scale(1.1); }
+  100% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* === Content Container === */
+.landing-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* === Navigation === */
+.landing-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  padding-top: 20px;
+}
+
+.landing-nav .brand {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #1d1d1f 0%, #4a4a4f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.landing-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.landing-nav .nav-links a,
+.landing-nav .nav-links .contact-item {
+  color: var(--landing-text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.landing-nav .nav-links a:hover {
+  color: var(--landing-text-main);
+}
+
+.landing-nav .nav-links i {
+  font-size: 16px;
+}
+
+/* === Hero Section === */
+.hero-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px 0 80px;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  font-size: clamp(3.5rem, 5vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+  color: #000;
+}
+
+.hero-title .accent {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.4em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--landing-accent);
+  margin-top: 16px;
+  background: var(--landing-accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--landing-text-secondary);
+  max-width: 600px;
+  margin: 0 auto 48px;
+  font-weight: 400;
+}
+
+/* === Hero Button === */
+.btn-hero {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 40px;
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  background: #1d1d1f;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-hero i {
+  margin-left: 10px;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.btn-hero:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  background: #000;
+}
+
+.btn-hero:hover i {
+  transform: translateX(4px);
+}
+
+.btn-hero:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* === Features Grid === */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 80px;
+  width: 100%;
+}
+
+.feature-card {
+  background: var(--landing-glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 32px;
+  border-radius: 24px;
+  border: 1px solid var(--landing-glass-border);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  text-align: left;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--landing-shadow-hover);
+}
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: var(--landing-text-main);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+  background: var(--landing-accent);
+  color: white;
+}
+
+.feature-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--landing-text-main);
+}
+
+.feature-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--landing-text-secondary);
+}
+
+/* === Mobile Responsiveness === */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  
+  .feature-card {
+    padding: 24px;
+  }
+  
+  .landing-nav {
+    height: 60px;
+  }
+}

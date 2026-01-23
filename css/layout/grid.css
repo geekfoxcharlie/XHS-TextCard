@@ -5,10 +5,11 @@
 /* === 主容器 === */
 .main-container {
   display: grid;
-  grid-template-columns: var(--left-panel-width) 1fr var(--template-panel-width) var(--editor-panel-width);
+  grid-template-columns: var(--left-panel-width) minmax(540px, 1fr) var(--template-panel-width) var(--editor-panel-width);
   grid-template-rows: 1fr;
   gap: var(--panel-gap);
   height: 100vh;
+  min-width: 1200px;
   padding: var(--container-padding);
   background-color: var(--color-background);
 }
@@ -35,6 +36,7 @@
 /* === 中间预览面板 === */
 .preview-panel {
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: var(--spacing-xs);
   background-color: var(--color-background);
   box-shadow: none; 

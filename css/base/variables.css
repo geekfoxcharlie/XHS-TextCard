@@ -16,9 +16,9 @@
   --text-area-padding: 40px;
   
   /* === 面板尺寸 === */
-  --left-panel-width: 420px;
-  --template-panel-width: 240px;
-  --editor-panel-width: 280px;
+  --left-panel-width: 320px;
+  --template-panel-width: 200px;
+  --editor-panel-width: 260px;
   --panel-gap: 12px;
   --container-padding: 12px;
   

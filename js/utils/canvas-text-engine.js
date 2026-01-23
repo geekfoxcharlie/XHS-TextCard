@@ -33,9 +33,9 @@ class CanvasTextEngine {
         return this.ctx.font;
     }
 
-    measureTextWidth(text, fontSize = this.config.fontSize, fontWeight = 'normal') {
+    measureTextWidth(text, fontSize = this.config.fontSize, fontWeight = 'normal', fontStyle = 'normal') {
         if (!text) return 0;
-        this.setFont({ fontSize, fontWeight });
+        this.setFont({ fontSize, fontWeight, fontStyle });
         const metrics = this.ctx.measureText(text);
         const spacing = text.length * (parseFloat(this.config.letterSpacing) || 0);
         return metrics.width + spacing;
@@ -87,7 +87,8 @@ class CanvasTextEngine {
                 const scale = hSizeMap[token.depth] || 1.1;
                 const fontSize = this.config.fontSize * scale;
                 const fontWeight = '800';
-                const lines = this.splitIntoLines(token.text, { fontSize, fontWeight });
+                
+                const lines = this.layoutInlineText(token.tokens || [{ type: 'text', text: token.text }], this.drawWidth, { fontSize, fontWeight });
                 
                 const marginTop = fontSize * 0.6;
                 const marginBottom = fontSize * 0.4;
@@ -96,10 +97,17 @@ class CanvasTextEngine {
                 layouts.push({
                     type: 'heading',
                     depth: token.depth,
-                    lines: lines.map(text => ({ text, fontSize, fontWeight })),
+                    lines: lines,
                     height: marginTop + contentHeight + marginBottom,
                     marginTop,
                     marginBottom
+                });
+                break;
+            }
+            case 'hr': {
+                layouts.push({
+                    type: 'divider',
+                    height: 20
                 });
                 break;
             }
@@ -139,7 +147,14 @@ class CanvasTextEngine {
                 token.items.forEach((item, index) => {
                     const prefix = token.ordered ? `${index + 1}. ` : '• ';
                     const prefixWidth = this.measureTextWidth(prefix);
-                    const lines = this.layoutInlineText(item.tokens, this.drawWidth - prefixWidth);
+                    
+                    // 列表项可能直接包含 tokens，或者包含段落（如果是松散列表）
+                    let inlineTokens = item.tokens || [];
+                    if (item.tokens && item.tokens.length === 1 && item.tokens[0].type === 'paragraph') {
+                        inlineTokens = item.tokens[0].tokens || [];
+                    }
+                    
+                    const lines = this.layoutInlineText(inlineTokens, this.drawWidth - prefixWidth);
                     const marginTop = 0;
                     const marginBottom = this.config.fontSize * 0.3;
                     const contentHeight = lines.length * baseLineHeight;
@@ -191,52 +206,67 @@ class CanvasTextEngine {
         return layouts;
     }
 
-    layoutInlineText(inlineTokens, maxWidth = this.drawWidth) {
+    layoutInlineText(inlineTokens, maxWidth = this.drawWidth, inheritedStyle = {}) {
         const lines = [];
         let currentLine = [];
         let currentLineWidth = 0;
 
         if (!inlineTokens) return [];
 
-        for (const token of inlineTokens) {
-            const style = {
-                fontSize: this.config.fontSize,
-                fontWeight: (token.type === 'strong' || token.type === 'bold') ? '700' : 'normal',
-                fontStyle: (token.type === 'em' || token.type === 'italic') ? 'italic' : 'normal',
-                isHighlight: token.type === 'highlight',
-                isCode: token.type === 'codespan' || token.type === 'code'
-            };
+        const processTokens = (tokens, currentStyle) => {
+            for (const token of tokens) {
+                const style = {
+                    fontSize: currentStyle.fontSize || this.config.fontSize,
+                    fontWeight: currentStyle.fontWeight || 'normal',
+                    fontStyle: currentStyle.fontStyle || 'normal',
+                    isHighlight: currentStyle.isHighlight || false,
+                    isCode: currentStyle.isCode || false,
+                    textDecoration: currentStyle.textDecoration || 'none'
+                };
 
-            if (token.raw && token.raw.startsWith('==')) {
-                style.isHighlight = true;
-                token.text = token.text || token.raw.slice(2, -2);
-            }
+                if (token.type === 'strong' || token.type === 'bold') style.fontWeight = '700';
+                if (token.type === 'em' || token.type === 'italic') style.fontStyle = 'italic';
+                if (token.type === 'codespan' || token.type === 'code') style.isCode = true;
+                if (token.type === 'del' || token.type === 'strikethrough') style.textDecoration = 'line-through';
+                if (token.type === 'highlight' || (token.raw && token.raw.startsWith('==') && token.raw.endsWith('=='))) {
+                    style.isHighlight = true;
+                }
 
-            const text = token.text || '';
-            
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                const charWidth = this.measureTextWidth(char, style.fontSize, style.fontWeight);
-
-                if (currentLineWidth + charWidth > maxWidth && currentLine.length > 0) {
-                    lines.push(currentLine);
-                    currentLine = [{ ...style, text: char }];
-                    currentLineWidth = charWidth;
+                if (token.tokens && token.tokens.length > 0) {
+                    processTokens(token.tokens, style);
                 } else {
-                    const lastSegment = currentLine[currentLine.length - 1];
-                    if (lastSegment && 
-                        lastSegment.fontWeight === style.fontWeight && 
-                        lastSegment.fontStyle === style.fontStyle && 
-                        lastSegment.isHighlight === style.isHighlight &&
-                        lastSegment.isCode === style.isCode) {
-                        lastSegment.text += char;
-                    } else {
-                        currentLine.push({ ...style, text: char });
+                    const text = token.text || token.raw || '';
+                    if (!text) continue;
+
+                    const chars = Array.from(text);
+                    for (const char of chars) {
+                        const charWidth = this.measureTextWidth(char, style.fontSize, style.fontWeight, style.fontStyle);
+
+                        if (currentLineWidth + charWidth > maxWidth && currentLine.length > 0) {
+                            lines.push(currentLine);
+                            currentLine = [{ ...style, text: char }];
+                            currentLineWidth = charWidth;
+                        } else {
+                            const lastSegment = currentLine[currentLine.length - 1];
+                            if (lastSegment && 
+                                lastSegment.fontWeight === style.fontWeight && 
+                                lastSegment.fontStyle === style.fontStyle && 
+                                lastSegment.isHighlight === style.isHighlight &&
+                                lastSegment.isCode === style.isCode &&
+                                lastSegment.fontSize === style.fontSize &&
+                                lastSegment.textDecoration === style.textDecoration) {
+                                lastSegment.text += char;
+                            } else {
+                                currentLine.push({ ...style, text: char });
+                            }
+                            currentLineWidth += charWidth;
+                        }
                     }
-                    currentLineWidth += charWidth;
                 }
             }
-        }
+        };
+
+        processTokens(inlineTokens, inheritedStyle);
 
         if (currentLine.length > 0) {
             lines.push(currentLine);

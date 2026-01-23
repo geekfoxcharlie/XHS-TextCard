@@ -1,8 +1,8 @@
 {
     "name": "弥散极光",
     "description": "2026 液体光影美学，营造梦幻、空灵的感官体验",
-    "author": "system",
-    "version": "1.2",
+    "author": "geekfoxcharlie",
+    "version": "1.3",
     "featured": true,
     "config": {
         "bgColor": "#FFFFFF",
@@ -20,6 +20,5 @@
         "signatureColor": "#2D3436",
         "signaturePosition": "bottom",
         "signatureStyle": "glass-minimal"
-    },
-    "cssFile": "aura-gradient.css"
+    }
 }
