@@ -25,7 +25,7 @@ class PreviewGenerator {
     </div>
 </div>
 <div class="preview-image-wrapper">
-    <div class="canvas-container" style="width: ${PREVIEW_WIDTH}px; height: ${PREVIEW_HEIGHT}px;">
+    <div class="canvas-container">
     </div>
 </div>`;
 

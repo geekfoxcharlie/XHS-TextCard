@@ -70,11 +70,20 @@
                 <div class="preview-title">预览</div>
                 <div class="preview-count" id="preview-count">共 0 张图片</div>
             </div>
-            <div class="preview-list" id="preview-list">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📝</div>
-                    <div>输入文字并选择模板后将自动生成预览</div>
+            <div class="preview-container">
+                <button class="preview-nav prev" id="preview-prev" title="上一张">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="preview-list" id="preview-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div>输入文字并选择模板后将自动生成预览</div>
+                    </div>
                 </div>
+                <button class="preview-nav next" id="preview-next" title="下一张">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="preview-indicators" id="preview-indicators"></div>
             </div>
             <div class="loading" id="loading">生成中...</div>
         </div>

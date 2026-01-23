@@ -35,9 +35,7 @@
 
 /* === 中间预览面板 === */
 .preview-panel {
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: var(--spacing-xs);
+  overflow: hidden;
   background-color: var(--color-background);
   box-shadow: none; 
 }
