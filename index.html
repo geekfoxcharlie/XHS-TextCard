@@ -1,25 +1,30 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" prefix="og: http://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XHS-TextCard | 小红书智能文字转图片工具 - 创作者排版神器</title>
-    <meta name="description" content="免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。一键将长文转化为精美图片，提升创作效率。">
-    <meta name="keywords" content="小红书,文字转图片,卡片生成,排版工具,创作者工具,XHS-TextCard,自动分页,品牌水印">
+    <meta name="description" content="XHS-TextCard 是一款免费开源的小红书文字卡片生成工具。支持智能分页、Markdown 解析、大师级模板、专属签名与防盗水印。专为内容创作者打造，一键将长文转化为高颜值社交媒体图片，提升小红书笔记权重与点击率。">
+    <meta name="keywords" content="小红书文字卡片,小红书排版工具,文字转图片,自动分页,Markdown转图片,创作者神器,XHS-TextCard,排版设计,社交媒体运营,品牌水印">
+    <meta name="author" content="geekfoxcharlie">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.xhs-textcard.site/">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.xhs-textcard.site/">
     <meta property="og:title" content="XHS-TextCard | 小红书智能文字转图片工具 - 创作者排版神器">
-    <meta property="og:description" content="免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。一键将长文转化为精美图片，提升创作效率。">
+    <meta property="og:description" content="免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。提升你的内容表现力。">
+    <meta property="og:site_name" content="XHS-TextCard">
     <meta property="og:image" content="https://www.xhs-textcard.site/rednote.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://www.xhs-textcard.site/">
-    <meta property="twitter:title" content="XHS-TextCard | 小红书智能文字转图片工具 - 创作者排版神器">
-    <meta property="twitter:description" content="免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。一键将长文转化为精美图片，提升创作效率。">
+    <meta property="twitter:title" content="XHS-TextCard | 小红书智能文字转图片工具">
+    <meta property="twitter:description" content="专为小红书打造的文字转图片工具，支持智能分页与Markdown语法。">
     <meta property="twitter:image" content="https://www.xhs-textcard.site/rednote.png">
 
     <script type="application/ld+json">
@@ -27,12 +32,21 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "XHS-TextCard",
-      "alternateName": "小红书智能文字转图片工具",
+      "alternateName": ["小红书文字卡片生成器", "XHS Card Generator"],
       "url": "https://www.xhs-textcard.site/",
       "image": "https://www.xhs-textcard.site/rednote.png",
       "description": "免费的小红书文字卡片生成工具，支持智能分页、Markdown 解析、专属签名与防盗水印。一键将长文转化为精美图片。",
-      "applicationCategory": "DesignApplication, Utility",
-      "operatingSystem": "Windows, macOS, Linux, iOS, Android",
+      "applicationCategory": "DesignApplication, MultimediaApplication",
+      "operatingSystem": "Web, Windows, macOS, Linux, iOS, Android",
+      "featureList": [
+        "智能自动分页",
+        "Markdown 语法支持",
+        "内置大师级设计模板",
+        "专属签名与品牌水印",
+        "高清 3:4 比例图片导出"
+      ],
+      "screenshot": "https://www.xhs-textcard.site/rednote.png",
+      "softwareVersion": "1.0.0",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -40,7 +54,8 @@
       },
       "author": {
         "@type": "Person",
-        "name": "geekfoxcharlie"
+        "name": "geekfoxcharlie",
+        "url": "https://github.com/geekfoxcharlie"
       }
     }
     </script>
@@ -82,6 +97,18 @@
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
+
+                <!-- AI Discovery & Technical Context -->
+                <section class="ai-context" aria-label="Technical Specifications" style="display: none;">
+                    <h2>About XHS-TextCard (AI Friendly Description)</h2>
+                    <p>XHS-TextCard is a zero-backend, pure frontend web application designed for generating social media text cards, specifically optimized for Xiaohongshu (Rednote) aspect ratios (3:4). It utilizes a custom CanvasTextEngine for recursive layout calculation and smart pagination.</p>
+                    <ul>
+                        <li>Input: Markdown supported text (Headers, Bold, Highlight, Lists).</li>
+                        <li>Logic: Client-side JavaScript (ES6), no build process, high-resolution HTML5 Canvas rendering.</li>
+                        <li>Output: High-fidelity PNG images with customizable branding.</li>
+                        <li>Keywords: text-to-image, XHS typography, content creator tools, smart text splitting algorithm.</li>
+                    </ul>
+                </section>
             </main>
 
             <section class="features-grid">
