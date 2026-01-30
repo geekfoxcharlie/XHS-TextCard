@@ -92,7 +92,8 @@ class CanvasTextEngine {
                 
                 const marginTop = fontSize * 0.6;
                 const marginBottom = fontSize * 0.4;
-                const contentHeight = lines.length * fontSize * 1.3;
+                const headingLineHeight = fontSize * this.config.lineHeight;
+                const contentHeight = lines.length * headingLineHeight;
                 
                 layouts.push({
                     type: 'heading',
@@ -156,7 +157,7 @@ class CanvasTextEngine {
                     
                     const lines = this.layoutInlineText(inlineTokens, this.drawWidth - prefixWidth);
                     const marginTop = 0;
-                    const marginBottom = this.config.fontSize * 0.3;
+                    const marginBottom = this.config.fontSize * 0.8;
                     const contentHeight = lines.length * baseLineHeight;
 
                     layouts.push({
@@ -195,10 +196,15 @@ class CanvasTextEngine {
             default: {
                 if (token.text) {
                     const lines = this.splitIntoLines(token.text);
+                    const marginTop = 0;
+                    const marginBottom = this.config.fontSize * 0.8;
+                    const contentHeight = lines.length * baseLineHeight;
                     layouts.push({
                         type: 'text',
                         lines: lines.map(text => ({ text, fontSize: this.config.fontSize, fontWeight: 'normal' })),
-                        height: lines.length * baseLineHeight
+                        height: marginTop + contentHeight + marginBottom,
+                        marginTop,
+                        marginBottom
                     });
                 }
             }

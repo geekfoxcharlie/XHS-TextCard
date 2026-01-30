@@ -17,7 +17,7 @@ const TemplateDefinitions = {
             
             ctx.strokeStyle = '#F2F2F7';
             ctx.lineWidth = 1;
-            const lineSpacing = (parseFloat(config.fontSize) || 18) * 1.6;
+            const lineSpacing = (parseFloat(config.fontSize) || 18) * (parseFloat(config.lineHeight) || 1.6);
             for (let y = rect.y + lineSpacing; y < rect.y + rect.height; y += lineSpacing) {
                 ctx.beginPath();
                 ctx.moveTo(rect.x, y);
