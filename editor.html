@@ -39,7 +39,6 @@
     }
     </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.2.0/dist/dom-to-image-more.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Pickr -->
@@ -53,19 +52,19 @@
     <div class="main-container">
         <!-- 左侧：输入区域 -->
         <div class="left-panel">
-            <div class="panel-header" style="display: flex; align-items: center; padding: 0 var(--spacing-md); height: 50px; border-bottom: 1px solid var(--color-border);">
-                <a href="index.html" class="btn-icon-text" title="返回主页" style="text-decoration: none; color: inherit; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; transition: background 0.3s;">
+            <div class="panel-header">
+                <a href="index.html" class="btn-icon-text" title="返回主页">
                     <i class="fas fa-home"></i>
                 </a>
-                <div style="flex: 1; text-align: center; font-weight: 600; color: var(--color-text-primary);">工作台</div>
+                <div>工作台</div>
             </div>
-            <div class="input-section" style="flex: 1; display: flex; flex-direction: column; position: relative; border-top: none;">
+            <div class="input-section">
                 <div class="section-title">
                     <i class="fas fa-edit"></i>
                     输入文字
-                    <div class="help-trigger" id="syntax-help-trigger">
-                        <i class="far fa-question-circle"></i>
-                        <div class="help-tooltip" id="syntax-help-tooltip">
+                    <div class="help-trigger" id="syntax-help-trigger" role="button" aria-label="语法速查" aria-expanded="false" aria-controls="syntax-help-tooltip">
+                        <i class="far fa-question-circle" aria-hidden="true"></i>
+                        <div class="help-tooltip" id="syntax-help-tooltip" role="tooltip">
                             <div class="help-title">语法速查</div>
                             <ul class="help-list">
                                 <li><span># 标题</span> <span>一级标题</span></li>
@@ -84,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-                <textarea id="text-input" style="flex: 1;"></textarea>
+                <textarea id="text-input"></textarea>
             </div>
         </div>
 
@@ -127,8 +126,8 @@
                 </div>
             </div>
             
-            <div class="download-section" style="margin-top: auto; padding: var(--spacing-lg); border-top: 1px solid var(--color-border);">
-                <button class="btn btn-primary" id="download-all-btn" disabled style="width: 100%; height: 44px; font-weight: 600;">
+            <div class="download-section">
+                <button class="btn btn-primary" id="download-all-btn" disabled>
                     <i class="fas fa-download"></i>
                     打包下载全部图片
                 </button>
@@ -169,26 +168,26 @@
                         <label class="form-label">
                             <i class="fas fa-fill-drip"></i> 背景颜色 / 渐变
                         </label>
-                        <div class="color-presets" id="bg-color-presets">
+                        <div class="color-presets" id="bg-color-presets" role="group" aria-label="背景颜色选择">
                             <!-- 纯色预设 (莫兰迪色系) -->
                             <div class="solid-presets">
-                                <div class="color-preset" style="background-color: #ffffff;" data-color="#ffffff" title="纯白"></div>
-                                <div class="color-preset" style="background-color: #E8D5C4;" data-color="#E8D5C4" title="浅杏"></div>
-                                <div class="color-preset" style="background-color: #B5C0D0;" data-color="#B5C0D0" title="灰蓝"></div>
-                                <div class="color-preset" style="background-color: #CCD3CA;" data-color="#CCD3CA" title="豆沙绿"></div>
-                                <div class="color-preset" style="background-color: #F5E8DD;" data-color="#F5E8DD" title="浅咖"></div>
-                                <div class="color-preset" style="background-color: #9290C3;" data-color="#9290C3" title="莫兰紫"></div>
-                                <div class="color-preset" style="background-color: #7C9D96;" data-color="#7C9D96" title="灰绿"></div>
-                                <div class="color-preset" style="background-color: #1a1a1b;" data-color="#1a1a1b" title="暗黑"></div>
+                                <div class="color-preset" data-color="#ffffff" title="纯白" role="button" aria-label="白色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#E8D5C4" title="浅杏" role="button" aria-label="浅杏色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#B5C0D0" title="灰蓝" role="button" aria-label="灰蓝色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#CCD3CA" title="豆沙绿" role="button" aria-label="豆沙绿色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#F5E8DD" title="浅咖" role="button" aria-label="浅咖色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#9290C3" title="莫兰紫" role="button" aria-label="莫兰紫色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#7C9D96" title="灰绿" role="button" aria-label="灰绿色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#1a1a1b" title="暗黑" role="button" aria-label="暗黑色背景" tabindex="0"></div>
                             </div>
                             <!-- 渐变预设 (初始隐藏) -->
-                            <div class="gradient-presets" style="display: none;">
-                                <div class="color-preset" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);" data-color="linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" title="晨曦"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);" data-color="linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)" title="晴空"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);" data-color="linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" title="蜜桃"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);" data-color="linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" title="梦幻"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);" data-color="linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)" title="木质"></div>
-                                <div class="color-preset" style="background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);" data-color="linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" title="素雅"></div>
+                            <div class="gradient-presets">
+                                <div class="color-preset" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" data-color="linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" title="晨曦" role="button" aria-label="晨曦渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)" data-color="linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)" title="晴空" role="button" aria-label="晴空渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" data-color="linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)" title="蜜桃" role="button" aria-label="蜜桃渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" data-color="linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" title="梦幻" role="button" aria-label="梦幻渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)" data-color="linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)" title="木质" role="button" aria-label="木质渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" data-color="linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" title="素雅" role="button" aria-label="素雅渐变" tabindex="0"></div>
                             </div>
                             <div class="color-picker-wrapper" id="bg-color-picker-container">
                                 <div id="bg-color-picker"></div>
@@ -198,7 +197,7 @@
                     </div>
 
                     <!-- 渐变配置面板 (初始隐藏) -->
-                    <div id="gradient-editor-panel" class="editor-popup" style="display: none;">
+                    <div id="gradient-editor-panel" class="editor-popup">
                         <div class="popup-header">
                             <span>渐变设置</span>
                             <i class="fas fa-times close-popup"></i>
@@ -222,20 +221,32 @@
 
                     <div class="form-group">
                         <label class="form-label">
-                            <i class="fas fa-font"></i> 文字颜色
+                            <i class="fas fa-font"></i> 文字颜色配置
                         </label>
-                        <div class="color-presets" id="text-color-presets">
-                            <div class="color-preset" style="background-color: #333333;" data-color="#333333" title="深灰"></div>
-                            <div class="color-preset" style="background-color: #000000;" data-color="#000000" title="纯黑"></div>
-                            <div class="color-preset" style="background-color: #495057;" data-color="#495057" title="中灰"></div>
-                            <div class="color-preset" style="background-color: #1c7ed6;" data-color="#1c7ed6" title="极光蓝"></div>
-                            <div class="color-preset" style="background-color: #d6336c;" data-color="#d6336c" title="玫瑰红"></div>
-                            <div class="color-preset" style="background-color: #37b24d;" data-color="#37b24d" title="森林绿"></div>
-                            <div class="color-preset" style="background-color: #f08c00;" data-color="#f08c00" title="琥珀橙"></div>
-                            <div class="color-preset" style="background-color: #ffffff; border: 1px solid #ddd;" data-color="#ffffff" title="纯白"></div>
-                            <div class="color-picker-wrapper">
-                                <div id="text-color-picker"></div>
-                                <i class="fas fa-plus"></i>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label class="form-label small-label" style="margin-bottom: 8px; font-size: 12px; color: #666;">正文颜色</label>
+                            <div class="color-presets" id="text-color-presets" role="group" aria-label="文字颜色选择">
+                                <div class="color-preset" style="background-color: #333333" data-color="#333333" title="深灰" role="button" aria-label="深灰色文字" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #000000" data-color="#000000" title="纯黑" role="button" aria-label="黑色文字" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #495057" data-color="#495057" title="中灰" role="button" aria-label="中灰色文字" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #1c7ed6" data-color="#1c7ed6" title="极光蓝" role="button" aria-label="极光蓝色文字" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #d6336c" data-color="#d6336c" title="玫瑰红" role="button" aria-label="玫瑰红色文字" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #37b24d" data-color="#37b24d" title="森林绿" role="button" aria-label="森林绿色文字" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #f08c00" data-color="#f08c00" title="琥珀橙" role="button" aria-label="琥珀色文字" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #ffffff" data-color="#ffffff" title="纯白" role="button" aria-label="白色文字" tabindex="0"></div>
+                                <div class="color-picker-wrapper">
+                                    <div id="text-color-picker"></div>
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row" style="align-items: center; justify-content: space-between;">
+                            <label class="form-label small-label" style="margin: 0; font-size: 12px; color: #666;">强调颜色</label>
+                            <div class="color-picker-wrapper small" title="强调色 (用于加粗/高亮/装饰)">
+                                <div id="accent-color-picker"></div>
+                                <i class="fas fa-palette"></i>
                             </div>
                         </div>
                     </div>
@@ -286,19 +297,50 @@
                         </select>
                     </div>
 
+                    <!-- 标题样式配置 -->
+                    <div class="form-group" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--color-border);">
+                        <label class="form-label" style="margin-bottom: 15px;">
+                            <i class="fas fa-heading"></i> 标题字号
+                        </label>
+                        
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label class="form-label small-label">
+                                <span>一级标题 (H1) 字号倍率</span>
+                                <span class="form-range-value" id="h1-scale-value">1.6x</span>
+                            </label>
+                            <input type="range" class="form-range" id="h1-scale" min="1.0" max="3.0" step="0.1" value="1.6">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label small-label">
+                                <span>二级标题 (H2) 字号倍率</span>
+                                <span class="form-range-value" id="h2-scale-value">1.4x</span>
+                            </label>
+                            <input type="range" class="form-range" id="h2-scale" min="1.0" max="2.5" step="0.1" value="1.4">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label small-label">
+                                <span>三级标题 (H3) 字号倍率</span>
+                                <span class="form-range-value" id="h3-scale-value">1.2x</span>
+                            </label>
+                            <input type="range" class="form-range" id="h3-scale" min="1.0" max="2.0" step="0.1" value="1.2">
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">
                             <span><i class="fas fa-stamp"></i> 背景水印</span>
                             <label class="switch">
-                                <input type="checkbox" id="has-watermark">
+                                <input type="checkbox" id="has-watermark" aria-label="启用背景水印">
                                 <span class="slider round"></span>
                             </label>
                         </label>
-                        <div class="form-row watermark-options" style="margin-top: 8px; display: none;">
+                        <div class="form-row watermark-options">
                             <div class="form-col">
                                 <input type="text" class="form-input" id="watermark-text" placeholder="水印文字 (如: @我的账号)">
                             </div>
-                            <div class="form-col watermark-color-col" style="flex: 0 0 44px;">
+                            <div class="form-col watermark-color-col">
                                 <div class="color-picker-wrapper small" title="水印颜色">
                                     <div id="watermark-color-picker"></div>
                                     <i class="fas fa-palette"></i>
@@ -311,16 +353,16 @@
                         <label class="form-label">
                             <span><i class="fas fa-signature"></i> 签名栏</span>
                             <label class="switch">
-                                <input type="checkbox" id="has-signature">
+                                <input type="checkbox" id="has-signature" aria-label="启用签名栏">
                                 <span class="slider round"></span>
                             </label>
                         </label>
-                        <div id="signature-options" style="display: none; margin-top: 10px;">
+                        <div id="signature-options">
                             <div class="form-row">
                                 <div class="form-col">
                                     <input type="text" class="form-input" id="signature-text" placeholder="签名内容 (如: 我的名字)">
                                 </div>
-                                <div class="form-col signature-color-col" style="flex: 0 0 44px;">
+                                <div class="form-col signature-color-col">
                                     <div class="color-picker-wrapper small" title="签名颜色">
                                         <div id="signature-color-picker"></div>
                                         <i class="fas fa-palette"></i>
@@ -330,8 +372,17 @@
                         </div>
                     </div>
 
-                    <div class="action-buttons" style="margin-top: 20px; flex-direction: row; gap: var(--spacing-sm);">
-                        <button class="btn btn-secondary" id="reset-template-btn" style="flex: 1;">
+                        <label class="form-label">
+                            <span><i class="fas fa-th"></i> 网格辅助线</span>
+                            <label class="switch">
+                                <input type="checkbox" id="show-grid" aria-label="显示网格辅助线">
+                                <span class="slider round"></span>
+                            </label>
+                        </label>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="reset-template-btn">
                             <i class="fas fa-undo"></i>
                             重置
                         </button>
@@ -345,6 +396,7 @@
     <script src="js/constants.js"></script>
     <script src="js/utils/markdown.js"></script>
     <script src="js/utils/canvas-text-engine.js"></script>
+    <script src="js/utils/canvas-utils.js"></script>
     <script src="js/TemplateDefinitions.js"></script>
     <script src="js/CanvasRenderer.js"></script>
     <script src="js/TemplateManager.js"></script>

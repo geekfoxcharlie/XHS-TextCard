@@ -1,23 +1,102 @@
+/**
+ * TextSplitter - 智能文本分页器
+ * 
+ * 设计原则：
+ * 1. 布局一致性：通过调用 TemplateDefinitions.getContentBox 确保分页逻辑与渲染逻辑共享相同的尺寸定义。
+ * 2. 递归拆分：当一个块（如长段落）超过剩余空间时，递归地将其切分为多页，确保没有任何文本溢出。
+ * 3. 语义化分页：支持 Markdown 分割线 (---) 作为强制分页符。
+ */
 class TextSplitter {
-    constructor(config) {
+    constructor(config, templateId = 'ios-memo') {
         this.config = config;
+        this.templateId = templateId;
         this.engine = new CanvasTextEngine(config);
-        this.maxHeight = MAX_CONTENT_HEIGHT;
+        this.calculateLayout();
+        
+        this.engine.updateConfig({
+            ...config,
+            drawWidth: this.contentWidth
+        });
     }
 
-    updateConfig(config) {
+    /**
+     * 更新配置并同步重算布局尺寸
+     */
+    updateConfig(config, templateId) {
         this.config = config;
-        this.engine.updateConfig(config);
+        if (templateId) this.templateId = templateId;
+        
+        this.calculateLayout();
+        this.engine.updateConfig({
+            ...config,
+            drawWidth: this.contentWidth
+        });
     }
 
+    /**
+     * 计算当前模板允许的最大内容高度和宽度
+     */
+    calculateLayout() {
+        if (typeof TemplateDefinitions !== 'undefined' && this.templateId) {
+            const contentBox = TemplateDefinitions.getContentBox(
+                this.templateId, this.config, PREVIEW_WIDTH, PREVIEW_HEIGHT
+            );
+            this.maxHeight = contentBox.height;
+            this.contentWidth = contentBox.width;
+        } else {
+            const padding = parseFloat(this.config.textPadding) || 35;
+            this.maxHeight = PREVIEW_HEIGHT - (padding * 2) - 60; 
+            this.contentWidth = (this.config.cardWidth || PREVIEW_WIDTH) - (padding * 2);
+        }
+    }
+
+    /**
+     * 执行分页算法
+     */
     split(text) {
         if (!text.trim()) return [];
+        if (typeof marked === 'undefined') return [];
 
         const tokens = marked.lexer(text);
         const pages = [];
-        let currentPage = {
-            layouts: [],
-            totalHeight: 0
+        let currentPage = { layouts: [], totalHeight: 0 };
+
+        /**
+         * 递归处理布局块，支持跨页拆分
+         */
+        const processLayout = (layout) => {
+            const availableHeight = this.maxHeight - currentPage.totalHeight;
+
+            // 情况 A：块能完全放入当前页
+            if (layout.height <= availableHeight) {
+                currentPage.layouts.push(layout);
+                currentPage.totalHeight += layout.height;
+                return;
+            }
+
+            // 情况 B：尝试拆分布局块（如将段落切分为前N行和剩余行）
+            const splitResult = this.engine.splitLayout(layout, availableHeight);
+            
+            if (splitResult) {
+                if (splitResult.part1.height > 0) {
+                    currentPage.layouts.push(splitResult.part1);
+                }
+                pages.push(currentPage.layouts);
+                currentPage = { layouts: [], totalHeight: 0 };
+                // 递归处理剩余部分
+                processLayout(splitResult.part2);
+            } else {
+                // 情况 C：无法拆分（如单行标题过长或图片）
+                if (currentPage.layouts.length > 0) {
+                    pages.push(currentPage.layouts);
+                    currentPage = { layouts: [], totalHeight: 0 };
+                    processLayout(layout);
+                } else {
+                    // 即使新页面也放不下，强行放入防止死循环
+                    currentPage.layouts.push(layout);
+                    currentPage.totalHeight += layout.height;
+                }
+            }
         };
 
         for (const token of tokens) {
@@ -30,17 +109,8 @@ class TextSplitter {
             }
 
             const layouts = this.engine.layoutToken(token);
-            
             for (const layout of layouts) {
-                if (currentPage.totalHeight + layout.height > this.maxHeight) {
-                    if (currentPage.layouts.length > 0) {
-                        pages.push(currentPage.layouts);
-                        currentPage = { layouts: [], totalHeight: 0 };
-                    }
-                }
-                
-                currentPage.layouts.push(layout);
-                currentPage.totalHeight += layout.height;
+                processLayout(layout);
             }
         }
 

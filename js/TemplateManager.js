@@ -1,7 +1,10 @@
 /**
- * TemplateManager
- * 模板管理器 - 负责模板配置加载、存储与管理
- * @version 1.0
+ * TemplateManager - 模板加载与状态管理器
+ * 
+ * 设计原则：
+ * 1. 动态加载：按需通过 Fetch 加载模板 JSON 配置，减少首屏体积。
+ * 2. 健壮性：通过默认值合并 (Object Spread) 确保新旧模板在配置项变更时的兼容性。
+ * 3. 顺序可控：通过 index.json 维护模板的显示顺序和推荐位状态。
  */
 class TemplateManager {
     constructor() {
@@ -11,43 +14,29 @@ class TemplateManager {
 
     async loadTemplateIndex() {
         try {
-            // 添加时间戳防止浏览器缓存 index.json
             const response = await fetch(`templates/index.json?t=${Date.now()}`);
-            const data = await response.json();
-            return data;
+            return await response.json();
         } catch (error) {
-            console.error('加载模板索引失败:', error);
+            console.error('Failed to load template index:', error);
             return null;
         }
     }
 
     async loadTemplate(templateId) {
-        if (this.templates[templateId]) {
-            return this.templates[templateId];
-        }
+        if (this.templates[templateId]) return this.templates[templateId];
 
         try {
-            // 加载模板配置 (同样添加时间戳防止缓存)
-            const configResponse = await fetch(`templates/${templateId}.json?t=${Date.now()}`);
-            const configData = await configResponse.json();
+            const response = await fetch(`templates/${templateId}.json?t=${Date.now()}`);
+            const configData = await response.json();
 
-            // 确保配置项完整（数据迁移与默认值）
+            // 数据合并与默认值兜底
             const config = {
-                bgColor: "#FFFFFF",
-                textColor: "#333333",
-                fontSize: 16,
-                lineHeight: 1.8,
-                letterSpacing: 0.5,
-                textPadding: 40,
-                fontFamily: "inherit",
-                hasWatermark: false,
-                watermarkText: "极客狐",
-                watermarkColor: "rgba(0,0,0,0.1)",
-                hasSignature: true,
-                signatureText: "极客狐",
-                signatureColor: "#555555",
-                signaturePosition: "bottom",
-                signatureStyle: "modern-pill",
+                bgColor: "#FFFFFF", textColor: "#333333", fontSize: 16,
+                lineHeight: 1.8, letterSpacing: 0.5, textPadding: 40,
+                fontFamily: "inherit", hasWatermark: false, watermarkText: "极客狐",
+                watermarkColor: "rgba(0,0,0,0.1)", hasSignature: true, signatureText: "极客狐",
+                signatureColor: "#555555", signaturePosition: "bottom", signatureStyle: "modern-pill",
+                h1Scale: 1.6, h2Scale: 1.4, h3Scale: 1.2, accentColor: "#333333",
                 ...configData.config
             };
 
@@ -64,46 +53,33 @@ class TemplateManager {
             this.templates[templateId] = template;
             return template;
         } catch (error) {
-            console.error(`加载模板 ${templateId} 失败:`, error);
+            console.error(`Failed to load template ${templateId}:`, error);
             return null;
         }
     }
 
-    getTemplate(templateId) {
-        return this.templates[templateId] || null;
-    }
+    getTemplate(templateId) { return this.templates[templateId] || null; }
 
     getAllTemplates() {
         if (this.templateOrder) {
-            return this.templateOrder
-                .map(id => this.templates[id])
-                .filter(t => t !== undefined && t !== null);
+            return this.templateOrder.map(id => this.templates[id]).filter(t => !!t);
         }
         return Object.values(this.templates);
     }
 
     async init() {
-        // 清理旧的本地存储，确保完全走配置
-        localStorage.removeItem('customTemplates');
+        localStorage.removeItem('customTemplates'); // 清理旧数据
 
-        // 加载模板索引
         const index = await this.loadTemplateIndex();
         if (index && index.templates) {
-            // 按照索引顺序保存 ID 列表，用于保持固定排序
             this.templateOrder = index.templates.map(t => t.id);
-            
-            // 异步加载所有模板
-            const loadPromises = index.templates.map(async (templateInfo) => {
-                const template = await this.loadTemplate(templateInfo.id);
-                if (template) {
-                    template.featured = templateInfo.featured;
-                }
+            const loadPromises = index.templates.map(async (info) => {
+                const template = await this.loadTemplate(info.id);
+                if (template) template.featured = info.featured;
                 return template;
             });
-
             await Promise.all(loadPromises);
         }
-
         return this.templates;
     }
 }

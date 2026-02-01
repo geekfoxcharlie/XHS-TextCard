@@ -11,11 +11,6 @@
 @import '../layout/preview-layout.css';
 @import '../components/forms.css';
 @import '../components/buttons.css';
-@import '../components/modals.css';
-@import '../components/signature-system.css';
-@import '../layers/template-layer.css';
-@import '../layers/text-layer.css';
-@import '../layers/watermark.css';
 
 /* === 页面特定样式 === */
 
@@ -468,4 +463,105 @@
     width: 28px;
     height: 28px;
   }
+}
+
+/* === Editor-specific extracted inline styles === */
+
+/* Panel header */
+.panel-header {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-md);
+  height: 50px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Home button icon */
+.btn-icon-text {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.btn-icon-text:hover {
+  background: var(--color-secondary);
+}
+
+/* Input section */
+.input-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-top: none;
+}
+
+/* Text input */
+#text-input {
+  flex: 1;
+}
+
+/* Download section */
+.download-section {
+  margin-top: auto;
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Download button */
+#download-all-btn {
+  width: 100%;
+  height: 44px;
+  font-weight: 600;
+}
+
+/* Color preset backgrounds */
+.color-preset[data-color="#ffffff"] {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+}
+
+.color-preset[data-color="#E8D5C4"] { background-color: #E8D5C4; }
+.color-preset[data-color="#B5C0D0"] { background-color: #B5C0D0; }
+.color-preset[data-color="#CCD3CA"] { background-color: #CCD3CA; }
+.color-preset[data-color="#F5E8DD"] { background-color: #F5E8DD; }
+.color-preset[data-color="#9290C3"] { background-color: #9290C3; }
+.color-preset[data-color="#7C9D96"] { background-color: #7C9D96; }
+.color-preset[data-color="#1a1a1b"] { background-color: #1a1a1b; }
+
+.gradient-presets .color-preset {
+  background: var(--preset-bg);
+}
+
+/* Form row/col specific */
+.watermark-options,
+.signature-options {
+  margin-top: var(--spacing-sm);
+}
+
+.watermark-color-col,
+.signature-color-col {
+  flex: 0 0 44px;
+}
+
+/* Action buttons */
+.action-buttons {
+  margin-top: 20px;
+  flex-direction: row;
+  gap: var(--spacing-sm);
+}
+
+#reset-template-btn {
+  flex: 1;
+}
+
+/* Hidden gradient presets */
+.gradient-presets {
+  display: none;
 }

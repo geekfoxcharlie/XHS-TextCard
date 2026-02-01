@@ -1,3 +1,12 @@
+/**
+ * App - 项目核心调度器
+ * 
+ * 设计原则：
+ * 1. 业务逻辑编排：作为 Entry Point，负责协调 TemplateManager, PreviewGenerator, 
+ *    DownloadManager 和 EditorController 之间的交互。
+ * 2. 状态管理：维护当前模板、配置及分发后的页面数据。
+ * 3. 响应式更新：处理输入抖动 (Debounce)，确保 UI 响应流畅。
+ */
 class App {
     constructor() {
         this.templateManager = new TemplateManager();
@@ -29,7 +38,7 @@ class App {
             const text = await response.text();
             this.elements.textInput.value = text;
         } catch (error) {
-            console.error('加载默认文本失败:', error);
+            console.error('Failed to load default text:', error);
             this.elements.textInput.value = '加载默认文本失败，请刷新页面重试。';
         }
     }
@@ -64,7 +73,7 @@ class App {
         this.editorController.setOnConfigChange((config) => {
             this.currentTemplateConfig = { ...config };
             
-            // 实时保存当前模板的配置
+            // 实时保存当前模板配置到本地
             if (this.currentTemplate) {
                 localStorage.setItem(`xhs_tpl_config_${this.currentTemplate}`, JSON.stringify(config));
             }
@@ -74,21 +83,10 @@ class App {
     }
 
     bindEvents() {
-        this.elements.textInput.addEventListener('input', () => {
-            this.schedulePreview(300);
-        });
-
-        this.elements.downloadAllBtn.addEventListener('click', () => {
-            this.downloadAllImages();
-        });
-
-        this.elements.resetTemplateBtn.addEventListener('click', () => {
-            this.resetTemplate();
-        });
-
-        this.elements.previewList.addEventListener('scroll', () => {
-            this.updateActiveIndicator();
-        });
+        this.elements.textInput.addEventListener('input', () => this.schedulePreview(300));
+        this.elements.downloadAllBtn.addEventListener('click', () => this.downloadAllImages());
+        this.elements.resetTemplateBtn.addEventListener('click', () => this.resetTemplate());
+        this.elements.previewList.addEventListener('scroll', () => this.updateActiveIndicator());
 
         this.elements.previewPrev.addEventListener('click', () => {
             this.elements.previewList.scrollLeft -= this.elements.previewList.clientWidth;
@@ -108,11 +106,7 @@ class App {
         
         const indicators = this.elements.previewIndicators.querySelectorAll('.preview-indicator');
         indicators.forEach((indicator, i) => {
-            if (i === index) {
-                indicator.classList.add('active');
-            } else {
-                indicator.classList.remove('active');
-            }
+            indicator.classList.toggle('active', i === index);
         });
 
         if (this.elements.previewPrev) {
@@ -126,7 +120,6 @@ class App {
 
     renderIndicators(count) {
         if (!this.elements.previewIndicators) return;
-        
         this.elements.previewIndicators.innerHTML = '';
         if (count <= 1) return;
 
@@ -140,9 +133,7 @@ class App {
 
     schedulePreview(delay = 300) {
         clearTimeout(this.debounceTimer);
-        this.debounceTimer = setTimeout(() => {
-            this.generatePreview();
-        }, delay);
+        this.debounceTimer = setTimeout(() => this.generatePreview(), delay);
     }
 
     async loadTemplates() {
@@ -158,17 +149,13 @@ class App {
         templates.forEach(template => {
             const item = document.createElement('div');
             item.className = 'template-item';
-            if (template.id === this.currentTemplate) {
-                item.classList.add('active');
-            }
+            if (template.id === this.currentTemplate) item.classList.add('active');
 
             item.innerHTML = `
                 <div class="template-item-name">${template.name}</div>
                 <div class="template-item-desc">${template.description}</div>
             `;
-            item.addEventListener('click', () => {
-                this.selectTemplate(template.id);
-            });
+            item.addEventListener('click', () => this.selectTemplate(template.id));
             this.elements.templateList.appendChild(item);
         });
     }
@@ -179,12 +166,11 @@ class App {
 
         this.currentTemplate = templateId;
         
-        // 尝试从本地存储加载用户自定义的配置
+        // 尝试从本地存储加载用户自定义配置
         const savedConfig = localStorage.getItem(`xhs_tpl_config_${templateId}`);
         if (savedConfig) {
             try {
-                const parsed = JSON.parse(savedConfig);
-                this.currentTemplateConfig = { ...template.config, ...parsed };
+                this.currentTemplateConfig = { ...template.config, ...JSON.parse(savedConfig) };
             } catch (e) {
                 this.currentTemplateConfig = { ...template.config };
             }
@@ -194,7 +180,6 @@ class App {
 
         this.renderTemplateList();
         this.editorController.setConfig(this.currentTemplateConfig);
-
         this.generatePreview();
     }
 
@@ -215,7 +200,7 @@ class App {
         this.elements.loading.classList.add('active');
         this.elements.previewList.innerHTML = '';
 
-        const splitter = new TextSplitter(this.currentTemplateConfig);
+        const splitter = new TextSplitter(this.currentTemplateConfig, this.currentTemplate);
         this.splitPages = splitter.split(text);
 
         this.elements.previewCount.textContent = `共 ${this.splitPages.length} 张图片`;
@@ -238,7 +223,7 @@ class App {
                 this.splitPages.length,
                 this.currentTemplate,
                 this.currentTemplateConfig,
-                (index) => this.downloadSingleImage(index)
+                (idx) => this.downloadSingleImage(idx)
             );
             this.elements.previewList.appendChild(previewItem);
         });
@@ -252,8 +237,7 @@ class App {
     }
 
     downloadSingleImage(index) {
-        const pageLayouts = this.splitPages[index];
-        this.downloadManager.download(pageLayouts, this.currentTemplateConfig, this.currentTemplate, index);
+        this.downloadManager.download(this.splitPages[index], this.currentTemplateConfig, this.currentTemplate, index);
     }
 
     downloadAllImages() {
@@ -263,9 +247,7 @@ class App {
     resetTemplate() {
         const template = this.templateManager.getTemplate(this.currentTemplate);
         if (template) {
-            // 清除本地存储的配置
             localStorage.removeItem(`xhs_tpl_config_${this.currentTemplate}`);
-            
             this.currentTemplateConfig = { ...template.config };
             this.editorController.setConfig(this.currentTemplateConfig);
             this.generatePreview();

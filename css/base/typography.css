@@ -104,37 +104,6 @@ hr {
   margin: var(--spacing-xxl) 0;
 }
 
-/* === 文本对齐工具类 === */
-.text-left { text-align: left; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.text-justify { text-align: justify; }
-
-/* === 字体大小工具类 === */
-.text-xs { font-size: var(--font-size-xs); }
-.text-sm { font-size: var(--font-size-sm); }
-.text-base { font-size: var(--font-size-base); }
-.text-lg { font-size: var(--font-size-lg); }
-.text-xl { font-size: var(--font-size-xl); }
-.text-xxl { font-size: var(--font-size-xxl); }
-
-/* === 字体粗细工具类 === */
-.font-light { font-weight: 300; }
-.font-normal { font-weight: 400; }
-.font-medium { font-weight: 500; }
-.font-semibold { font-weight: 600; }
-.font-bold { font-weight: 700; }
-
-/* === 行高工具类 === */
-.leading-tight { line-height: 1.25; }
-.leading-normal { line-height: 1.5; }
-.leading-relaxed { line-height: 1.75; }
-
-/* === 文本颜色工具类 === */
-.text-primary { color: var(--color-text-primary); }
-.text-secondary { color: var(--color-text-secondary); }
-.text-muted { color: #999999; }
-
 /* === 高亮文本 === */
 .highlight {
   background: linear-gradient(180deg, transparent 60%, #fff3bf 60%, #fff3bf 90%, transparent 90%);

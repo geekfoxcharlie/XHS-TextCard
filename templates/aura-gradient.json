@@ -19,6 +19,10 @@
         "signatureText": "极客狐",
         "signatureColor": "#2D3436",
         "signaturePosition": "bottom",
-        "signatureStyle": "glass-minimal"
+        "signatureStyle": "glass-minimal",
+        "h1Scale": 1.6,
+        "h2Scale": 1.4,
+        "h3Scale": 1.2,
+        "accentColor": "#2D3436"
     }
 }

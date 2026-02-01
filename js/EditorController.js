@@ -1,3 +1,11 @@
+/**
+ * EditorController - 侧边栏编辑面板控制器
+ * 
+ * 设计原则：
+ * 1. 数据驱动 UI：UI 控件的状态始终通过 currentConfig 同步，不直接操作 DOM 存储数据。
+ * 2. 交互一致性：通过 configMap 映射控件类型与事件，减少重复逻辑。
+ * 3. 颜色管理：集成 Pickr 取色器，并支持 Solid 与 Gradient 模式的无缝切换。
+ */
 class EditorController {
     constructor() {
         this.elements = {};
@@ -8,12 +16,11 @@ class EditorController {
         this.lastGradientColor = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
         
         this.swatches = [
-            '#ffffff', '#E8D5C4', '#B5C0D0', '#CCD3CA', 
-            '#F5E8DD', '#9290C3', '#7C9D96', '#1a1a1b',
-            '#333333', '#000000', '#495057', '#1c7ed6',
-            '#d6336c', '#37b24d', '#f08c00'
+            '#ffffff', '#E8D5C4', '#B5C0D0', '#CCD3CA', '#F5E8DD', '#9290C3', '#7C9D96', 
+            '#1a1a1b', '#333333', '#000000', '#495057', '#1c7ed6', '#d6336c', '#37b24d', '#f08c00'
         ];
 
+        // 配置映射表：键名, 控件类型, 类型转换
         this.configMap = [
             { key: 'fontSize', type: 'range', isInt: true },
             { key: 'lineHeight', type: 'range', isFloat: true },
@@ -23,13 +30,16 @@ class EditorController {
             { key: 'hasWatermark', type: 'checkbox', toggle: '.watermark-options' },
             { key: 'watermarkText', type: 'input' },
             { key: 'hasSignature', type: 'checkbox', toggle: '#signature-options' },
-            { key: 'signatureText', type: 'input' }
+            { key: 'signatureText', type: 'input' },
+            { key: 'showGrid', type: 'checkbox' },
+            { key: 'h1Scale', type: 'range', isFloat: true },
+            { key: 'h2Scale', type: 'range', isFloat: true },
+            { key: 'h3Scale', type: 'range', isFloat: true }
         ];
     }
 
     init(elements) {
         this.elements = elements;
-        
         if (typeof Pickr === 'undefined') {
             this.initBgModeSelector();
             this.bindEvents();
@@ -42,10 +52,13 @@ class EditorController {
             this.initGradientEditor();
             this.bindEvents();
         } catch (error) {
-            console.error('Error during EditorController init:', error);
+            console.error('EditorController init failed:', error);
         }
     }
 
+    /**
+     * 初始化所有颜色取色器
+     */
     initPickrs() {
         const pickrConfigs = [
             { id: '#bg-color-picker', key: 'bgColor', default: '#ffffff', type: 'bg' },
@@ -53,7 +66,8 @@ class EditorController {
             { id: '#gradient-start-picker', key: 'gradStart', default: '#f5f7fa', type: 'grad' },
             { id: '#gradient-end-picker', key: 'gradEnd', default: '#c3cfe2', type: 'grad' },
             { id: '#watermark-color-picker', key: 'watermarkColor', default: 'rgba(0,0,0,0.1)', type: 'rgba' },
-            { id: '#signature-color-picker', key: 'signatureColor', default: '#555555', type: 'rgba' }
+            { id: '#signature-color-picker', key: 'signatureColor', default: '#555555', type: 'rgba' },
+            { id: '#accent-color-picker', key: 'accentColor', default: null, type: 'text' }
         ];
 
         pickrConfigs.forEach(cfg => {
@@ -80,10 +94,7 @@ class EditorController {
 
     createPickr(el, defaultColor, onChange) {
         return Pickr.create({
-            el: el,
-            theme: 'monolith',
-            default: defaultColor,
-            swatches: this.swatches,
+            el: el, theme: 'monolith', default: defaultColor, swatches: this.swatches,
             components: {
                 preview: true, opacity: true, hue: true,
                 interaction: { hex: true, rgba: true, input: true, save: true }
@@ -95,6 +106,9 @@ class EditorController {
         });
     }
 
+    /**
+     * 渐变编辑器弹窗逻辑
+     */
     initGradientEditor() {
         const plusBtn = document.querySelector('#bg-color-picker-container .fa-plus');
         const popup = document.getElementById('gradient-editor-panel');
@@ -110,8 +124,7 @@ class EditorController {
 
         popup.querySelector('.close-popup')?.addEventListener('click', () => popup.style.display = 'none');
         
-        const angleInput = document.getElementById('gradient-angle');
-        angleInput?.addEventListener('input', (e) => {
+        document.getElementById('gradient-angle')?.addEventListener('input', (e) => {
             const deg = e.target.value;
             const label = document.getElementById('gradient-angle-value');
             if (label) label.textContent = deg + 'deg';
@@ -125,6 +138,9 @@ class EditorController {
         });
     }
 
+    /**
+     * 解析现有 CSS 渐变字符串并同步到控件
+     */
     parseCurrentGradient() {
         const bg = this.currentConfig.bgColor;
         if (!bg || typeof bg !== 'string' || !bg.startsWith('linear-gradient')) return;
@@ -168,12 +184,10 @@ class EditorController {
         
         const solidPresets = document.querySelector('.solid-presets');
         const gradientPresets = document.querySelector('.gradient-presets');
-        const bgPickerPlus = document.querySelector('#bg-color-picker-container .fa-plus');
         const bgPickrRoot = document.querySelector('#bg-color-picker-container .pickr');
         
         if (solidPresets) solidPresets.style.display = mode === 'solid' ? 'flex' : 'none';
         if (gradientPresets) gradientPresets.style.display = mode === 'gradient' ? 'flex' : 'none';
-        if (bgPickerPlus) bgPickerPlus.style.display = 'block';
         if (bgPickrRoot) bgPickrRoot.style.display = mode === 'solid' ? 'block' : 'none';
         
         const gradientPanel = document.getElementById('gradient-editor-panel');
@@ -181,7 +195,6 @@ class EditorController {
 
         if (this.currentConfig) {
             this.currentConfig.bgMode = mode;
-            
             const isCurrentGrad = typeof this.currentConfig.bgColor === 'string' && this.currentConfig.bgColor.includes('linear-gradient');
             if (mode === 'solid' && isCurrentGrad) {
                 this.currentConfig.bgColor = this.lastSolidColor || '#ffffff';
@@ -200,11 +213,7 @@ class EditorController {
             });
         });
 
-        const presetGroups = [
-            { container: '#bg-color-presets', type: 'bg' },
-            { container: '#text-color-presets', type: 'text' }
-        ];
-
+        const presetGroups = [{ container: '#bg-color-presets', type: 'bg' }, { container: '#text-color-presets', type: 'text' }];
         presetGroups.forEach(group => {
             document.querySelectorAll(`${group.container} .color-preset`).forEach(preset => {
                 preset.addEventListener('click', () => {
@@ -214,6 +223,7 @@ class EditorController {
                     if (group.type === 'bg') {
                         const isGrad = color.startsWith('linear-gradient');
                         this.currentConfig.bgMode = isGrad ? 'gradient' : 'solid';
+                        this.setBgMode(this.currentConfig.bgMode);
                         if (isGrad) {
                             this.lastGradientColor = color;
                         } else {
@@ -235,7 +245,6 @@ class EditorController {
         this.configMap.forEach(cfg => {
             const el = this.getControlElement(cfg);
             if (!el) return;
-
             const eventType = (cfg.type === 'range' || cfg.type === 'input') ? 'input' : 'change';
             el.addEventListener(eventType, (e) => {
                 const val = cfg.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -258,31 +267,30 @@ class EditorController {
         if (this.elements[cfg.key + 'Input']) return this.elements[cfg.key + 'Input'];
         if (this.elements[cfg.key + 'Check']) return this.elements[cfg.key + 'Check'];
         if (this.elements[cfg.key + 'Select']) return this.elements[cfg.key + 'Select'];
-        
         const fallbackId = cfg.key.replace(/([A-Z])/g, "-$1").toLowerCase();
         return document.getElementById(fallbackId);
     }
 
     updateUIControl(cfg, val) {
         const label = this.elements[cfg.key + 'Value'];
-        if (label) label.textContent = val + (cfg.key === 'lineHeight' ? '' : (cfg.key === 'fontSize' || cfg.key === 'letterSpacing' || cfg.key === 'textPadding' ? 'px' : ''));
-
+        let displayVal = val;
+        if (['fontSize', 'textPadding', 'letterSpacing'].includes(cfg.key)) displayVal = val + 'px';
+        else if (cfg.key.endsWith('Scale')) displayVal = val + 'x';
+        
+        if (label) label.textContent = displayVal;
         if (cfg.type === 'checkbox' && cfg.toggle) {
-            document.querySelectorAll(cfg.toggle).forEach(node => {
-                node.style.display = val ? 'flex' : 'none';
-            });
+            document.querySelectorAll(cfg.toggle).forEach(node => { node.style.display = val ? 'flex' : 'none'; });
         }
     }
 
+    /**
+     * 设置全量配置并同步到 UI
+     */
     setConfig(config) {
         this.currentConfig = { ...config };
-        
         if (config.bgColor) {
-            if (config.bgColor.startsWith('linear-gradient')) {
-                this.lastGradientColor = config.bgColor;
-            } else {
-                this.lastSolidColor = config.bgColor;
-            }
+            if (config.bgColor.startsWith('linear-gradient')) this.lastGradientColor = config.bgColor;
+            else this.lastSolidColor = config.bgColor;
         }
         
         this.updateEditorFromConfig();
@@ -297,6 +305,7 @@ class EditorController {
         }
         if (config.watermarkColor) this.pickrs.watermarkColor?.setColor(config.watermarkColor);
         if (config.signatureColor) this.pickrs.signatureColor?.setColor(config.signatureColor);
+        if (config.accentColor) this.pickrs.accentColor?.setColor(config.accentColor);
     }
 
     updateActivePreset(type, color) {
@@ -309,9 +318,7 @@ class EditorController {
 
     updateEditorFromConfig() {
         if (!this.currentConfig) return;
-
         this.setBgMode(this.currentConfig.bgMode || 'solid');
-
         this.configMap.forEach(cfg => {
             const el = this.getControlElement(cfg);
             const val = this.currentConfig[cfg.key];
@@ -324,8 +331,5 @@ class EditorController {
     }
 
     setOnConfigChange(callback) { this.onConfigChange = callback; }
-
-    notifyConfigChange() {
-        if (this.onConfigChange) this.onConfigChange(this.currentConfig);
-    }
+    notifyConfigChange() { if (this.onConfigChange) this.onConfigChange(this.currentConfig); }
 }
