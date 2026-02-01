@@ -23,9 +23,6 @@ class App {
     }
 
     init() {
-        if (typeof MarkdownParser !== 'undefined') {
-            MarkdownParser.init();
-        }
         this.initElements();
         this.bindEvents();
         this.loadTemplates();
@@ -151,10 +148,16 @@ class App {
             item.className = 'template-item';
             if (template.id === this.currentTemplate) item.classList.add('active');
 
-            item.innerHTML = `
-                <div class="template-item-name">${template.name}</div>
-                <div class="template-item-desc">${template.description}</div>
-            `;
+            const name = document.createElement('div');
+            name.className = 'template-item-name';
+            name.textContent = template.name;
+            
+            const desc = document.createElement('div');
+            desc.className = 'template-item-desc';
+            desc.textContent = template.description;
+
+            item.appendChild(name);
+            item.appendChild(desc);
             item.addEventListener('click', () => this.selectTemplate(template.id));
             this.elements.templateList.appendChild(item);
         });
@@ -186,7 +189,7 @@ class App {
     generatePreview() {
         const text = this.elements.textInput.value.trim();
         if (!text) {
-            this.elements.previewList.innerHTML = '<div class="empty-state">请输入文字内容</div>';
+            this.showEmptyState('请输入文字内容');
             this.elements.previewCount.textContent = '共 0 张图片';
             this.elements.downloadAllBtn.disabled = true;
             this.splitPages = [];
@@ -206,7 +209,7 @@ class App {
         this.elements.previewCount.textContent = `共 ${this.splitPages.length} 张图片`;
 
         if (this.splitPages.length === 0) {
-            this.elements.previewList.innerHTML = '<div class="empty-state">没有可生成的内容</div>';
+            this.showEmptyState('没有可生成的内容');
             this.elements.loading.classList.remove('active');
             this.elements.downloadAllBtn.disabled = true;
             this.renderIndicators(0);
@@ -236,8 +239,25 @@ class App {
         });
     }
 
+    showEmptyState(message) {
+        this.elements.previewList.innerHTML = '';
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        
+        const icon = document.createElement('div');
+        icon.className = 'empty-state-icon';
+        icon.textContent = '📝';
+        
+        const text = document.createElement('div');
+        text.textContent = message;
+        
+        emptyState.appendChild(icon);
+        emptyState.appendChild(text);
+        this.elements.previewList.appendChild(emptyState);
+    }
+
     downloadSingleImage(index) {
-        this.downloadManager.download(this.splitPages[index], this.currentTemplateConfig, this.currentTemplate, index);
+        this.downloadManager.download(this.splitPages[index], this.currentTemplateConfig, this.currentTemplate, index, this.splitPages.length);
     }
 
     downloadAllImages() {

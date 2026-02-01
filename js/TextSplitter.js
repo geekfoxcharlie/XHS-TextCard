@@ -37,17 +37,12 @@ class TextSplitter {
      * 计算当前模板允许的最大内容高度和宽度
      */
     calculateLayout() {
-        if (typeof TemplateDefinitions !== 'undefined' && this.templateId) {
-            const contentBox = TemplateDefinitions.getContentBox(
-                this.templateId, this.config, PREVIEW_WIDTH, PREVIEW_HEIGHT
-            );
-            this.maxHeight = contentBox.height;
-            this.contentWidth = contentBox.width;
-        } else {
-            const padding = parseFloat(this.config.textPadding) || 35;
-            this.maxHeight = PREVIEW_HEIGHT - (padding * 2) - 60; 
-            this.contentWidth = (this.config.cardWidth || PREVIEW_WIDTH) - (padding * 2);
-        }
+        // 核心布局尺寸定义来自于 TemplateDefinitions
+        const contentBox = TemplateDefinitions.getContentBox(
+            this.templateId, this.config, PREVIEW_WIDTH, PREVIEW_HEIGHT
+        );
+        this.maxHeight = contentBox.height;
+        this.contentWidth = contentBox.width;
     }
 
     /**
@@ -120,6 +115,4 @@ class TextSplitter {
 
         return pages;
     }
-
-    destroy() {}
 }

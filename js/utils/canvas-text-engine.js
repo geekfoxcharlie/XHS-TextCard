@@ -11,6 +11,7 @@ class CanvasTextEngine {
     constructor(config = {}) {
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
+        this.widthCache = new Map(); // 字符宽度缓存
         this.updateConfig(config);
     }
 
@@ -19,6 +20,7 @@ class CanvasTextEngine {
      */
     updateConfig(config) {
         const defaultFont = "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif";
+        const oldConfig = this.config || {};
         this.config = {
             fontSize: 16, lineHeight: 1.6, letterSpacing: 0,
             fontFamily: defaultFont, textPadding: 35, cardWidth: PREVIEW_WIDTH || 500,
@@ -27,6 +29,13 @@ class CanvasTextEngine {
         
         if (this.config.fontFamily === 'inherit' || !this.config.fontFamily) {
             this.config.fontFamily = defaultFont;
+        }
+        
+        // 如果字体或基本参数变了，清空缓存
+        if (oldConfig.fontFamily !== this.config.fontFamily || 
+            oldConfig.fontSize !== this.config.fontSize ||
+            oldConfig.letterSpacing !== this.config.letterSpacing) {
+            this.widthCache.clear();
         }
         
         this.drawWidth = config.drawWidth || (this.config.cardWidth - (parseFloat(this.config.textPadding) * 2 || 70));
@@ -40,10 +49,24 @@ class CanvasTextEngine {
 
     measureTextWidth(text, fontSize = this.config.fontSize, fontWeight = 'normal', fontStyle = 'normal') {
         if (!text) return 0;
+        
+        // 生成缓存键
+        const cacheKey = `${text}_${fontSize}_${fontWeight}_${fontStyle}`;
+        if (this.widthCache.has(cacheKey)) {
+            return this.widthCache.get(cacheKey);
+        }
+
         this.setFont({ fontSize, fontWeight, fontStyle });
         const metrics = this.ctx.measureText(text);
         const spacing = text.length * (parseFloat(this.config.letterSpacing) || 0);
-        return metrics.width + spacing;
+        const width = metrics.width + spacing;
+        
+        // 只有短文本才缓存，防止缓存无限增长
+        if (text.length < 10) {
+            this.widthCache.set(cacheKey, width);
+        }
+        
+        return width;
     }
 
     /**

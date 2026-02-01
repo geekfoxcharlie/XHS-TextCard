@@ -26,22 +26,40 @@ class PreviewGenerator {
             scale: 2 
         });
 
-        item.innerHTML = `
-            <div class="preview-item-header">
-                <div class="preview-item-title">第 ${index + 1} 张 / 共 ${totalCount} 张</div>
-                <div class="preview-item-actions">
-                    <button class="btn-small" data-index="${index}" data-action="download">下载</button>
-                </div>
-            </div>
-            <div class="preview-image-wrapper">
-                <div class="canvas-container"></div>
-            </div>`;
+        // 头部信息容器
+        const header = document.createElement('div');
+        header.className = 'preview-item-header';
+        
+        const title = document.createElement('div');
+        title.className = 'preview-item-title';
+        title.textContent = `第 ${index + 1} 张 / 共 ${totalCount} 张`;
+        
+        const actions = document.createElement('div');
+        actions.className = 'preview-item-actions';
+        
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'btn-small';
+        downloadBtn.textContent = '下载';
+        downloadBtn.addEventListener('click', () => onDownload(index));
+        
+        actions.appendChild(downloadBtn);
+        header.appendChild(title);
+        header.appendChild(actions);
 
-        const container = item.querySelector('.canvas-container');
-        canvas.style.cssText = 'width: 100%; height: 100%; display: block; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);';
-        container.appendChild(canvas);
-
-        item.querySelector('[data-action="download"]').addEventListener('click', () => onDownload(index));
+        // 图像包装容器
+        const imageWrapper = document.createElement('div');
+        imageWrapper.className = 'preview-image-wrapper';
+        
+        const canvasContainer = document.createElement('div');
+        canvasContainer.className = 'canvas-container';
+        
+        canvas.className = 'preview-canvas';
+        
+        canvasContainer.appendChild(canvas);
+        imageWrapper.appendChild(canvasContainer);
+        
+        item.appendChild(header);
+        item.appendChild(imageWrapper);
 
         return item;
     }

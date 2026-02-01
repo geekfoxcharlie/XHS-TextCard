@@ -218,7 +218,24 @@
   position: relative;
 }
 
+.preview-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
 .preview-item-header {
   margin-bottom: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: var(--preview-width);
+}
+
+.preview-item-title {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
 }

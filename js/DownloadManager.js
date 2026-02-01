@@ -22,12 +22,14 @@ class DownloadManager {
     /**
      * 将布局渲染为高清 DataURL
      */
-    async capture(layouts, config, templateId) {
+    async capture(layouts, config, templateId, index = 0, totalCount = 1) {
         // 强制关闭辅助线
         const renderConfig = { ...config, showGrid: false };
         
         const canvas = this.renderer.render({
             layouts,
+            index,
+            totalCount,
             config: renderConfig,
             templateId,
             width: PREVIEW_WIDTH,
@@ -60,10 +62,10 @@ class DownloadManager {
     /**
      * 下载单张图片
      */
-    async download(layouts, config, templateId, index) {
+    async download(layouts, config, templateId, index, totalCount = 1) {
         if (!layouts) return;
         await this.withLoading(async () => {
-            const dataUrl = await this.capture(layouts, config, templateId);
+            const dataUrl = await this.capture(layouts, config, templateId, index, totalCount);
             this.triggerDownload(dataUrl, `xhs-card-${index + 1}-${Date.now()}.png`);
         });
     }
@@ -77,8 +79,9 @@ class DownloadManager {
 
         await this.withLoading(async () => {
             const zip = new JSZip();
-            for (let i = 0; i < pages.length; i++) {
-                const dataUrl = await this.capture(pages[i], config, templateId);
+            const totalCount = pages.length;
+            for (let i = 0; i < totalCount; i++) {
+                const dataUrl = await this.capture(pages[i], config, templateId, i, totalCount);
                 zip.file(`card-${i + 1}.png`, dataUrl.split(',')[1], { base64: true });
             }
 
