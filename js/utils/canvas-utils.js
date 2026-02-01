@@ -26,11 +26,14 @@ const CanvasUtils = {
 
     /**
      * 将 CSS 渐变语法转换为 CanvasGradient 对象
+     * 支持多色值渐变
      */
     createGradient(ctx, cssGradient, width, height) {
         try {
-            const angle = (cssGradient.match(/(\d+)deg/)?.[1] || 135);
+            const angleMatch = cssGradient.match(/(\d+)deg/);
+            const angle = angleMatch ? parseInt(angleMatch[1]) : 135;
             const colors = cssGradient.match(/(#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}|rgba?\(.*?\))/g);
+            
             if (!colors || colors.length < 2) return null;
 
             const rad = (angle - 90) * (Math.PI / 180);
@@ -41,10 +44,17 @@ const CanvasUtils = {
             const y1 = height / 2 + Math.sin(rad) * (len / 2);
 
             const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
-            gradient.addColorStop(0, colors[0]);
-            gradient.addColorStop(1, colors[colors.length - 1]);
+            
+            // 均匀分布所有颜色点
+            colors.forEach((color, index) => {
+                gradient.addColorStop(index / (colors.length - 1), color);
+            });
+            
             return gradient;
-        } catch (e) { return null; }
+        } catch (e) { 
+            console.error('Gradient parsing failed:', e);
+            return null; 
+        }
     },
 
     /**

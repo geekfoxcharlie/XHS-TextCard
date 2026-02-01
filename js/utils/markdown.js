@@ -3,7 +3,7 @@
  */
 class MarkdownParser {
     static init() {
-        if (typeof marked === 'undefined') return;
+        if (typeof marked === 'undefined' || this.isInitialized) return;
 
         // 添加 ==高亮== 自定义语法
         const highlightExtension = {
@@ -27,11 +27,12 @@ class MarkdownParser {
 
         marked.use({ extensions: [highlightExtension] });
         marked.setOptions({ breaks: true, gfm: true });
+        this.isInitialized = true;
     }
 
     static parse(text) {
         if (typeof marked === 'undefined') return text.replace(/\n/g, '<br>');
-        this.init();
+        if (!this.isInitialized) this.init();
         return marked.parse(text);
     }
 }

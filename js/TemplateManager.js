@@ -14,7 +14,7 @@ class TemplateManager {
 
     async loadTemplateIndex() {
         try {
-            const response = await fetch(`templates/index.json?t=${Date.now()}`);
+            const response = await fetch(`templates/index.json`);
             return await response.json();
         } catch (error) {
             console.error('Failed to load template index:', error);
@@ -26,17 +26,31 @@ class TemplateManager {
         if (this.templates[templateId]) return this.templates[templateId];
 
         try {
-            const response = await fetch(`templates/${templateId}.json?t=${Date.now()}`);
+            const response = await fetch(`templates/${templateId}.json`);
             const configData = await response.json();
 
             // 数据合并与默认值兜底
             const config = {
-                bgColor: "#FFFFFF", textColor: "#333333", fontSize: 16,
-                lineHeight: 1.8, letterSpacing: 0.5, textPadding: 40,
-                fontFamily: "inherit", hasWatermark: false, watermarkText: "极客狐",
-                watermarkColor: "rgba(0,0,0,0.1)", hasSignature: true, signatureText: "极客狐",
-                signatureColor: "#555555", signaturePosition: "bottom", signatureStyle: "modern-pill",
-                h1Scale: 1.6, h2Scale: 1.4, h3Scale: 1.2, accentColor: "#333333",
+                bgColor: "#FFFFFF", 
+                textColor: "#333333", 
+                bgMode: "solid",
+                fontSize: 16,
+                lineHeight: 1.8, 
+                letterSpacing: 0.5, 
+                textPadding: 40,
+                fontFamily: "inherit", 
+                hasWatermark: false, 
+                watermarkText: DEFAULT_BRAND_TEXT,
+                watermarkColor: "rgba(0,0,0,0.1)", 
+                hasSignature: true, 
+                signatureText: DEFAULT_BRAND_TEXT,
+                signatureColor: "#555555", 
+                signaturePosition: "bottom", 
+                signatureStyle: "modern-pill",
+                h1Scale: 1.6, 
+                h2Scale: 1.4, 
+                h3Scale: 1.2, 
+                accentColor: "#333333",
                 ...configData.config
             };
 
@@ -68,8 +82,6 @@ class TemplateManager {
     }
 
     async init() {
-        localStorage.removeItem('customTemplates'); // 清理旧数据
-
         const index = await this.loadTemplateIndex();
         if (index && index.templates) {
             this.templateOrder = index.templates.map(t => t.id);

@@ -23,6 +23,9 @@ class App {
     }
 
     init() {
+        if (typeof MarkdownParser !== 'undefined') {
+            MarkdownParser.init();
+        }
         this.initElements();
         this.bindEvents();
         this.loadTemplates();
@@ -128,7 +131,7 @@ class App {
         }
     }
 
-    schedulePreview(delay = 300) {
+    schedulePreview(delay = DEFAULT_DEBOUNCE_DELAY) {
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => this.generatePreview(), delay);
     }

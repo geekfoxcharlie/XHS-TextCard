@@ -19,7 +19,7 @@ class CanvasTextEngine {
      * 更新全局排版参数
      */
     updateConfig(config) {
-        const defaultFont = "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif";
+        const defaultFont = "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif";
         const oldConfig = this.config || {};
         this.config = {
             fontSize: 16, lineHeight: 1.6, letterSpacing: 0,
@@ -57,9 +57,8 @@ class CanvasTextEngine {
         }
 
         this.setFont({ fontSize, fontWeight, fontStyle });
-        const metrics = this.ctx.measureText(text);
-        const spacing = text.length * (parseFloat(this.config.letterSpacing) || 0);
-        const width = metrics.width + spacing;
+        const letterSpacing = parseFloat(this.config.letterSpacing) || 0;
+        const width = CanvasUtils.measureTextWidth(this.ctx, text, letterSpacing);
         
         // 只有短文本才缓存，防止缓存无限增长
         if (text.length < 10) {
