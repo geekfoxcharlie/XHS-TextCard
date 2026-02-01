@@ -166,19 +166,23 @@
                             </label>
                         </label>
                         <div id="cover-options" class="editor-sub-panel">
-                            <div class="form-group">
-                                <label class="form-label small-label">封面标题 (留空则取正文第一行)</label>
-                                <input type="text" class="form-input" id="cover-title" placeholder="输入封面标题">
+                            <div class="form-row">
+                                <input type="text" class="form-input" id="cover-title" placeholder="封面标题">
                             </div>
-                            <div class="form-group">
-                                <label class="form-label small-label">封面图片</label>
-                                <div class="file-input-wrapper">
-                                    <button class="btn btn-secondary btn-small" id="upload-cover-btn">
-                                        <i class="fas fa-upload"></i> 上传图片
-                                    </button>
-                                    <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
-                                    <div class="file-name-hint" id="cover-file-name">默认背景</div>
-                                </div>
+                            <div class="form-row" style="margin-top: 10px;">
+                                <button class="btn btn-secondary btn-small" id="upload-cover-btn" style="width: 100%;">
+                                    <i class="fas fa-upload"></i> 上传封面图
+                                </button>
+                                <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
+                            </div>
+                            <div class="file-name-hint" id="cover-file-name" style="text-align: center; margin-top: 5px; font-size: 12px; color: #888;">默认背景</div>
+
+                            <div class="form-group" style="margin-top: 10px;">
+                                <label class="form-label small-label">
+                                    <span>封面字号</span>
+                                    <span class="form-range-value" id="cover-font-size-value">48px</span>
+                                </label>
+                                <input type="range" class="form-range" id="cover-font-size" min="24" max="96" value="48">
                             </div>
                         </div>
                     </div>

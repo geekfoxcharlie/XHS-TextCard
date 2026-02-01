@@ -566,6 +566,12 @@
   border: 1px solid var(--color-border);
 }
 
+/* 修复封面选项面板的布局问题，强制垂直排列 */
+#cover-options {
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
 .file-input-wrapper {
   display: flex;
   align-items: center;

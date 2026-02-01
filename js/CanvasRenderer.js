@@ -84,42 +84,69 @@ class CanvasRenderer {
     }
 
     /**
-     * 绘制图文封面
+     * 绘制图文封面 - 上下分栏风格
+     * 上 60%: 图片
+     * 下 40%: 标题
      */
     drawCoverContent(ctx, layout, config, width, height, templateId) {
         const img = this.imageCache.get(layout.image);
         const padding = parseFloat(config.textPadding) || 40;
         
+        // 定义分栏比例 (0.6 = 60% 图片高度)
+        const splitRatio = 0.6;
+        const imageH = height * splitRatio;
+        const textH = height - imageH;
+        const textY = imageH;
+
         ctx.save();
         
-        // 绘制图片背景 (Cover 模式)
+        // 1. 绘制上半部分：图片
         if (img) {
-            const scale = Math.max(width / img.width, height / img.height);
+            const scale = Math.max(width / img.width, imageH / img.height);
             const x = (width / 2) - (img.width / 2) * scale;
-            const y = (height / 2) - (img.height / 2) * scale;
+            const y = (imageH / 2) - (img.height / 2) * scale;
             
-            // 裁剪区域
             ctx.beginPath();
-            ctx.rect(0, 0, width, height);
+            ctx.rect(0, 0, width, imageH);
             ctx.clip();
             
             ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
             
-            // 蒙层 (提升文字可读性)
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-            ctx.fillRect(0, 0, width, height);
+            // 可选：添加轻微内阴影增加层次感
+            // ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            // ctx.shadowBlur = 20;
+            // ctx.shadowOffsetY = 5;
+            // ctx.shadowOffsetX = 0;
+            // ctx.rect(0, 0, width, imageH);
+            // ctx.stroke();
+            
+            ctx.restore(); // 恢复 clip
+        } else {
+            // 占位图
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, width, imageH);
+            ctx.fillStyle = '#ccc';
+            ctx.font = '24px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('请上传封面图片', width / 2, imageH / 2);
         }
 
-        // 绘制标题
-        const fontSize = 36;
+        // 2. 绘制下半部分：标题
+        // 背景色已经由 drawTemplateBackground 绘制，此处只需绘制文字
+        
+        ctx.save();
+        
+        const fontSize = parseFloat(config.coverFontSize) || 48;
         const fontFamily = config.fontFamily === 'inherit' ? "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif" : (config.fontFamily || "sans-serif");
         
-        ctx.fillStyle = '#FFFFFF';
+        // 字体颜色使用 textColor (因为现在背景是浅色或深色的卡片背景，不是图片上的蒙层)
+        ctx.fillStyle = config.textColor || '#000000';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = `800 ${fontSize}px ${fontFamily}`;
         
-        // 简单的自动换行处理 (封面标题)
+        // 简单的自动换行处理
         const maxWidth = width - (padding * 2);
         const words = layout.title.split('');
         let line = '';
@@ -137,35 +164,37 @@ class CanvasRenderer {
         }
         lines.push(line);
 
-        const totalHeight = lines.length * fontSize * 1.4;
-        let startY = (height / 2) - (totalHeight / 2) + (fontSize / 2);
+        const lineHeight = fontSize * 1.4;
+        const totalTextHeight = lines.length * lineHeight;
+        // 垂直居中于下半部分
+        let startY = textY + (textH / 2) - (totalTextHeight / 2) + (fontSize * 0.4);
         
         lines.forEach((l, i) => {
-            // 文字投影
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetY = 4;
-            ctx.fillText(l, width / 2, startY + (i * fontSize * 1.4));
+            ctx.shadowColor = 'transparent'; // 移除阴影
+            ctx.fillText(l, width / 2, startY + (i * lineHeight));
         });
 
-        // 模板特定装饰器 (Cover 专用)
+        // 3. 模板特定装饰器 (适配新布局)
         if (templateId === 'minimalist-magazine') {
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetY = 0;
             ctx.font = 'bold 14px "Source Han Serif SC", serif';
             ctx.textAlign = 'left';
-            ctx.fillText('SPECIAL EDITION', padding, 50);
+            ctx.fillStyle = config.accentColor || '#000';
+            // 移到文字区域左上角
+            ctx.fillText('SPECIAL EDITION', padding, textY + 40);
+            
             ctx.beginPath();
-            ctx.moveTo(padding, 65);
-            ctx.lineTo(padding + 100, 65);
-            ctx.strokeStyle = '#FFFFFF';
+            ctx.moveTo(padding, textY + 55);
+            ctx.lineTo(padding + 100, textY + 55);
+            ctx.strokeStyle = config.accentColor || '#000';
             ctx.stroke();
+
         } else if (templateId === 'swiss-studio') {
-             ctx.shadowBlur = 0;
-             ctx.shadowOffsetY = 0;
+             // 左侧色条保持通栏
              ctx.fillStyle = config.accentColor || '#FF4500';
              ctx.fillRect(0, 0, 10, height);
+
         } else if (templateId === 'deep-night') {
+             // 边框装饰保持全屏
              ctx.strokeStyle = config.accentColor || '#00F5FF';
              ctx.lineWidth = 2;
              ctx.strokeRect(20, 20, width - 40, height - 40);

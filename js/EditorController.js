@@ -36,7 +36,8 @@ class EditorController {
             { key: 'h2Scale', type: 'range', isFloat: true },
             { key: 'h3Scale', type: 'range', isFloat: true },
             { key: 'hasCover', type: 'checkbox', toggle: '#cover-options' },
-            { key: 'coverTitle', type: 'input' }
+            { key: 'coverTitle', type: 'input' },
+            { key: 'coverFontSize', type: 'range', isInt: true }
         ];
     }
 
@@ -309,7 +310,7 @@ class EditorController {
         }
 
         let displayVal = val;
-        if (['fontSize', 'textPadding', 'letterSpacing'].includes(cfg.key)) displayVal = val + 'px';
+        if (['fontSize', 'textPadding', 'letterSpacing', 'coverFontSize'].includes(cfg.key)) displayVal = val + 'px';
         else if (cfg.key.endsWith('Scale')) displayVal = val + 'x';
         
         if (label) label.textContent = displayVal;
