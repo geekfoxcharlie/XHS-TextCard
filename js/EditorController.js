@@ -272,7 +272,13 @@ class EditorController {
     }
 
     updateUIControl(cfg, val) {
-        const label = this.elements[cfg.key + 'Value'];
+        // 尝试从 elements 获取 label，如果不存在则通过 ID 查找
+        let label = this.elements[cfg.key + 'Value'];
+        if (!label) {
+            const labelId = cfg.key.replace(/([A-Z])/g, "-$1").toLowerCase() + '-value';
+            label = document.getElementById(labelId);
+        }
+
         let displayVal = val;
         if (['fontSize', 'textPadding', 'letterSpacing'].includes(cfg.key)) displayVal = val + 'px';
         else if (cfg.key.endsWith('Scale')) displayVal = val + 'x';
