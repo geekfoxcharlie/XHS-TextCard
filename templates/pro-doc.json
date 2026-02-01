@@ -5,6 +5,7 @@
     "version": "1.3",
     "featured": true,
     "config": {
+    "coverImage": "assets/cover-pro-doc.jpg",
     "coverFontSize": 48,
         "bgColor": "#F9FAFB",
         "textColor": "#111827",

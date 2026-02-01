@@ -5,6 +5,7 @@
     "version": "1.3",
     "featured": true,
     "config": {
+    "coverImage": "assets/cover-aura-gradient.jpg",
     "coverFontSize": 48,
         "bgColor": "#FFFFFF",
         "textColor": "#2D3436",

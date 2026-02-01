@@ -5,6 +5,7 @@
     "version": "1.3",
     "featured": true,
     "config": {
+    "coverImage": "assets/cover-minimalist-magazine.jpg",
     "coverFontSize": 48,
         "bgColor": "#FFFFFF",
         "textColor": "#1A1A1A",

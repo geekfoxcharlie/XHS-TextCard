@@ -346,7 +346,8 @@ class EditorController {
         // 更新封面图片提示
         const fileNameHint = document.getElementById('cover-file-name');
         if (fileNameHint) {
-            fileNameHint.textContent = config.coverImage === DEFAULT_COVER_IMAGE ? '默认背景' : '已上传自定义图片';
+            const isCustom = config.coverImage && config.coverImage.startsWith('data:');
+            fileNameHint.textContent = isCustom ? '已上传自定义图片' : '默认背景';
         }
     }
 
