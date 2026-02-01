@@ -54,6 +54,24 @@ class TextSplitter {
 
         const tokens = marked.lexer(text);
         const pages = [];
+        
+        // 1. 注入封面页
+        if (this.config.hasCover) {
+            let coverTitle = this.config.coverTitle;
+            if (!coverTitle) {
+                // 尝试从 tokens 中寻找第一个标题或第一行文字
+                const firstContentToken = tokens.find(t => t.type === 'heading' || t.type === 'paragraph');
+                if (firstContentToken) {
+                    coverTitle = firstContentToken.text || firstContentToken.raw.split('\n')[0];
+                }
+            }
+            pages.push([{
+                type: 'cover',
+                title: coverTitle || '未命名文档',
+                image: this.config.coverImage
+            }]);
+        }
+
         let currentPage = { layouts: [], totalHeight: 0 };
 
         /**

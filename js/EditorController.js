@@ -34,7 +34,9 @@ class EditorController {
             { key: 'showGrid', type: 'checkbox' },
             { key: 'h1Scale', type: 'range', isFloat: true },
             { key: 'h2Scale', type: 'range', isFloat: true },
-            { key: 'h3Scale', type: 'range', isFloat: true }
+            { key: 'h3Scale', type: 'range', isFloat: true },
+            { key: 'hasCover', type: 'checkbox', toggle: '#cover-options' },
+            { key: 'coverTitle', type: 'input' }
         ];
     }
 
@@ -251,6 +253,33 @@ class EditorController {
                 this.updateConfigAndNotify(cfg, val);
             });
         });
+
+        // 封面图片上传逻辑
+        const uploadBtn = document.getElementById('upload-cover-btn');
+        const fileInput = document.getElementById('cover-image-input');
+        const fileNameHint = document.getElementById('cover-file-name');
+
+        if (uploadBtn && fileInput) {
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('图片大小不能超过 5MB');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const dataUrl = event.target.result;
+                    this.currentConfig.coverImage = dataUrl;
+                    if (fileNameHint) fileNameHint.textContent = file.name;
+                    this.notifyConfigChange();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
     }
 
     updateConfigAndNotify(cfg, rawValue) {
@@ -312,6 +341,12 @@ class EditorController {
         if (config.watermarkColor) this.pickrs.watermarkColor?.setColor(config.watermarkColor);
         if (config.signatureColor) this.pickrs.signatureColor?.setColor(config.signatureColor);
         if (config.accentColor) this.pickrs.accentColor?.setColor(config.accentColor);
+        
+        // 更新封面图片提示
+        const fileNameHint = document.getElementById('cover-file-name');
+        if (fileNameHint) {
+            fileNameHint.textContent = config.coverImage === DEFAULT_COVER_IMAGE ? '默认背景' : '已上传自定义图片';
+        }
     }
 
     updateActivePreset(type, color) {

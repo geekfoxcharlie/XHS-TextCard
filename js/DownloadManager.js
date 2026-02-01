@@ -26,7 +26,7 @@ class DownloadManager {
         // 强制关闭辅助线
         const renderConfig = { ...config, showGrid: false };
         
-        const canvas = this.renderer.render({
+        const canvas = await this.renderer.render({
             layouts,
             index,
             totalCount,

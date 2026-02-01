@@ -15,11 +15,11 @@ class PreviewGenerator {
     /**
      * 创建一个预览卡片 DOM 元素
      */
-    createPreviewItem(layouts, index, totalCount, templateId, config, onDownload) {
+    async createPreviewItem(layouts, index, totalCount, templateId, config, onDownload) {
         const item = document.createElement('div');
         item.className = 'preview-item';
 
-        const canvas = this.renderer.render({
+        const canvas = await this.renderer.render({
             layouts, config, templateId,
             width: PREVIEW_WIDTH,
             height: PREVIEW_HEIGHT,

@@ -14,3 +14,4 @@ const OUTPUT_HEIGHT = 1656;
 const DEFAULT_BRAND_TEXT = '极客狐';
 const DEFAULT_WATERMARK_OPACITY = 0.1;
 const DEFAULT_DEBOUNCE_DELAY = 300;
+const DEFAULT_COVER_IMAGE = 'assets/default-cover.jpg';

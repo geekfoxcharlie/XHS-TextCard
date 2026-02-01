@@ -557,11 +557,39 @@
   gap: var(--spacing-sm);
 }
 
-#reset-template-btn {
-  flex: 1;
+/* 封面设置子面板 */
+.editor-sub-panel {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--color-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
 }
 
-/* Hidden gradient presets */
-.gradient-presets {
-  display: none;
+.file-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.file-name-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.btn-small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  height: auto;
+}
+
+/* 按钮样式补全 */
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

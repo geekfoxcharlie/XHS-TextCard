@@ -229,8 +229,8 @@ class App {
         this.elements.downloadAllBtn.disabled = false;
         this.renderIndicators(this.splitPages.length);
 
-        this.splitPages.forEach((pageLayouts, index) => {
-            const previewItem = this.previewGenerator.createPreviewItem(
+        const renderPromises = this.splitPages.map(async (pageLayouts, index) => {
+            const previewItem = await this.previewGenerator.createPreviewItem(
                 pageLayouts,
                 index,
                 this.splitPages.length,
@@ -238,14 +238,17 @@ class App {
                 this.currentTemplateConfig,
                 (idx) => this.downloadSingleImage(idx)
             );
-            this.elements.previewList.appendChild(previewItem);
+            return previewItem;
         });
 
-        this.elements.loading.classList.remove('active');
-        
-        requestAnimationFrame(() => {
-            this.elements.previewList.scrollLeft = scrollLeft;
-            this.updateActiveIndicator();
+        Promise.all(renderPromises).then(items => {
+            items.forEach(item => this.elements.previewList.appendChild(item));
+            this.elements.loading.classList.remove('active');
+            
+            requestAnimationFrame(() => {
+                this.elements.previewList.scrollLeft = scrollLeft;
+                this.updateActiveIndicator();
+            });
         });
     }
 

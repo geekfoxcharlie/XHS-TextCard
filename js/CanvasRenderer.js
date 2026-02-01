@@ -8,9 +8,28 @@
  * 4. 高清适配：支持 Scale 参数进行预览与高清输出的无损切换。
  */
 class CanvasRenderer {
-    constructor() {}
+    constructor() {
+        this.imageCache = new Map();
+    }
 
-    render(options) {
+    /**
+     * 加载图片并缓存
+     */
+    async loadImage(src) {
+        if (this.imageCache.has(src)) return this.imageCache.get(src);
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                this.imageCache.set(src, img);
+                resolve(img);
+            };
+            img.onerror = () => resolve(null);
+            img.src = src;
+        });
+    }
+
+    async render(options) {
         const {
             layouts, index, totalCount, config, templateId,
             width = PREVIEW_WIDTH, height = PREVIEW_HEIGHT, scale = 1
@@ -23,35 +42,136 @@ class CanvasRenderer {
         canvas.height = height * scale;
         ctx.scale(scale, scale);
 
-        // 1. 绘制基础背景
+        // 1. 预加载必要的图片 (如封面)
+        if (layouts.length === 1 && layouts[0].type === 'cover') {
+            await this.loadImage(layouts[0].image);
+        }
+
+        // 2. 绘制基础背景
         this.drawTemplateBackground(ctx, templateId, config, width, height);
 
-        // 2. 绘制文本区域背景 (如备忘录纸张、模拟窗口)
+        // 3. 绘制文本区域背景 (如备忘录纸张、模拟窗口)
         const textAreaRect = this.getTextAreaRect(config, width, height, templateId);
         this.drawTextAreaBackground(ctx, templateId, config, textAreaRect);
 
-        // 3. 绘制水印 (位于文字之下)
+        // 4. 绘制水印 (位于文字之下)
         if (config.hasWatermark) {
             this.drawWatermark(ctx, config, width, height);
         }
 
-        // 4. 核心文本渲染
-        this.drawTextContent(ctx, layouts, config, textAreaRect, templateId);
+        // 5. 核心内容渲染 (封面或普通文本)
+        if (layouts.length === 1 && layouts[0].type === 'cover') {
+            this.drawCoverContent(ctx, layouts[0], config, width, height, templateId);
+        } else {
+            this.drawTextContent(ctx, layouts, config, textAreaRect, templateId);
+        }
 
-        // 5. 绘制模板前景 (如顶部装饰、边框)
-        this.drawTemplateForeground(ctx, templateId, config, width, height, index, totalCount);
+        // 6. 绘制模板前景 (如顶部装饰、边框)
+        const isCover = layouts.length === 1 && layouts[0].type === 'cover';
+        this.drawTemplateForeground(ctx, templateId, config, width, height, index, totalCount, isCover);
 
-        // 6. 绘制签名栏
+        // 7. 绘制签名栏
         if (config.hasSignature) {
             this.drawSignature(ctx, config, width, height, templateId);
         }
 
-        // 7. 辅助网格 (辅助排版对齐)
+        // 8. 辅助网格 (辅助排版对齐)
         if (config.showGrid) {
             this.drawGridLayout(ctx, textAreaRect, layouts);
         }
 
         return canvas;
+    }
+
+    /**
+     * 绘制图文封面
+     */
+    drawCoverContent(ctx, layout, config, width, height, templateId) {
+        const img = this.imageCache.get(layout.image);
+        const padding = parseFloat(config.textPadding) || 40;
+        
+        ctx.save();
+        
+        // 绘制图片背景 (Cover 模式)
+        if (img) {
+            const scale = Math.max(width / img.width, height / img.height);
+            const x = (width / 2) - (img.width / 2) * scale;
+            const y = (height / 2) - (img.height / 2) * scale;
+            
+            // 裁剪区域
+            ctx.beginPath();
+            ctx.rect(0, 0, width, height);
+            ctx.clip();
+            
+            ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+            
+            // 蒙层 (提升文字可读性)
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.fillRect(0, 0, width, height);
+        }
+
+        // 绘制标题
+        const fontSize = 36;
+        const fontFamily = config.fontFamily === 'inherit' ? "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif" : (config.fontFamily || "sans-serif");
+        
+        ctx.fillStyle = '#FFFFFF';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = `800 ${fontSize}px ${fontFamily}`;
+        
+        // 简单的自动换行处理 (封面标题)
+        const maxWidth = width - (padding * 2);
+        const words = layout.title.split('');
+        let line = '';
+        const lines = [];
+        
+        for(let n = 0; n < words.length; n++) {
+            let testLine = line + words[n];
+            let metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                lines.push(line);
+                line = words[n];
+            } else {
+                line = testLine;
+            }
+        }
+        lines.push(line);
+
+        const totalHeight = lines.length * fontSize * 1.4;
+        let startY = (height / 2) - (totalHeight / 2) + (fontSize / 2);
+        
+        lines.forEach((l, i) => {
+            // 文字投影
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 4;
+            ctx.fillText(l, width / 2, startY + (i * fontSize * 1.4));
+        });
+
+        // 模板特定装饰器 (Cover 专用)
+        if (templateId === 'minimalist-magazine') {
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            ctx.font = 'bold 14px "Source Han Serif SC", serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('SPECIAL EDITION', padding, 50);
+            ctx.beginPath();
+            ctx.moveTo(padding, 65);
+            ctx.lineTo(padding + 100, 65);
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.stroke();
+        } else if (templateId === 'swiss-studio') {
+             ctx.shadowBlur = 0;
+             ctx.shadowOffsetY = 0;
+             ctx.fillStyle = config.accentColor || '#FF4500';
+             ctx.fillRect(0, 0, 10, height);
+        } else if (templateId === 'deep-night') {
+             ctx.strokeStyle = config.accentColor || '#00F5FF';
+             ctx.lineWidth = 2;
+             ctx.strokeRect(20, 20, width - 40, height - 40);
+        }
+        
+        ctx.restore();
     }
 
     /**
@@ -119,7 +239,9 @@ class CanvasRenderer {
         }
     }
 
-    drawTemplateForeground(ctx, templateId, config, width, height, index = 0, totalCount = 1) {
+    drawTemplateForeground(ctx, templateId, config, width, height, index = 0, totalCount = 1, isCover = false) {
+        if (isCover) return; // 封面不绘制页码等通用装饰
+        
         const template = TemplateDefinitions[templateId];
         if (template && template.drawForeground) {
             ctx.save();
