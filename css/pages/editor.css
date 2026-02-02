@@ -55,18 +55,11 @@
 /* === 颜色预设容器 === */
 .color-presets {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: var(--spacing-xs);
   align-items: center;
   padding: var(--spacing-xs) 0;
   width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.color-presets::-webkit-scrollbar {
-  display: none;
 }
 
 .solid-presets,

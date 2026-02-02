@@ -20,6 +20,7 @@ class App {
         
         this.elements = {};
         this.debounceTimer = null;
+        this.shouldScrollToStart = false;
     }
 
     init() {
@@ -73,12 +74,20 @@ class App {
             hasWatermarkCheck: document.getElementById('has-watermark'),
             watermarkTextInput: document.getElementById('watermark-text'),
             hasSignatureCheck: document.getElementById('has-signature'),
-            signatureTextInput: document.getElementById('signature-text')
+            signatureTextInput: document.getElementById('signature-text'),
+            hasCoverCheck: document.getElementById('has-cover'),
+            coverTitleInput: document.getElementById('cover-title'),
+            coverFontSizeInput: document.getElementById('cover-font-size')
         };
 
         this.downloadManager.setLoadingElement(this.elements.loading);
         this.editorController.init(this.elements);
         this.editorController.setOnConfigChange((config) => {
+            // 如果开启了封面，且之前是关闭状态，标记需要滚动到开始位置
+            if (config.hasCover && (!this.currentTemplateConfig || !this.currentTemplateConfig.hasCover)) {
+                this.shouldScrollToStart = true;
+            }
+
             this.currentTemplateConfig = { ...config };
             
             // 实时保存当前模板配置到本地
@@ -247,7 +256,12 @@ class App {
             this.elements.loading.classList.remove('active');
             
             requestAnimationFrame(() => {
-                this.elements.previewList.scrollLeft = scrollLeft;
+                if (this.shouldScrollToStart) {
+                    this.elements.previewList.scrollLeft = 0;
+                    this.shouldScrollToStart = false;
+                } else {
+                    this.elements.previewList.scrollLeft = scrollLeft;
+                }
                 this.updateActiveIndicator();
             });
         });
