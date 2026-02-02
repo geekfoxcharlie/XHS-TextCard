@@ -35,7 +35,7 @@ class EditorController {
             { key: 'h1Scale', type: 'range', isFloat: true },
             { key: 'h2Scale', type: 'range', isFloat: true },
             { key: 'h3Scale', type: 'range', isFloat: true },
-            { key: 'hasCover', type: 'checkbox', toggle: '#cover-options' },
+            { key: 'hasCover', type: 'checkbox', toggle: '#cover-options-container' },
             { key: 'coverTitle', type: 'input' },
             { key: 'coverFontSize', type: 'range', isInt: true }
         ];
@@ -212,11 +212,18 @@ class EditorController {
             tab.addEventListener('click', () => {
                 this.elements.editorTabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                this.elements.visualEditor?.classList.toggle('active', tab.dataset.tab === 'visual');
+                
+                const currentTab = tab.dataset.tab;
+                this.elements.visualEditor?.classList.toggle('active', currentTab === 'visual');
+                this.elements.coverEditor?.classList.toggle('active', currentTab === 'cover');
             });
         });
 
-        const presetGroups = [{ container: '#bg-color-presets', type: 'bg' }, { container: '#text-color-presets', type: 'text' }];
+        const presetGroups = [
+            { container: '#bg-color-presets', type: 'bg' }, 
+            { container: '#text-color-presets', type: 'text' },
+            { container: '#accent-color-presets', type: 'accent' }
+        ];
         presetGroups.forEach(group => {
             document.querySelectorAll(`${group.container} .color-preset`).forEach(preset => {
                 preset.addEventListener('click', () => {
@@ -234,12 +241,16 @@ class EditorController {
                             this.lastSolidColor = color;
                         }
                         this.updateActivePreset('bg-color', color);
-                    } else {
+                    } else if (group.type === 'text') {
                         this.pickrs.textColor?.setColor(color);
                         this.updateActivePreset('text-color', color);
+                    } else if (group.type === 'accent') {
+                        this.pickrs.accentColor?.setColor(color);
+                        this.updateActivePreset('accent-color', color);
                     }
 
-                    this.currentConfig[group.type === 'bg' ? 'bgColor' : 'textColor'] = color;
+                    const keyMap = { bg: 'bgColor', text: 'textColor', accent: 'accentColor' };
+                    this.currentConfig[keyMap[group.type]] = color;
                     this.notifyConfigChange();
                 });
             });
@@ -339,9 +350,12 @@ class EditorController {
             this.updateActivePreset('text-color', config.textColor);
             this.pickrs.textColor?.setColor(config.textColor);
         }
+        if (config.accentColor) {
+            this.updateActivePreset('accent-color', config.accentColor);
+            this.pickrs.accentColor?.setColor(config.accentColor);
+        }
         if (config.watermarkColor) this.pickrs.watermarkColor?.setColor(config.watermarkColor);
         if (config.signatureColor) this.pickrs.signatureColor?.setColor(config.signatureColor);
-        if (config.accentColor) this.pickrs.accentColor?.setColor(config.accentColor);
         
         // 更新封面图片提示
         const fileNameHint = document.getElementById('cover-file-name');
@@ -353,7 +367,12 @@ class EditorController {
 
     updateActivePreset(type, color) {
         if (!color) return;
-        const containerId = type === 'bg-color' ? 'bg-color-presets' : 'text-color-presets';
+        let containerId;
+        if (type === 'bg-color') containerId = 'bg-color-presets';
+        else if (type === 'text-color') containerId = 'text-color-presets';
+        else if (type === 'accent-color') containerId = 'accent-color-presets';
+
+        if (!containerId) return;
         document.querySelectorAll(`#${containerId} .color-preset`).forEach(p => {
             p.classList.toggle('active', p.dataset.color.toLowerCase() === color.toLowerCase());
         });

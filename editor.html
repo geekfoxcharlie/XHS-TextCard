@@ -131,13 +131,12 @@
                 <div class="template-list" id="template-list">
                     <!-- 模板列表将通过 JavaScript 动态生成 -->
                 </div>
-            </div>
-            
-            <div class="download-section">
-                <button class="btn btn-primary" id="download-all-btn" disabled>
-                    <i class="fas fa-download"></i>
-                    打包下载全部图片
-                </button>
+                <div class="action-buttons template-actions">
+                    <button class="btn btn-secondary" id="reset-template-btn">
+                        <i class="fas fa-undo"></i>
+                        恢复默认样式
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -153,40 +152,14 @@
                         <i class="fas fa-magic"></i>
                         基础配置
                     </button>
+                    <button class="editor-tab" data-tab="cover">
+                        <i class="fas fa-image"></i>
+                        封面配置
+                    </button>
                 </div>
 
                 <!-- 可视化编辑器 -->
                 <div class="editor-content active" id="visual-editor">
-                    <div class="form-group">
-                        <label class="form-label">
-                            <span><i class="fas fa-image"></i> 启用封面</span>
-                            <label class="switch">
-                                <input type="checkbox" id="has-cover" checked aria-label="启用图文封面">
-                                <span class="slider round"></span>
-                            </label>
-                        </label>
-                        <div id="cover-options" class="editor-sub-panel">
-                            <div class="form-row">
-                                <input type="text" class="form-input" id="cover-title" placeholder="封面标题">
-                            </div>
-                            <div class="form-row" style="margin-top: 10px;">
-                                <button class="btn btn-secondary btn-small" id="upload-cover-btn" style="width: 100%;">
-                                    <i class="fas fa-upload"></i> 上传封面图
-                                </button>
-                                <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
-                            </div>
-                            <div class="file-name-hint" id="cover-file-name" style="text-align: center; margin-top: 5px; font-size: 12px; color: #888;">默认背景</div>
-
-                            <div class="form-group" style="margin-top: 10px;">
-                                <label class="form-label small-label">
-                                    <span>封面字号</span>
-                                    <span class="form-range-value" id="cover-font-size-value">48px</span>
-                                </label>
-                                <input type="range" class="form-range" id="cover-font-size" min="24" max="96" value="48">
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <div class="bg-mode-selector">
                             <button class="bg-mode-btn active" data-mode="solid" title="纯色">
@@ -276,11 +249,21 @@
                             </div>
                         </div>
 
-                        <div class="form-row" style="align-items: center; justify-content: space-between;">
-                            <label class="form-label small-label" style="margin: 0; font-size: 12px; color: #666;">强调颜色</label>
-                            <div class="color-picker-wrapper small" title="强调色 (用于加粗/高亮/装饰)">
-                                <div id="accent-color-picker"></div>
-                                <i class="fas fa-palette"></i>
+                        <div style="margin-bottom: 15px;">
+                            <label class="form-label small-label" style="margin-bottom: 8px; font-size: 12px; color: #666;">强调颜色</label>
+                            <div class="color-presets" id="accent-color-presets" role="group" aria-label="强调颜色选择">
+                                <div class="color-preset" style="background-color: #FF9500" data-color="#FF9500" title="经典橙" role="button" aria-label="橙色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #FF2D55" data-color="#FF2D55" title="活力红" role="button" aria-label="红色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #007AFF" title="商务蓝" data-color="#007AFF" role="button" aria-label="蓝色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #34C759" title="清新绿" data-color="#34C759" role="button" aria-label="绿色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #5856D6" title="优雅紫" data-color="#5856D6" role="button" aria-label="紫色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #00F5FF" title="赛博青" data-color="#00F5FF" role="button" aria-label="青色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #FF4500" title="瑞士红" data-color="#FF4500" role="button" aria-label="橙红色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #000000" title="纯黑" data-color="#000000" role="button" aria-label="黑色强调" tabindex="0"></div>
+                                <div class="color-picker-wrapper">
+                                    <div id="accent-color-picker"></div>
+                                    <i class="fas fa-plus"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -409,6 +392,7 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
                         <label class="form-label">
                             <span><i class="fas fa-th"></i> 网格辅助线</span>
                             <label class="switch">
@@ -417,14 +401,51 @@
                             </label>
                         </label>
                     </div>
+                </div>
 
-                    <div class="action-buttons">
-                        <button class="btn btn-secondary" id="reset-template-btn">
-                            <i class="fas fa-undo"></i>
-                            重置
-                        </button>
+                <!-- 封面编辑器 -->
+                <div class="editor-content" id="cover-editor">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span><i class="fas fa-image"></i> 启用封面</span>
+                            <label class="switch">
+                                <input type="checkbox" id="has-cover" aria-label="启用图文封面">
+                                <span class="slider round"></span>
+                            </label>
+                        </label>
+                    </div>
+                    
+                    <div id="cover-options-container">
+                        <div class="form-group">
+                            <label class="form-label small-label">封面标题</label>
+                            <input type="text" class="form-input" id="cover-title" placeholder="封面标题">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label small-label">封面图片</label>
+                            <button class="btn btn-secondary btn-small" id="upload-cover-btn" style="width: 100%;">
+                                <i class="fas fa-upload"></i> 上传图片
+                            </button>
+                            <input type="file" id="cover-image-input" accept="image/*" style="display: none;">
+                            <div class="file-name-hint" id="cover-file-name" style="text-align: center; margin-top: 5px; font-size: 12px; color: #888;">默认背景</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label small-label">
+                                <span>封面字号</span>
+                                <span class="form-range-value" id="cover-font-size-value">48px</span>
+                            </label>
+                            <input type="range" class="form-range" id="cover-font-size" min="24" max="96" value="48">
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="download-section">
+                <button class="btn btn-primary" id="download-all-btn" disabled>
+                    <i class="fas fa-download"></i>
+                    打包下载全部图片
+                </button>
             </div>
         </div>
     </div>

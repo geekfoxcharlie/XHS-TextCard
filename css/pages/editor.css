@@ -553,8 +553,18 @@
 /* Action buttons */
 .action-buttons {
   margin-top: 20px;
+  display: flex;
   flex-direction: row;
   gap: var(--spacing-sm);
+}
+
+.template-actions {
+  padding: 0 var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.template-actions button {
+  width: 100%;
 }
 
 /* 封面设置子面板 */
@@ -567,7 +577,8 @@
 }
 
 /* 修复封面选项面板的布局问题，强制垂直排列 */
-#cover-options {
+#cover-options-container {
+  display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
 }

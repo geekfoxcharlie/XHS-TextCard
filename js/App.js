@@ -55,6 +55,7 @@ class App {
             previewNext: document.getElementById('preview-next'),
             loading: document.getElementById('loading'),
             visualEditor: document.getElementById('visual-editor'),
+            coverEditor: document.getElementById('cover-editor'),
             editorTabs: document.querySelectorAll('.editor-tab'),
             fontSizeInput: document.getElementById('font-size'),
             fontSizeValue: document.getElementById('font-size-value'),

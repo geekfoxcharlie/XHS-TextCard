@@ -271,7 +271,7 @@
 /* === 编辑器面板 === */
 .editor-section {
   padding: var(--spacing-md);
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -299,7 +299,6 @@
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
   border-bottom: 2px solid var(--color-secondary);
-  padding-bottom: calc(-2px);
 }
 
 .editor-tab {

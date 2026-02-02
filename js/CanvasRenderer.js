@@ -140,8 +140,8 @@ class CanvasRenderer {
         const fontSize = parseFloat(config.coverFontSize) || 48;
         const fontFamily = config.fontFamily === 'inherit' ? "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Helvetica Neue', sans-serif" : (config.fontFamily || "sans-serif");
         
-        // 字体颜色使用 textColor (因为现在背景是浅色或深色的卡片背景，不是图片上的蒙层)
-        ctx.fillStyle = config.textColor || '#000000';
+        // 字体颜色使用 accentColor (强调色)
+        ctx.fillStyle = config.accentColor || '#000000';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = `800 ${fontSize}px ${fontFamily}`;
