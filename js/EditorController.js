@@ -66,11 +66,11 @@ class EditorController {
         const pickrConfigs = [
             { id: '#bg-color-picker', key: 'bgColor', default: '#ffffff', type: 'bg' },
             { id: '#text-color-picker', key: 'textColor', default: '#333333', type: 'text' },
+            { id: '#accent-color-picker', key: 'accentColor', default: null, type: 'accent' },
             { id: '#gradient-start-picker', key: 'gradStart', default: '#f5f7fa', type: 'grad' },
             { id: '#gradient-end-picker', key: 'gradEnd', default: '#c3cfe2', type: 'grad' },
             { id: '#watermark-color-picker', key: 'watermarkColor', default: 'rgba(0,0,0,0.1)', type: 'rgba' },
-            { id: '#signature-color-picker', key: 'signatureColor', default: '#555555', type: 'rgba' },
-            { id: '#accent-color-picker', key: 'accentColor', default: null, type: 'text' }
+            { id: '#signature-color-picker', key: 'signatureColor', default: '#555555', type: 'rgba' }
         ];
 
         pickrConfigs.forEach(cfg => {
@@ -79,20 +79,42 @@ class EditorController {
                     this.currentConfig[cfg.key] = color.toRGBA().toString(3);
                 } else if (cfg.type === 'grad') {
                     this.updateGradientFromPickrs();
-                } else {
+                } else if (['bg', 'text', 'accent'].includes(cfg.type)) {
                     const hex = color.toHEXA().toString();
-                    this.currentConfig[cfg.key] = hex;
-                    if (cfg.type === 'bg') {
-                        this.currentConfig.bgMode = 'solid';
-                        this.lastSolidColor = hex;
-                        this.updateActivePreset('bg-color', hex);
-                    } else if (cfg.type === 'text') {
-                        this.updateActivePreset('text-color', hex);
-                    }
+                    this.handleColorSelection(cfg.type, hex);
                 }
                 this.notifyConfigChange();
             });
         });
+    }
+
+    /**
+     * 统一处理颜色选择逻辑 (包括预设和自定义)
+     * @param {string} type 'bg' | 'text' | 'accent'
+     * @param {string} color Hex 或 Gradient 字符串
+     */
+    handleColorSelection(type, color) {
+        if (!this.currentConfig) return;
+
+        const keyMap = { bg: 'bgColor', text: 'textColor', accent: 'accentColor' };
+        const configKey = keyMap[type];
+        
+        if (type === 'bg') {
+            const isGrad = color.startsWith('linear-gradient');
+            this.currentConfig.bgMode = isGrad ? 'gradient' : 'solid';
+            this.setBgMode(this.currentConfig.bgMode);
+            if (isGrad) {
+                this.lastGradientColor = color;
+            } else {
+                this.pickrs.bgColor?.setColor(color, true);
+                this.lastSolidColor = color;
+            }
+        } else {
+            this.pickrs[configKey]?.setColor(color, true);
+        }
+
+        this.currentConfig[configKey] = color;
+        this.updateActivePreset(type + '-color', color);
     }
 
     createPickr(el, defaultColor, onChange) {
@@ -150,8 +172,8 @@ class EditorController {
         
         const colors = bg.match(/#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}|rgba?\(.*?\)/g);
         if (colors?.length >= 2) {
-            this.pickrs.gradStart.setColor(colors[0]);
-            this.pickrs.gradEnd.setColor(colors[colors.length - 1]);
+            this.pickrs.gradStart.setColor(colors[0], true);
+            this.pickrs.gradEnd.setColor(colors[colors.length - 1], true);
         }
         const angleMatch = bg.match(/(\d+)deg/);
         if (angleMatch) {
@@ -228,29 +250,7 @@ class EditorController {
             document.querySelectorAll(`${group.container} .color-preset`).forEach(preset => {
                 preset.addEventListener('click', () => {
                     const color = preset.dataset.color;
-                    if (!this.currentConfig) return;
-
-                    if (group.type === 'bg') {
-                        const isGrad = color.startsWith('linear-gradient');
-                        this.currentConfig.bgMode = isGrad ? 'gradient' : 'solid';
-                        this.setBgMode(this.currentConfig.bgMode);
-                        if (isGrad) {
-                            this.lastGradientColor = color;
-                        } else {
-                            this.pickrs.bgColor?.setColor(color);
-                            this.lastSolidColor = color;
-                        }
-                        this.updateActivePreset('bg-color', color);
-                    } else if (group.type === 'text') {
-                        this.pickrs.textColor?.setColor(color);
-                        this.updateActivePreset('text-color', color);
-                    } else if (group.type === 'accent') {
-                        this.pickrs.accentColor?.setColor(color);
-                        this.updateActivePreset('accent-color', color);
-                    }
-
-                    const keyMap = { bg: 'bgColor', text: 'textColor', accent: 'accentColor' };
-                    this.currentConfig[keyMap[group.type]] = color;
+                    this.handleColorSelection(group.type, color);
                     this.notifyConfigChange();
                 });
             });
@@ -344,18 +344,18 @@ class EditorController {
         
         if (config.bgColor) {
             this.updateActivePreset('bg-color', config.bgColor);
-            if (!config.bgColor.startsWith('linear-gradient')) this.pickrs.bgColor?.setColor(config.bgColor);
+            if (!config.bgColor.startsWith('linear-gradient')) this.pickrs.bgColor?.setColor(config.bgColor, true);
         }
         if (config.textColor) {
             this.updateActivePreset('text-color', config.textColor);
-            this.pickrs.textColor?.setColor(config.textColor);
+            this.pickrs.textColor?.setColor(config.textColor, true);
         }
         if (config.accentColor) {
             this.updateActivePreset('accent-color', config.accentColor);
-            this.pickrs.accentColor?.setColor(config.accentColor);
+            this.pickrs.accentColor?.setColor(config.accentColor, true);
         }
-        if (config.watermarkColor) this.pickrs.watermarkColor?.setColor(config.watermarkColor);
-        if (config.signatureColor) this.pickrs.signatureColor?.setColor(config.signatureColor);
+        if (config.watermarkColor) this.pickrs.watermarkColor?.setColor(config.watermarkColor, true);
+        if (config.signatureColor) this.pickrs.signatureColor?.setColor(config.signatureColor, true);
         
         // 更新封面图片提示
         const fileNameHint = document.getElementById('cover-file-name');
@@ -368,14 +368,36 @@ class EditorController {
     updateActivePreset(type, color) {
         if (!color) return;
         let containerId;
+
         if (type === 'bg-color') containerId = 'bg-color-presets';
         else if (type === 'text-color') containerId = 'text-color-presets';
         else if (type === 'accent-color') containerId = 'accent-color-presets';
 
         if (!containerId) return;
+
+        let foundPreset = false;
+        const colorLower = color.toLowerCase();
         document.querySelectorAll(`#${containerId} .color-preset`).forEach(p => {
-            p.classList.toggle('active', p.dataset.color.toLowerCase() === color.toLowerCase());
+            const isActive = p.dataset.color.toLowerCase() === colorLower;
+            p.classList.toggle('active', isActive);
+            if (isActive) foundPreset = true;
         });
+
+        // 处理自定义颜色预览
+        const pickerWrapper = document.querySelector(`#${containerId} .color-picker-wrapper`);
+        if (pickerWrapper) {
+            const isGradient = color.startsWith('linear-gradient');
+            if (!foundPreset && !isGradient) {
+                pickerWrapper.classList.add('active');
+                pickerWrapper.style.backgroundColor = color;
+                // 对于非常浅的颜色，增加边框以便识别
+                pickerWrapper.style.borderColor = 'var(--color-primary)';
+            } else {
+                pickerWrapper.classList.remove('active');
+                pickerWrapper.style.backgroundColor = ''; // 清除内联样式，回归 CSS 默认
+                pickerWrapper.style.borderColor = '';
+            }
+        }
     }
 
     updateEditorFromConfig() {

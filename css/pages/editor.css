@@ -137,6 +137,39 @@
   background: #f8f9ff;
 }
 
+.color-picker-wrapper.active {
+  border-color: var(--color-primary);
+  border-style: solid;
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
+}
+
+.color-picker-wrapper.active::after {
+  content: '\2713';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 8px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  font-weight: bold;
+}
+
+/* 浅色自定义颜色时的勾选框适配 */
+.color-picker-wrapper.active[style*="background-color: #ffffff"],
+.color-picker-wrapper.active[style*="background-color: rgb(255, 255, 255)"],
+.color-picker-wrapper.active[style*="background-color: #f"],
+.color-picker-wrapper.active[style*="background-color: white"] {
+  border: 1px solid var(--color-border);
+}
+
+.color-picker-wrapper.active[style*="background-color: #ffffff"]::after,
+.color-picker-wrapper.active[style*="background-color: rgb(255, 255, 255)"]::after {
+  color: var(--color-text-primary);
+  text-shadow: none;
+}
+
 .color-picker-wrapper.small {
   width: 32px;
   height: 32px;

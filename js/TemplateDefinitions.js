@@ -75,10 +75,6 @@ const TemplateDefinitions = {
             ctx.textAlign = 'right';
             ctx.fillText('XHS-TEXTCARD // VOL. 2026', width - 45, 75);
             
-            // 页码
-            ctx.textAlign = 'center';
-            ctx.font = '500 10px serif';
-            ctx.fillText(`PAGE ${index + 1} OF ${totalCount}`, width / 2, height - 35);
             ctx.restore();
         },
         getTextStyles: (segment, config) => {
