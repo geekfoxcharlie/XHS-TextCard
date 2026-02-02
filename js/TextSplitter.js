@@ -48,7 +48,7 @@ class TextSplitter {
     /**
      * 执行分页算法
      */
-    split(text) {
+    async split(text) {
         if (!text.trim()) return [];
         if (typeof marked === 'undefined') return [];
 
@@ -121,7 +121,7 @@ class TextSplitter {
                 continue;
             }
 
-            const layouts = this.engine.layoutToken(token);
+            const layouts = await this.engine.layoutToken(token);
             for (const layout of layouts) {
                 processLayout(layout);
             }

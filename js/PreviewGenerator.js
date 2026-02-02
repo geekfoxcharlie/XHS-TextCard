@@ -20,7 +20,7 @@ class PreviewGenerator {
         item.className = 'preview-item';
 
         const canvas = await this.renderer.render({
-            layouts, config, templateId,
+            layouts, index, totalCount, config, templateId,
             width: PREVIEW_WIDTH,
             height: PREVIEW_HEIGHT,
             scale: 2 

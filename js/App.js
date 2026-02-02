@@ -206,7 +206,7 @@ class App {
         this.generatePreview();
     }
 
-    generatePreview() {
+    async generatePreview() {
         const text = this.elements.textInput.value.trim();
         if (!text) {
             this.showEmptyState('请输入文字内容');
@@ -221,14 +221,16 @@ class App {
 
         const scrollLeft = this.elements.previewList.scrollLeft;
         this.elements.loading.classList.add('active');
-        this.elements.previewList.innerHTML = '';
+        // 不立即清空，防止闪烁，等到新内容准备好再替换
+        // this.elements.previewList.innerHTML = ''; 
 
         const splitter = new TextSplitter(this.currentTemplateConfig, this.currentTemplate);
-        this.splitPages = splitter.split(text);
+        this.splitPages = await splitter.split(text);
 
         this.elements.previewCount.textContent = `共 ${this.splitPages.length} 张图片`;
 
         if (this.splitPages.length === 0) {
+            this.elements.previewList.innerHTML = '';
             this.showEmptyState('没有可生成的内容');
             this.elements.loading.classList.remove('active');
             this.elements.downloadAllBtn.disabled = true;
@@ -251,19 +253,21 @@ class App {
             return previewItem;
         });
 
-        Promise.all(renderPromises).then(items => {
-            items.forEach(item => this.elements.previewList.appendChild(item));
-            this.elements.loading.classList.remove('active');
-            
-            requestAnimationFrame(() => {
-                if (this.shouldScrollToStart) {
-                    this.elements.previewList.scrollLeft = 0;
-                    this.shouldScrollToStart = false;
-                } else {
-                    this.elements.previewList.scrollLeft = scrollLeft;
-                }
-                this.updateActiveIndicator();
-            });
+        const items = await Promise.all(renderPromises);
+        
+        // 渲染完成后一次性更新 DOM
+        this.elements.previewList.innerHTML = '';
+        items.forEach(item => this.elements.previewList.appendChild(item));
+        this.elements.loading.classList.remove('active');
+        
+        requestAnimationFrame(() => {
+            if (this.shouldScrollToStart) {
+                this.elements.previewList.scrollLeft = 0;
+                this.shouldScrollToStart = false;
+            } else {
+                this.elements.previewList.scrollLeft = scrollLeft;
+            }
+            this.updateActiveIndicator();
         });
     }
 

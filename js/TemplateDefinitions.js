@@ -61,16 +61,16 @@ const TemplateDefinitions = {
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
             const textColor = config.textColor || '#1A1A1A';
-            const accentColor = config.accentColor || '#1A1A1A';
+            const decorativeColor = '#1A1A1A'; // 固定装饰色，不随配置改变
             
             // 页眉
             ctx.save();
-            ctx.fillStyle = accentColor;
+            ctx.fillStyle = decorativeColor;
             ctx.font = 'bold 12px "Source Han Serif SC", serif';
             ctx.textAlign = 'left';
             ctx.fillText('EDITORIAL', 45, 75);
             
-            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.6);
+            ctx.fillStyle = CanvasUtils.hexToRgba(decorativeColor, 0.6);
             ctx.font = 'italic 10px serif';
             ctx.textAlign = 'right';
             ctx.fillText('XHS-TEXTCARD // VOL. 2026', width - 45, 75);

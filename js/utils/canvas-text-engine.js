@@ -69,12 +69,42 @@ class CanvasTextEngine {
     }
 
     /**
+     * 测量图片尺寸并计算缩放后的高度
+     */
+    async measureImage(src, maxWidth = this.drawWidth) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            
+            const timeout = setTimeout(() => {
+                img.onload = null;
+                img.onerror = null;
+                resolve({ width: maxWidth, height: 100, error: true, timeout: true });
+            }, 5000);
+
+            img.onload = () => {
+                clearTimeout(timeout);
+                const ratio = img.height / img.width;
+                const height = maxWidth * ratio;
+                resolve({ width: maxWidth, height, ratio, originalWidth: img.width, originalHeight: img.height });
+            };
+            img.onerror = () => {
+                clearTimeout(timeout);
+                resolve({ width: maxWidth, height: 100, error: true });
+            };
+            img.src = src;
+        });
+    }
+
+    /**
      * 将原始文本拆分为行（用于简单文本或代码块）
      */
     splitIntoLines(text, style = {}, maxWidth = this.drawWidth) {
         const { fontSize = this.config.fontSize, fontWeight = 'normal' } = style;
         const lines = [];
         let currentLine = '', currentWidth = 0;
+
+        if (!text) return [];
 
         for (const char of text) {
             if (char === '\n') {
@@ -98,11 +128,28 @@ class CanvasTextEngine {
     /**
      * 将解析后的 Token 转换为布局对象
      */
-    layoutToken(token) {
+    async layoutToken(token) {
         const layouts = [];
         const baseLineHeight = this.config.fontSize * this.config.lineHeight;
 
+        if (!token) return layouts;
+
         switch (token.type) {
+            case 'image': {
+                const imgData = await this.measureImage(token.href);
+                const marginTop = 10, marginBottom = 20;
+                layouts.push({
+                    type: 'image',
+                    src: token.href,
+                    alt: token.text || '',
+                    width: imgData.width,
+                    height: (imgData.height || 100) + marginTop + marginBottom,
+                    contentHeight: imgData.height || 100,
+                    marginTop,
+                    marginBottom
+                });
+                break;
+            }
             case 'heading': {
                 const scales = { 1: this.config.h1Scale || 1.6, 2: this.config.h2Scale || 1.4, 3: this.config.h3Scale || 1.2 };
                 const fontSize = this.config.fontSize * (scales[token.depth] || 1.1);
@@ -122,8 +169,43 @@ class CanvasTextEngine {
                 layouts.push({ type: 'divider', height: 20 });
                 break;
             }
+            case 'text':
             case 'paragraph': {
-                const lines = this.layoutInlineText(token.tokens || [{ type: 'text', text: token.text }]);
+                // 如果是纯文本 token 且包含图片语法但没有被解析为 tokens（防御性处理）
+                if (token.type === 'text' && !token.tokens && token.text.includes('![')) {
+                    // 这里可以尝试手动解析，但通常 marked.lexer 应该能处理好
+                }
+
+                // 如果段落只包含一个图片，则直接作为图片处理
+                if (token.tokens && token.tokens.length === 1 && token.tokens[0].type === 'image') {
+                    return await this.layoutToken(token.tokens[0]);
+                }
+                
+                // 如果段落包含多个图片和其他文本，提取出来作为独立块
+                const hasImage = token.tokens && token.tokens.some(t => t.type === 'image');
+                if (hasImage) {
+                    const subLayouts = [];
+                    let currentTextTokens = [];
+                    
+                    for (const subToken of token.tokens) {
+                        if (subToken.type === 'image') {
+                            if (currentTextTokens.length > 0) {
+                                subLayouts.push(...await this.layoutToken({ type: 'paragraph', tokens: currentTextTokens, text: '' }));
+                                currentTextTokens = [];
+                            }
+                            subLayouts.push(...await this.layoutToken(subToken));
+                        } else {
+                            currentTextTokens.push(subToken);
+                        }
+                    }
+                    
+                    if (currentTextTokens.length > 0) {
+                        subLayouts.push(...await this.layoutToken({ type: 'paragraph', tokens: currentTextTokens, text: '' }));
+                    }
+                    return subLayouts;
+                }
+
+                const lines = this.layoutInlineText(token.tokens || [{ type: 'text', text: token.text || '' }]);
                 const marginBottom = this.config.fontSize * 0.8;
                 layouts.push({
                     type: 'paragraph', lines, height: (lines.length * baseLineHeight) + marginBottom,
@@ -142,13 +224,22 @@ class CanvasTextEngine {
                 break;
             }
             case 'list': {
-                token.items.forEach((item, index) => {
-                    const prefix = token.ordered ? `${index + 1}. ` : '• ';
+                for (let i = 0; i < token.items.length; i++) {
+                    const item = token.items[i];
+                    const prefix = token.ordered ? `${i + 1}. ` : '• ';
                     const prefixWidth = this.measureTextWidth(prefix);
                     let inlineTokens = item.tokens || [];
                     if (inlineTokens.length === 1 && inlineTokens[0].type === 'paragraph') {
                         inlineTokens = inlineTokens[0].tokens || [];
                     }
+                    
+                    // 检查列表项中是否有图片
+                    const hasImage = inlineTokens.some(t => t.type === 'image');
+                    if (hasImage) {
+                        // 如果有图片，我们暂时简单的把图片作为独立块处理（虽然在列表中可能排版略怪）
+                        // 或者递归处理
+                    }
+
                     const lines = this.layoutInlineText(inlineTokens, this.drawWidth - prefixWidth);
                     const marginBottom = this.config.fontSize * 0.8;
                     layouts.push({
@@ -156,7 +247,7 @@ class CanvasTextEngine {
                         height: (lines.length * baseLineHeight) + marginBottom,
                         marginTop: 0, marginBottom
                     });
-                });
+                }
                 break;
             }
             case 'space': {

@@ -61,6 +61,7 @@ const CanvasUtils = {
      * 测量文本真实宽度
      */
     measureTextWidth(ctx, text, letterSpacing = 0) {
+        if (!text) return 0;
         return ctx.measureText(text).width + (text.length * letterSpacing);
     },
 

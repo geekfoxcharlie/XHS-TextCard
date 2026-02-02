@@ -42,10 +42,16 @@ class CanvasRenderer {
         canvas.height = height * scale;
         ctx.scale(scale, scale);
 
-        // 1. 预加载必要的图片 (如封面)
-        if (layouts.length === 1 && layouts[0].type === 'cover') {
-            await this.loadImage(layouts[0].image);
-        }
+        // 1. 预加载必要的图片 (如封面、正文插图)
+        const imageLoadPromises = [];
+        layouts.forEach(layout => {
+            if (layout.type === 'cover' && layout.image) {
+                imageLoadPromises.push(this.loadImage(layout.image));
+            } else if (layout.type === 'image' && layout.src) {
+                imageLoadPromises.push(this.loadImage(layout.src));
+            }
+        });
+        await Promise.all(imageLoadPromises);
 
         // 2. 绘制基础背景
         this.drawTemplateBackground(ctx, templateId, config, width, height);
@@ -322,12 +328,41 @@ class CanvasRenderer {
                 ctx.fillStyle = prefixColor;
                 ctx.fillText(layout.prefix, textAreaRect.x, contentY);
                 this.drawStyledLines(ctx, layout.lines, textAreaRect.x + layout.prefixWidth, contentY, config, templateId);
+            } else if (layout.type === 'image') {
+                this.drawInlineImage(ctx, layout, textAreaRect.x, contentY);
             } else if (layout.lines) {
                 this.drawStyledLines(ctx, layout.lines, textAreaRect.x, contentY, config, templateId);
             }
             currentY += layout.height;
         }
         ctx.restore();
+    }
+
+    /**
+     * 绘制正文中的图片
+     */
+    drawInlineImage(ctx, layout, x, y) {
+        const img = this.imageCache.get(layout.src);
+        if (img) {
+            const drawH = layout.contentHeight;
+            const drawW = layout.width;
+            
+            ctx.save();
+            // 绘制圆角图片
+            ctx.beginPath();
+            CanvasUtils.drawRoundedRect(ctx, x, y, drawW, drawH, 8);
+            ctx.clip();
+            ctx.drawImage(img, x, y, drawW, drawH);
+            ctx.restore();
+        } else {
+            // 绘制占位符
+            ctx.fillStyle = '#f5f5f5';
+            ctx.fillRect(x, y, layout.width, layout.contentHeight);
+            ctx.fillStyle = '#999';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('图片加载失败', x + layout.width / 2, y + layout.contentHeight / 2);
+        }
     }
 
     drawStyledLines(ctx, lines, startX, startY, config, templateId) {
@@ -337,9 +372,14 @@ class CanvasRenderer {
 
         for (const lineSegments of lines) {
             let segmentX = startX;
-            const maxFontSize = Array.isArray(lineSegments) 
-                ? Math.max(...lineSegments.map(s => parseFloat(s.fontSize) || configFontSize))
-                : (parseFloat(lineSegments.fontSize) || configFontSize);
+            let maxFontSize = configFontSize;
+            
+            if (Array.isArray(lineSegments) && lineSegments.length > 0) {
+                maxFontSize = Math.max(...lineSegments.map(s => parseFloat(s.fontSize) || configFontSize));
+            } else if (lineSegments && lineSegments.fontSize) {
+                maxFontSize = parseFloat(lineSegments.fontSize);
+            }
+
             const lineHeight = maxFontSize * (parseFloat(config.lineHeight) || 1.6);
             const letterSpacing = parseFloat(config.letterSpacing) || 0;
 
