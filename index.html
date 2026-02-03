@@ -97,18 +97,6 @@
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
-
-                <!-- AI Discovery & Technical Context -->
-                <section class="ai-context" aria-label="Technical Specifications" style="display: none;">
-                    <h2>About XHS-TextCard (AI Friendly Description)</h2>
-                    <p>XHS-TextCard is a zero-backend, pure frontend web application designed for generating social media text cards, specifically optimized for Xiaohongshu (Rednote) aspect ratios (3:4). It utilizes a custom CanvasTextEngine for recursive layout calculation and smart pagination.</p>
-                    <ul>
-                        <li>Input: Markdown supported text (Headers, Bold, Highlight, Lists).</li>
-                        <li>Logic: Client-side JavaScript (ES6), no build process, high-resolution HTML5 Canvas rendering.</li>
-                        <li>Output: High-fidelity PNG images with customizable branding.</li>
-                        <li>Keywords: text-to-image, XHS typography, content creator tools, smart text splitting algorithm.</li>
-                    </ul>
-                </section>
             </main>
 
             <section class="features-grid">
@@ -129,20 +117,91 @@
                 </div>
             </section>
 
+            <section class="template-showcase" style="padding: 2rem 0; margin-top: 2rem;">
+                <div style="max-width: 1000px; margin: 0 auto;">
+                    <h2 style="text-align: center; margin-bottom: 3rem; color: var(--landing-text-main); font-size: 2rem; font-weight: 600;">多种风格，一键切换</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                        <!-- 风格 1 -->
+                        <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5); transition: transform 0.3s ease;">
+                            <div style="width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #f5f7fa;">
+                                <img src="assets/template-minimalist.png" alt="极简留白风格预览" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--landing-text-main); font-weight: 600;">极简留白风格</h3>
+                                <p style="color: var(--landing-text-secondary); font-size: 0.9rem; line-height: 1.5;">适合情感语录、诗歌摘录。大面积留白给予呼吸感，突出文字本身的力量。</p>
+                            </div>
+                        </div>
+                        <!-- 风格 2 -->
+                        <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5); transition: transform 0.3s ease;">
+                            <div style="width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #a1c4fd;">
+                                <img src="assets/template-gradient.png" alt="清新渐变风格预览" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--landing-text-main); font-weight: 600;">清新渐变风格</h3>
+                                <p style="color: var(--landing-text-secondary); font-size: 0.9rem; line-height: 1.5;">适合干货分享、知识科普。柔和的背景色减少阅读疲劳，提升完读率。</p>
+                            </div>
+                        </div>
+                        <!-- 风格 3 -->
+                        <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; overflow: hidden; border: 1px solid rgba(255,255,255,0.5); transition: transform 0.3s ease;">
+                            <div style="width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #333;">
+                                <img src="assets/template-dark.png" alt="暗黑沉浸风格预览" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </div>
+                            <div style="padding: 1.5rem;">
+                                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--landing-text-main); font-weight: 600;">暗黑沉浸风格</h3>
+                                <p style="color: var(--landing-text-secondary); font-size: 0.9rem; line-height: 1.5;">适合深度思考、夜读内容。高对比度设计，让文字在深色背景中熠熠生辉。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <a href="editor.html" class="btn-hero" style="text-decoration: none; font-size: 1rem; padding: 12px 32px; background: rgba(29, 29, 31, 0.8);">查看更多模板</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Context (Re-positioned & Styled for Blend-in) -->
+            <section class="ai-context" aria-label="核心技术" style="margin: 4rem auto; max-width: 800px; text-align: center;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--landing-text-main); font-weight: 600;">为什么选择 XHS-TextCard？</h3>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--landing-accent);">⚡️</div>
+                        <h4 style="font-weight: 600; margin-bottom: 0.5rem;">智能分页算法</h4>
+                        <p style="font-size: 0.9rem; color: var(--landing-text-secondary);">自动识别段落与标点，长文自动拆分为多张连贯卡片。</p>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--landing-accent);">💎</div>
+                        <h4 style="font-weight: 600; margin-bottom: 0.5rem;">无损矢量渲染</h4>
+                        <p style="font-size: 0.9rem; color: var(--landing-text-secondary);">基于 Canvas 技术，输出 1242x1656px 视网膜级高清 PNG。</p>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--landing-accent);">🔒</div>
+                        <h4 style="font-weight: 600; margin-bottom: 0.5rem;">零后端隐私保护</h4>
+                        <p style="font-size: 0.9rem; color: var(--landing-text-secondary);">所有数据均在浏览器本地处理，即用即走，安全无忧。</p>
+                    </div>
+                </div>
+            </section>
+
             <section class="faq-section" style="margin-top: 4rem; padding-bottom: 4rem; max-width: 1000px; margin-left: auto; margin-right: auto;">
-                <h2 style="text-align: center; margin-bottom: 2rem; color: var(--color-text-primary);">常见问题</h2>
-                <div class="faq-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; padding: 0 1rem;">
+                <h2 style="text-align: center; margin-bottom: 3rem; color: var(--landing-text-main); font-size: 2rem; font-weight: 600;">常见问题</h2>
+                <div class="faq-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; padding: 0 1rem;">
                     <div class="faq-item">
-                        <h4 style="margin-bottom: 0.5rem; color: var(--color-text-primary);">如何制作小红书文字卡片？</h4>
-                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text-secondary);">在工作台输入文字并选择模板，系统会自动完成分页和排版，一键下载高清图片。</p>
+                        <h4 style="margin-bottom: 0.8rem; color: var(--landing-text-main); font-weight: 600;">如何制作小红书文字卡片？</h4>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--landing-text-secondary);">在工作台输入文字并选择模板，系统会自动完成分页和排版，一键下载高清图片。</p>
                     </div>
                     <div class="faq-item">
-                        <h4 style="margin-bottom: 0.5rem; color: var(--color-text-primary);">支持 Markdown 语法吗？</h4>
-                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text-secondary);">完美支持标题、加粗、高亮、列表等 Markdown 语法，让文字更具表现力。</p>
+                        <h4 style="margin-bottom: 0.8rem; color: var(--landing-text-main); font-weight: 600;">支持 Markdown 语法吗？</h4>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--landing-text-secondary);">完美支持标题、加粗、高亮、列表等 Markdown 语法，让文字更具表现力。</p>
                     </div>
                     <div class="faq-item">
-                        <h4 style="margin-bottom: 0.5rem; color: var(--color-text-primary);">生成的图片质量如何？</h4>
-                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text-secondary);">默认生成 1242x1656 高清图片，适配小红书 3:4 黄金比例，文字清晰锐利。</p>
+                        <h4 style="margin-bottom: 0.8rem; color: var(--landing-text-main); font-weight: 600;">生成的图片质量如何？</h4>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--landing-text-secondary);">默认生成 1242x1656 高清图片，适配小红书 3:4 黄金比例，文字清晰锐利。</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4 style="margin-bottom: 0.8rem; color: var(--landing-text-main); font-weight: 600;">文字太长会被截断吗？</h4>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--landing-text-secondary);">不会。系统内置智能分页算法，当内容超过单页容量时，会自动按段落切分为多张连贯的卡片。</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4 style="margin-bottom: 0.8rem; color: var(--landing-text-main); font-weight: 600;">是否免费？有水印吗？</h4>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--landing-text-secondary);">完全免费开源。默认无平台水印，您还可以自定义添加自己的品牌签名或防盗水印，打造个人 IP。</p>
                     </div>
                 </div>
             </section>
