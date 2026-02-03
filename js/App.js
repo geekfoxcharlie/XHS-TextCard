@@ -90,9 +90,10 @@ class App {
 
             this.currentTemplateConfig = { ...config };
             
-            // 实时保存当前模板配置到本地
+            // 实时保存当前模板配置到本地（排除 coverImage，避免 LocalStorage 超限）
             if (this.currentTemplate) {
-                localStorage.setItem(`xhs_tpl_config_${this.currentTemplate}`, JSON.stringify(config));
+                const { coverImage, ...safeConfig } = config;
+                localStorage.setItem(`xhs_tpl_config_${this.currentTemplate}`, JSON.stringify(safeConfig));
             }
             
             this.generatePreview();
