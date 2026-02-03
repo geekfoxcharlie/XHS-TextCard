@@ -289,6 +289,7 @@ class EditorController {
                     this.currentConfig.coverImage = dataUrl;
                     if (fileNameHint) fileNameHint.textContent = file.name;
                     this.notifyConfigChange();
+                    fileInput.value = '';
                 };
                 reader.readAsDataURL(file);
             });
