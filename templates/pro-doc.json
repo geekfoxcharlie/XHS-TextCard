@@ -3,7 +3,6 @@
     "description": "专业级技术文档美学，高层级信息的权威呈现",
     "author": "geekfoxcharlie",
     "version": "1.3",
-    "featured": true,
     "config": {
     "coverImage": "assets/cover-pro-doc.jpg",
     "coverFontSize": 48,

@@ -9,7 +9,6 @@
 class TemplateManager {
     constructor() {
         this.templates = {};
-        this.currentCategory = 'featured';
     }
 
     async loadTemplateIndex() {
@@ -90,7 +89,6 @@ class TemplateManager {
             this.templateOrder = index.templates.map(t => t.id);
             const loadPromises = index.templates.map(async (info) => {
                 const template = await this.loadTemplate(info.id);
-                if (template) template.featured = info.featured;
                 return template;
             });
             await Promise.all(loadPromises);

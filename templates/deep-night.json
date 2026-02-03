@@ -3,7 +3,6 @@
     "description": "深夜里的理性能量，沉浸式深度思考空间",
     "author": "geekfoxcharlie",
     "version": "1.3",
-    "featured": true,
     "config": {
     "coverImage": "assets/cover-deep-night.jpg",
     "coverFontSize": 48,

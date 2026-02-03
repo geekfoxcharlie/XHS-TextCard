@@ -135,15 +135,6 @@
   background: #f0f4ff;
 }
 
-.template-item.featured::after {
-  content: '\2605';
-  position: absolute;
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
-  color: #ffd700;
-  font-size: var(--font-size-sm);
-}
-
 .template-item-name {
   font-weight: 600;
   font-size: var(--font-size-base);

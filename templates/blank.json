@@ -3,7 +3,6 @@
     "description": "纯净极简背景，回归文字本质",
     "author": "geekfoxcharlie",
     "version": "1.3",
-    "featured": true,
     "config": {
     "coverImage": "assets/cover-blank.jpg",
     "coverFontSize": 48,

@@ -3,7 +3,6 @@
     "description": "现代社论排版美学，让文字拥有纸质出版物的质感",
     "author": "geekfoxcharlie",
     "version": "1.3",
-    "featured": true,
     "config": {
     "coverImage": "assets/cover-minimalist-magazine.jpg",
     "coverFontSize": 48,
