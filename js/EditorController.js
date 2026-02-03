@@ -278,7 +278,7 @@ class EditorController {
                 const file = e.target.files[0];
                 if (!file) return;
 
-                if (file.size > 5 * 1024 * 1024) {
+                if (file.size > 10 * 1024 * 1024) {
                     alert('图片大小不能超过 5MB');
                     return;
                 }
