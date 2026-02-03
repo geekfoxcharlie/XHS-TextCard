@@ -10,10 +10,46 @@
  * 3. 模板独立性：装饰性的固定 UI (如模拟按钮、页眉页脚) 除非设计需要，否则不应受强调色控制，以维持模板本身的视觉识别度。
  */
 const TemplateDefinitions = {
+    /**
+     * 内部页码绘制辅助工具
+     */
+    _drawPageNumber: (ctx, width, height, index, totalCount, config, options = {}) => {
+        if (!config.showPageNumber) return;
+        
+        const pageNum = config.hasCover ? index : index + 1;
+        const totalPage = config.hasCover ? totalCount - 1 : totalCount;
+        if (totalPage <= 0) return;
+
+        const {
+            color = 'rgba(128, 128, 128, 0.5)',
+            font = '500 12px sans-serif',
+            textAlign = 'right',
+            x = width - 25,
+            y = height - 25,
+            prefix = '',
+            suffix = '',
+            padZero = false
+        } = options;
+
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.font = font;
+        ctx.textAlign = textAlign;
+        
+        const format = (n) => padZero ? String(n).padStart(2, '0') : n;
+        const text = `${prefix}${format(pageNum)} / ${format(totalPage)}${suffix}`;
+        
+        ctx.fillText(text, x, y);
+        ctx.restore();
+    },
+
     'blank': {
         /**
          * 空白模板 - 极致简约，回归文字本质
          */
+        drawForeground: (ctx, width, height, index, totalCount, config) => {
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
+        },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#1A1A1A';
             const textColor = config.textColor || '#1A1A1A';
@@ -76,6 +112,9 @@ const TemplateDefinitions = {
             ctx.fillText('XHS-TEXTCARD // VOL. 2026', width - 45, 75);
             
             ctx.restore();
+
+            // 页码 - 标准样式
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#1A1A1A';
@@ -127,7 +166,7 @@ const TemplateDefinitions = {
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const textColor = config.textColor || '#1C1C1E';
+            const decorativeColor = '#8E8E93'; 
             const iosOrange = '#FF9500'; 
             ctx.save();
             ctx.fillStyle = iosOrange;
@@ -146,11 +185,14 @@ const TemplateDefinitions = {
             const now = new Date();
             const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
             
-            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.5); 
+            ctx.fillStyle = decorativeColor; 
             ctx.font = '500 12px -apple-system, sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(dateStr, width / 2, 35);
             ctx.restore();
+
+            // 页码 - 标准样式
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#FF9500';
@@ -211,12 +253,15 @@ const TemplateDefinitions = {
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const textColor = config.textColor || '#6B7280';
+            const decorativeColor = '#6B7280';
             ctx.save();
-            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.6);
+            ctx.fillStyle = decorativeColor;
             ctx.font = '700 9px -apple-system, sans-serif'; ctx.textAlign = 'right';
             ctx.fillText('CONFIDENTIAL / INTERNAL USE ONLY', width - 25, 25);
             ctx.restore();
+
+            // 页码 - 标准样式
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#0066FF', textColor = config.textColor || '#111827';
@@ -261,13 +306,21 @@ const TemplateDefinitions = {
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const textColor = config.textColor || '#E5E5E5';
+            const decorativeColor = '#E5E5E5'; // 固定颜色，不随配置改变
             ctx.save();
-            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.3); ctx.font = '800 10px Inter, sans-serif'; 
-            ctx.textAlign = 'right'; ctx.fillText('THOUGHT MODE ON //', width - 25, 30);
-            ctx.strokeStyle = CanvasUtils.hexToRgba(textColor, 0.2); ctx.lineWidth = 1;
+            ctx.fillStyle = CanvasUtils.hexToRgba(decorativeColor, 0.3); ctx.font = '800 10px Inter, sans-serif'; 
+            ctx.textAlign = 'right'; ctx.fillText('// THOUGHT MODE ON', width - 25, 25);
+            ctx.strokeStyle = CanvasUtils.hexToRgba(decorativeColor, 0.2); ctx.lineWidth = 1;
             ctx.beginPath(); ctx.moveTo(25, height - 60); ctx.lineTo(width - 25, height - 60); ctx.stroke();
             ctx.restore();
+
+            // 页码 - 移至左上方，常规样式 (固定颜色)
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
+                color: 'rgba(255, 255, 255, 0.3)',
+                textAlign: 'left',
+                x: 25,
+                y: 25
+            });
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#00F5FF', textColor = config.textColor || '#E5E5E5';
@@ -280,7 +333,7 @@ const TemplateDefinitions = {
             }
             return { textColor };
         },
-        terminalStyles: (config) => ({ bg: '#050505', text: config.accentColor || '#00F5FF' })
+        terminalStyles: (config) => ({ bg: '#050505', text: '#39FF14' })
     },
 
     'aura-gradient': {
@@ -324,6 +377,9 @@ const TemplateDefinitions = {
             CanvasUtils.drawRoundedRect(ctx, cardX, cardY, cardW, cardH, 28, null, true);
             ctx.restore();
         },
+        drawForeground: (ctx, width, height, index, totalCount, config) => {
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
+        },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#2D3436', textColor = config.textColor || '#2D3436';
             if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.isHighlight || segment.headingLevel) {
@@ -357,12 +413,22 @@ const TemplateDefinitions = {
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const accentColor = config.accentColor || '#FF4500', textColor = config.textColor || '#1A1A1A';
+            const accentColor = config.accentColor || '#FF4500', decorativeColor = '#1A1A1A';
             ctx.save();
-            ctx.fillStyle = textColor; ctx.font = '700 10px Helvetica'; ctx.textAlign = 'right';
+            ctx.fillStyle = decorativeColor; ctx.font = '700 10px Helvetica'; ctx.textAlign = 'right';
             ctx.fillText('REF. CH-8004', width - 25, 25);
             ctx.beginPath(); ctx.rect(width - 40, height - 40, 15, 15); ctx.strokeStyle = accentColor; ctx.lineWidth = 2; ctx.stroke();
             ctx.restore();
+
+            // 页码 - 瑞士风 (移至左下角，与红条对齐)
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
+                color: '#1A1A1A', // 固定颜色
+                font: '700 10px Helvetica',
+                padZero: true,
+                textAlign: 'left',
+                x: 25,
+                y: height - 25
+            });
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#FF4500', textColor = config.textColor || '#1A1A1A';

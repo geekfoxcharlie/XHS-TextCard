@@ -25,6 +25,7 @@
         "h1Scale": 1.6,
         "h2Scale": 1.4,
         "h3Scale": 1.2,
-        "accentColor": "#1A1A1A"
+        "accentColor": "#1A1A1A",
+        "showPageNumber": true
     }
 }

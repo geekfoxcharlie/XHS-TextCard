@@ -462,12 +462,13 @@ class CanvasRenderer {
             ctx.fillStyle = barBg;
             ctx.fillRect(0, height - barHeight, width, barHeight);
             ctx.font = '700 13px monospace'; 
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = cursorColor; 
             ctx.textAlign = 'left';
-            ctx.fillText('> _', 25, height - barHeight / 2 + 5);
-            ctx.fillStyle = '#fff';
+            ctx.fillText('> _', 25, height - barHeight / 2);
+            ctx.fillStyle = sigColor; 
             ctx.textAlign = 'right';
-            ctx.fillText(sigText, width - 25, height - barHeight / 2 + 5);
+            ctx.fillText(sigText, width - 25, height - barHeight / 2);
         } else if (sigStyle === 'modern-pill') {
             ctx.font = `600 13px ${fontFamily}`;
             const metrics = ctx.measureText(sigText);

@@ -19,12 +19,13 @@
         "watermarkColor": "rgba(255,255,255,0.03)",
         "hasSignature": true,
         "signatureText": "极客狐",
-        "signatureColor": "#00F5FF",
+        "signatureColor": "#39FF14",
         "signaturePosition": "bottom",
         "signatureStyle": "terminal",
         "h1Scale": 1.6,
         "h2Scale": 1.4,
         "h3Scale": 1.2,
-        "accentColor": "#00F5FF"
+        "accentColor": "#00F5FF",
+        "showPageNumber": true
     }
 }

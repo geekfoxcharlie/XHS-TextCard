@@ -32,6 +32,7 @@ class EditorController {
             { key: 'hasSignature', type: 'checkbox', toggle: '#signature-options' },
             { key: 'signatureText', type: 'input' },
             { key: 'showGrid', type: 'checkbox' },
+            { key: 'showPageNumber', type: 'checkbox' },
             { key: 'h1Scale', type: 'range', isFloat: true },
             { key: 'h2Scale', type: 'range', isFloat: true },
             { key: 'h3Scale', type: 'range', isFloat: true },
