@@ -35,15 +35,15 @@
 
 <div align="center">
 
-| <img src="assets/readme/cover_1.png" width="220" alt="苹果备忘录封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_1.png" width="220" alt="苹果备忘录页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_2.png" width="220" alt="苏黎世工作室封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_2.png" width="220" alt="苏黎世工作室页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
+| <img src="assets/readme/cover_1.png" width="175" alt="苹果备忘录封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"><img src="assets/readme/page_1.png" width="175" alt="苹果备忘录页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_2.png" width="175" alt="苏黎世工作室封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"><img src="assets/readme/page_2.png" width="175" alt="苏黎世工作室页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
 |:---:|:---:|
 | *拟物记录风格* | *瑞士网格秩序* |
 
-| <img src="assets/readme/cover_3.png" width="220" alt="极简杂志封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_3.png" width="220" alt="极简杂志页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_4.png" width="220" alt="弥散极光封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_4.png" width="220" alt="弥散极光页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
+| <img src="assets/readme/cover_3.png" width="175" alt="极简杂志封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"><img src="assets/readme/page_3.png" width="175" alt="极简杂志页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_4.png" width="175" alt="弥散极光封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"><img src="assets/readme/page_4.png" width="175" alt="弥散极光页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
 |:---:|:---:|
 | *现代社论美学* | *柔和渐变光影* |
 
-| <img src="assets/readme/cover_5.png" width="220" alt="暗夜深思封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_5.png" width="220" alt="暗夜深思页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_6.png" width="220" alt="大厂文档封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_6.png" width="220" alt="大厂文档页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
+| <img src="assets/readme/cover_5.png" width="175" alt="暗夜深思封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"><img src="assets/readme/page_5.png" width="175" alt="暗夜深思页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_6.png" width="175" alt="大厂文档封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"><img src="assets/readme/page_6.png" width="175" alt="大厂文档页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
 |:---:|:---:|
 | *赛博朋克氛围* | *专业权威呈现* |
 
