@@ -38,7 +38,7 @@ class TemplateManager {
                 letterSpacing: 0.5, 
                 textPadding: 40,
                 fontFamily: "inherit", 
-                hasCover: false,
+                hasCover: true,
                 coverImage: DEFAULT_COVER_IMAGE,
                 coverTitle: "",
                 hasWatermark: false, 
