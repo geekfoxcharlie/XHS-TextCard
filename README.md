@@ -1,116 +1,170 @@
-# XHS-TextCard | 小红书智能文字卡片工具
+<div align="center">
 
-**XHS-TextCard** 是一款专为小红书创作者打造的智能卡片生成工具。它不仅能将您的**深度长文**一键转化为排版精美的系列图片，更致力于通过**全方位的视觉定制**（专属签名、防盗水印、大师级模版），助你打造**独一无二的个人 IP 视觉风格**。
+<h1>XHS-TextCard 🎨</h1>
 
-## 🎯 解决的核心痛点
+**专为小红书创作者打造的智能文字卡片生成工具**
 
-小红书创作者常遇到的痛点：
-- **手动分页效率低下**：长文发布需要手动分割成多张图片，耗时耗力
-- **排版风格不统一**：每张图片的视觉效果参差不齐，影响专业形象
-- **缺乏个人品牌标识**：内容容易被抄袭，难以形成独特辨识度
-- **参数调节繁琐**：频繁调整字体、颜色、间距，创作流程不够流畅
-- **在线工具使用壁垒**：多数工具需要注册登录，受网络影响创作不自由
-- **精细定制收费高**：好的模板和高级功能往往需要付费，增加创作成本
-- **隐私数据安全隐患**：在线工具可能泄露创作内容，存在版权风险
+一键将深度长文转化为排版精美的系列图片，打造**独一无二的个人 IP 视觉风格**
 
-## 🌟 核心功能：智能文字转卡片
+[![GitHub Stars](https://img.shields.io/github/stars/geekfoxcharlie/XHS-TextCard?style=social)](https://github.com/geekfoxcharlie/XHS-TextCard)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Made with Love](https://img.shields.io/badge/made%20with-❤️-ff69b4.svg)]()
 
-这是本项目的灵魂引擎，集智能排版与视觉定制于一体：
+🌐 **[在线演示](https://www.xhs-textcard.site)** | 📖 **[使用文档](#-快速开始)** | ⭐ **[点个 Star](https://github.com/geekfoxcharlie/XHS-TextCard)**
 
-- **专业级 Canvas 渲染引擎**：放弃不稳定的 DOM 渲染，采用纯 Canvas 手法进行文字度量与绘制。无论在何种设备上，预览效果与下载图片都能保持像素级的一致性，文字锐利无锯齿。
-- **智能分页引擎**：内置 TextSplitter 算法，精准计算文字高度与段落结构，自动将长文拆分为多张 3:4 黄金比例图片。支持使用 `---` 进行强制手动分页。
-- **大师级预制模板**：内置**苹果备忘录**、**苏黎世工作室**、**极简杂志**、**弥散极光**、**暗夜深思**、**大厂文档**等深度适配小红书审美的专业模板。
-- **智能 Markdown 解析**：完美支持多级标题、**加粗**、==高亮==、*斜体*、~~删除线~~、`行内代码` 等丰富语法，支持语法嵌套。
-- **深度视觉定制**：
-    - **排版微调**：字号、行高、字间距、内边距均可像素级调节。
-    - **色彩管理**：内置莫兰迪色系等多款配色预设，支持 HEX/RGBA 及渐变色背景自由定义。
-- **一键批量导出**：自动生成 1242x1656 高清图片（小红书最佳尺寸），支持单张下载或一键打包为 ZIP 文件。
+</div>
 
-## 🚀 打造专属 IP 视觉
+---
 
-我们深知“辨识度”对于创作者的重要性，因此提供了强大的专属性配置：
+## ✨ 为什么选择 XHS-TextCard
 
-### 1. 品牌签名栏 (Signature System)
-- **多风格选择**：内置 Terminal（极客风）、现代胶囊、优雅衬线、极简毛玻璃等多种设计风格。
-- **内容自定义**：支持自定义签名文案（如 @你的账号）及专属品牌色。
+作为小红书创作者，您是否遇到过这些困扰？
 
-### 2. 版权防盗水印 (Watermark)
-- **背景保护**：支持开启背景水印，有效标识内容原创性。
-- **隐形嵌入**：可精细调节水印颜色的透明度，在宣誓主权的同时，确保不影响读者的阅读体验。
+| ❌ 传统方式 | ✅ XHS-TextCard |
+|:----------|:---------------|
+| 手动分割图片耗时耗力 | **智能分页算法**，自动计算最佳分割点 |
+| 排版风格参差不齐 | **6款大师级模板**，一键统一视觉 |
+| 内容易被抄袭搬运 | **专属签名+水印**，保护原创内容 |
+| 在线工具卡顿收费 | **完全本地运行**，零费用零等待 |
+| 导出图片模糊变形 | **Canvas 像素级渲染**，1242×1656 高清输出 |
+| 隐私内容泄露风险 | **不上传云端**，数据绝对安全 |
 
-### 3. 个人模板库 (Template Library)
-- **参数调优**：在官方模板基础上，自由调配出满意的参数组合（字号、颜色、间距等）。
-- **实时保存**：系统会自动保留您在浏览器中的最后一次修改参数，确保您在创作系列笔记时视觉风格的延续性。
+---
 
-### 🛠️ 模板扩展指南（开发者）
+## 🎨 6款大师级模板
 
-项目采用**配置驱动架构**，开发者可轻松添加新模板：
+<div align="center">
+
+| <img src="assets/readme/cover_1.png" width="220" alt="苹果备忘录封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_1.png" width="220" alt="苹果备忘录页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_2.png" width="220" alt="苏黎世工作室封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_2.png" width="220" alt="苏黎世工作室页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
+|:---:|:---:|
+| *拟物记录风格* | *瑞士网格秩序* |
+
+| <img src="assets/readme/cover_3.png" width="220" alt="极简杂志封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_3.png" width="220" alt="极简杂志页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_4.png" width="220" alt="弥散极光封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_4.png" width="220" alt="弥散极光页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
+|:---:|:---:|
+| *现代社论美学* | *柔和渐变光影* |
+
+| <img src="assets/readme/cover_5.png" width="220" alt="暗夜深思封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_5.png" width="220" alt="暗夜深思页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> | <img src="assets/readme/cover_6.png" width="220" alt="大厂文档封面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> <img src="assets/readme/page_6.png" width="220" alt="大厂文档页面" style="border: 1px solid #f0f0f0; border-radius: 4px;"> |
+|:---:|:---:|
+| *赛博朋克氛围* | *专业权威呈现* |
+
+</div>
+
+---
+
+## 🚀 核心功能
+
+### 📝 专业级排版引擎
+
+- **Canvas 渲染**：放弃不稳定 DOM，采用纯 Canvas 绘制，文字锐利无锯齿
+- **智能分页**：TextSplitter 算法精准计算，支持 `---` 强制分页
+- **Markdown 全支持**：标题、加粗、==高亮==、*斜体*、~~删除线~~、`代码`
+- **黄金比例**：3:4 比例，1242×1656 高清输出，完美适配小红书
+
+### 🎨 深度视觉定制
+
+- **模板系统**：6款大师级预制模板，一键切换风格
+- **封面设计**：自定义封面标题、字体、布局，打造系列内容专业感
+- **字体微调**：字号、行高、字间距、内边距像素级调节
+- **色彩管理**：莫兰迪色系预设，HEX/RGBA/渐变自由定义
+- **品牌签名**：Terminal 极客风、现代胶囊、优雅衬线、毛玻璃等多种风格
+- **版权水印**：背景水印保护原创，透明度可调
+
+### 💾 便捷导出
+
+- **单张/批量**：支持单张下载或一键 ZIP 打包
+- **实时预览**：修改即时渲染，创作流畅不停顿
+- **参数记忆**：自动保存配置，系列内容风格统一
+
+---
+
+## 🏃 快速开始
+
+### 在线使用（推荐）
+
+直接访问：[https://www.xhs-textcard.site](https://www.xhs-textcard.site)
+
+### 本地使用
+
+```bash
+# 1. 克隆项目
+git clone https://github.com/geekfoxcharlie/XHS-TextCard.git
+cd XHS-TextCard
+
+# 2. 启动本地服务器
+python -m http.server 8000
+
+# 3. 浏览器访问
+open http://localhost:8000/editor.html
+```
+
+> 💡 **提示**：由于浏览器安全策略，请勿直接双击 HTML 文件打开
+
+### 一键部署
+
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/geekfoxcharlie/XHS-TextCard)
+
+---
+
+## 🛠️ 模板扩展（开发者）
+
+采用配置驱动架构，轻松添加新模板：
 
 ```
 templates/
 ├── index.json              # 模板索引
-└── {template-id}.json      # 模板基础配置（名称、默认参数）
+└── {template-id}.json      # 模板基础配置
 ```
 
-**添加新模板步骤：**
-1. 在 `templates/` 目录创建 `{id}.json`
-2. 在 `js/TemplateDefinitions.js` 中定义该模板的 Canvas 绘制逻辑
-3. 在 `templates/index.json` 中注册新模板
-4. 刷新页面即可在模板列表中看到新模板
+**添加步骤：**
+1. 创建 `templates/my-style.json`
+2. 在 `js/TemplateDefinitions.js` 定义 Canvas 绘制逻辑
+3. 在 `templates/index.json` 注册
+4. 刷新页面即可使用
 
-模板系统支持丰富的视觉定制，包括背景样式、签名栏风格、水印效果等。
+---
 
-## 🛠️ 技术特性
+## 🔧 技术特性
 
-- **隐私绝对安全**：所有的文字输入、图文渲染均在**本地浏览器**完成，绝不上传云端，确保隐私安全。
-- **极速性能**：优化的 Canvas 绘制逻辑确保即使是大文本也能实现毫秒级的实时预览。
-- **智能分割算法**：基于 Canvas 测量的精确计算，确保分页准确性和美观性。
+| 特性 | 说明 |
+|-----|------|
+| **零依赖** | 无 npm 包，纯前端 HTML/CSS/JS |
+| **隐私优先** | 所有处理在本地浏览器完成，绝不上传 |
+| **毫秒级预览** | 优化的 Canvas 绘制，大文本也能实时响应 |
+| **跨平台** | Chrome 80+、Firefox 75+、Safari 13+、Edge 80+ |
+
+---
 
 ## 💡 使用技巧
 
-- **强制分页**：在需要手动切断图片的地方输入三个短横线 `---`（Markdown 分割线语法），即可实现强制分页，精准控制每张图片的内容。
-- **智能分段**：用两个回车 `↵↵` 分隔段落（推荐），系统会优先在段落间分页，避免页面末尾出现孤立的单行文字。
-- **预览锁定**：修改文字时预览区滚动条会自动锁定在当前位置，方便进行局部的精细调整。
-- **语法速查**：输入框标题旁的问号图标可随时唤起语法说明，无需离开编辑器。
-- **品牌一致性**：通过微调参数组合，确保系列内容视觉风格统一。
+- **`---` 强制分页**：在需要切断的地方输入三个短横线
+- **`↵↵` 智能分段**：双回车分隔段落，系统优先在段落间分页
+- **参数微调**：先选模板再调参数，效率更高
+- **封面设置**：开启封面选项，系列内容更专业
+- **滚动锁定**：修改时预览区自动锁定，方便局部调整
 
-## 🔧 系统要求
-
-- **浏览器兼容**：Chrome 80+、Firefox 75+、Safari 13+、Edge 80+
-- **操作系统**：Windows 7+、macOS 10.12+、Linux（主流发行版）
-- **网络要求**：初次使用需联网加载外部库，之后可完全离线使用
-
-## 🚀 快速开始
-
-1. **下载项目**：获取项目源码包并解压到任意目录。
-
-2. **启动本地服务器**（推荐方式）：
-   ```bash
-   # Python 3.x
-   python -m http.server 8000
-
-   # Python 2.x
-   python -m SimpleHTTPServer 8000
-
-   # Node.js (如果安装了)
-   npx http-server -p 8000
-
-   # PHP (如果安装了)
-   php -S localhost:8000
-   ```
-
- 3. **打开浏览器访问**：
-    - 文字转卡片：http://localhost:8000/
-
-> **注意**：不推荐直接双击HTML文件打开，因为浏览器的安全策略可能导致部分功能无法正常工作。
+---
 
 ## 📋 项目信息
 
 - **版本**：v1.3
-- **作者**：geekfoxcharlie (小红书: 极客狐)
-- **开源协议**：MIT License
-- **最后更新**：2026年1月23日
+- **作者**：[@geekfoxcharlie](https://github.com/geekfoxcharlie) (小红书: 极客狐)
+- **协议**：MIT License
+- **更新**：2026年2月
+
+### 致谢
+
+本项目使用了以下优秀的开源库：
+- [marked](https://github.com/markedjs/marked) - Markdown 解析器
+- [JSZip](https://github.com/Stuk/jszip) - ZIP 文件生成
+- [Pickr](https://github.com/Simonwep/pickr) - 颜色选择器
+- [Font Awesome](https://fontawesome.com/) - 图标字体
 
 ---
 
-**XHS-TextCard** - 释放文字的力量，让排版不再成为负担。
+<div align="center">
+
+**⭐ 如果这个项目对您有帮助，请点个 Star 支持一下！**
+
+**XHS-TextCard** - 释放文字的力量，让排版不再成为负担
+
+</div>
