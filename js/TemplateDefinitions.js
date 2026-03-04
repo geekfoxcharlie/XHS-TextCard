@@ -208,7 +208,7 @@ const TemplateDefinitions = {
 
             // 页码：放在右下角留白处
             TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
-                x: width - 75, y: height - 85, color: 'rgba(0,0,0,0.3)', font: 'italic 14px serif'
+                x: width - 75, y: height - 85, color: 'rgba(0,0,0,0.3)', font: 'italic 14px serif', padZero: true
             });
         },
         getTextStyles: (segment, config) => {
