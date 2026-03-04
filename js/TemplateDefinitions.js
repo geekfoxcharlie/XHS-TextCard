@@ -45,7 +45,7 @@ const TemplateDefinitions = {
 
     'blank': {
         /**
-         * 空白模板 - 极致简约，回归文字本质
+         * 空白模板 - 极致简约
          */
         drawForeground: (ctx, width, height, index, totalCount, config) => {
             TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
@@ -60,110 +60,165 @@ const TemplateDefinitions = {
         }
     },
 
+    'polaroid': {
+        /**
+         * 复古拍立得 - 相纸留白与复古手写感
+         */
+        getContentBox: (config, width, height) => {
+            const padding = parseFloat(config.textPadding) || 60;
+            const marginX = 50, marginY = 60;
+            const bottomBlankHeight = 450;
+            const photoHeight = height - (marginY * 2) - bottomBlankHeight;
+            
+            return {
+                x: marginX + padding,
+                y: marginY + photoHeight + 40,
+                width: width - (marginX * 2) - (padding * 2),
+                height: bottomBlankHeight - 40 - (config.hasSignature ? 80 : 40)
+            };
+        },
+        drawBackground: (ctx, width, height, config) => {
+            ctx.save();
+            // 如果不是渐变模式，添加噪点
+            if (config.bgMode !== 'gradient') {
+                ctx.fillStyle = config.bgColor || '#D6D6D6';
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = 0.03;
+                for (let i = 0; i < 5000; i++) {
+                    ctx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
+                    ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
+                }
+            }
+            ctx.restore();
+        },
+        drawTextAreaBackground: (ctx, rect, config) => {
+            const marginX = 50, marginY = 60;
+            const paperWidth = PREVIEW_WIDTH - (marginX * 2);
+            const paperHeight = PREVIEW_HEIGHT - (marginY * 2);
+            
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.shadowBlur = 30; ctx.shadowOffsetY = 15;
+            CanvasUtils.drawRoundedRect(ctx, marginX, marginY, paperWidth, paperHeight, 4, '#FAFAFA');
+            ctx.shadowColor = 'transparent';
+            
+            const photoMargin = 30;
+            const photoWidth = paperWidth - (photoMargin * 2);
+            const photoHeight = paperHeight - 450;
+            
+            // 照片区域背景
+            ctx.fillStyle = config.bgColor && config.bgMode === 'solid' ? config.bgColor : '#2C2C2C';
+            ctx.fillRect(marginX + photoMargin, marginY + photoMargin, photoWidth, photoHeight);
+            
+            const grad = ctx.createLinearGradient(marginX + photoMargin, marginY + photoMargin, marginX + photoMargin + photoWidth, marginY + photoMargin + photoHeight);
+            grad.addColorStop(0, 'rgba(255,255,255,0.1)'); grad.addColorStop(0.3, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(marginX + photoMargin, marginY + photoMargin, photoWidth, photoHeight);
+            ctx.restore();
+        },
+        drawForeground: (ctx, width, height, index, totalCount, config) => {
+            // 胶带
+            ctx.save();
+            ctx.translate(width / 2, 45); ctx.rotate(-0.05);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.shadowColor = 'rgba(0,0,0,0.1)'; ctx.shadowBlur = 5; ctx.shadowOffsetY = 2;
+            ctx.fillRect(-80, -20, 160, 40);
+            ctx.restore();
+
+            // 页码：放在右下角留白处
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
+                x: width - 75, y: height - 85, color: 'rgba(0,0,0,0.3)', font: 'italic 14px serif'
+            });
+        },
+        getTextStyles: (segment, config) => {
+            const accentColor = config.accentColor || '#D9534F';
+            const textColor = config.textColor || '#2B2B2B';
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) return { textColor: accentColor };
+            if (segment.isHighlight) return { textColor: textColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.2) };
+            return { textColor };
+        }
+    },
+
     'notion-style': {
         /**
-         * 效率笔记 (Notion风) - 面包屑导航与极简知识库
+         * 效率笔记 (Notion风)
          */
         getContentBox: (config, width, height) => {
             const padding = parseFloat(config.textPadding) || 40;
-            const topMargin = 120; // 为面包屑留出空间
-            const bottomMargin = config.hasSignature ? 80 : 50;
-            return {
-                x: padding,
-                y: topMargin,
-                width: width - (padding * 2),
-                height: height - topMargin - bottomMargin
-            };
+            const topMargin = 120, bottomMargin = config.hasSignature ? 80 : 50;
+            return { x: padding, y: topMargin, width: width - (padding * 2), height: height - topMargin - bottomMargin };
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
             const textColor = config.textColor || '#37352F';
-            const mutedColor = CanvasUtils.hexToRgba(textColor, 0.5);
-            
-            // 绘制顶部面包屑导航
-            ctx.save();
-            ctx.font = '14px ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            
             const padding = parseFloat(config.textPadding) || 40;
-            const startY = 60;
-            
-            // Emoji 占位
-            ctx.fillText('📖', padding, startY);
-            
-            ctx.fillStyle = mutedColor;
-            ctx.fillText(' /  Workspace  /  Notes', padding + 25, startY);
-            
-            // 底部横线（可选）
+            ctx.save();
+            ctx.font = '14px ui-sans-serif, system-ui, sans-serif';
+            ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+            ctx.fillText('📖', padding, 60);
+            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.5);
+            ctx.fillText(' /  Workspace  /  Notes', padding + 25, 60);
             ctx.strokeStyle = CanvasUtils.hexToRgba(textColor, 0.1);
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(padding, 90);
-            ctx.lineTo(width - padding, 90);
-            ctx.stroke();
-            
+            ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(padding, 90); ctx.lineTo(width - padding, 90); ctx.stroke();
             ctx.restore();
-
             TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#0F7B6C';
             const textColor = config.textColor || '#37352F';
-            if (segment.isHighlight) {
-                return { 
-                    textColor: accentColor, 
-                    highlightColor: CanvasUtils.hexToRgba(accentColor, 0.15) 
-                };
-            }
-            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
-                return { textColor: accentColor };
-            }
+            if (segment.isHighlight) return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.15) };
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) return { textColor: accentColor };
             return { textColor };
         }
     },
 
     'elegant-book': {
         /**
-         * 书籍内页 - 优雅的复古出版物排版
+         * 书籍内页
          */
         getContentBox: (config, width, height) => {
             const padding = parseFloat(config.textPadding) || 55;
-            const topMargin = 110;
-            const bottomMargin = config.hasSignature ? 100 : 80;
-            return {
-                x: padding,
-                y: topMargin,
-                width: width - (padding * 2),
-                height: height - topMargin - bottomMargin
-            };
+            const topMargin = 110, bottomMargin = config.hasSignature ? 100 : 80;
+            return { x: padding, y: topMargin, width: width - (padding * 2), height: height - topMargin - bottomMargin };
+        },
+        drawBackground: (ctx, width, height, config) => {
+            ctx.save();
+            const bgColor = config.bgColor || '#FDFBF7';
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.globalAlpha = 0.04;
+            for (let i = 0; i < 3000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#8b4513' : '#fff';
+                ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
+            }
+            
+            const grad = ctx.createLinearGradient(0, 0, width, 0);
+            grad.addColorStop(0, 'rgba(0,0,0,0.02)');
+            grad.addColorStop(0.05, 'rgba(0,0,0,0)');
+            grad.addColorStop(0.5, 'rgba(255,255,255,0.01)');
+            grad.addColorStop(0.95, 'rgba(0,0,0,0)');
+            grad.addColorStop(1, 'rgba(0,0,0,0.02)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
             const textColor = config.textColor || '#2B2B2B';
-            const mutedColor = CanvasUtils.hexToRgba(textColor, 0.4);
             const padding = parseFloat(config.textPadding) || 55;
-            
             ctx.save();
-            // 页眉装饰线与文字
-            ctx.strokeStyle = CanvasUtils.hexToRgba(textColor, 0.2);
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(padding, 65);
-            ctx.lineTo(width - padding, 65);
-            ctx.stroke();
-            
-            ctx.fillStyle = mutedColor;
-            ctx.font = '10px "Noto Serif SC", "Source Han Serif SC", serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText('• XHS-TEXTCARD CLASSIC COLLECTION •', width / 2, 55);
+            ctx.strokeStyle = CanvasUtils.hexToRgba(textColor, 0.15);
+            ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(padding, 65); ctx.lineTo(width - padding, 65); ctx.stroke();
+            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.4);
+            ctx.font = 'italic 11px "Noto Serif SC", serif';
+            ctx.textAlign = 'center'; ctx.fillText('• 经典文学集珍 •', width / 2, 55);
 
-            // 复古页码
             if (config.showPageNumber) {
                 const pageNum = config.hasCover ? index : index + 1;
                 const totalPage = config.hasCover ? totalCount - 1 : totalCount;
                 if (totalPage > 0) {
-                    ctx.font = 'italic 12px serif';
-                    ctx.fillText(`— ${pageNum} —`, width / 2, height - 35);
+                    ctx.font = 'italic 13px serif';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(`— ${pageNum} —`, width - padding, height - 35);
                 }
             }
             ctx.restore();
@@ -171,282 +226,44 @@ const TemplateDefinitions = {
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#8C3A3A';
             const textColor = config.textColor || '#2B2B2B';
-            
-            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
-                return { textColor: accentColor };
-            }
-            if (segment.isHighlight) {
-                return { 
-                    textColor: accentColor, 
-                    highlightColor: CanvasUtils.hexToRgba(accentColor, 0.1) 
-                };
-            }
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) return { textColor: accentColor };
+            if (segment.isHighlight) return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.1) };
             return { textColor };
         }
     },
 
     'minimalist-magazine': {
         /**
-         * 极简杂志 - 现代社论排版美学，让文字拥有纸质出版物的质感
+         * 极简杂志
          */
         getContentBox: (config, width, height) => {
             const padding = parseFloat(config.textPadding) || 45;
-            const topMargin = 100; // 为杂志页眉留出空间
-            const bottomMargin = config.hasSignature ? 80 : 60;
-            return {
-                x: padding,
-                y: topMargin,
-                width: width - (padding * 2),
-                height: height - topMargin - bottomMargin
-            };
-        },
-        drawBackground: (ctx, width, height, config) => {
-            // 可以在这里添加纸张纹理感（如果需要），目前保持纯色
+            const topMargin = 100, bottomMargin = config.hasSignature ? 80 : 60;
+            return { x: padding, y: topMargin, width: width - (padding * 2), height: height - topMargin - bottomMargin };
         },
         drawTextAreaBackground: (ctx, rect, config) => {
             const textColor = config.textColor || '#1A1A1A';
             ctx.save();
             ctx.strokeStyle = CanvasUtils.hexToRgba(textColor, 0.1);
-            ctx.lineWidth = 1;
-            // 顶线
-            ctx.beginPath();
-            ctx.moveTo(rect.x, 85);
-            ctx.lineTo(rect.x + rect.width, 85);
-            ctx.stroke();
-            // 底线
-            ctx.beginPath();
-            ctx.moveTo(rect.x, PREVIEW_HEIGHT - 55);
-            ctx.lineTo(rect.x + rect.width, PREVIEW_HEIGHT - 55);
-            ctx.stroke();
+            ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(rect.x, 85); ctx.lineTo(rect.x + rect.width, 85); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(rect.x, PREVIEW_HEIGHT - 55); ctx.lineTo(rect.x + rect.width, PREVIEW_HEIGHT - 55); ctx.stroke();
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const textColor = config.textColor || '#1A1A1A';
-            const decorativeColor = '#1A1A1A'; // 固定装饰色，不随配置改变
-            
-            // 页眉
+            const decorativeColor = '#1A1A1A';
             ctx.save();
-            ctx.fillStyle = decorativeColor;
-            ctx.font = 'bold 12px "Source Han Serif SC", serif';
-            ctx.textAlign = 'left';
-            ctx.fillText('EDITORIAL', 45, 75);
-            
-            ctx.fillStyle = CanvasUtils.hexToRgba(decorativeColor, 0.6);
-            ctx.font = 'italic 10px serif';
-            ctx.textAlign = 'right';
-            ctx.fillText('XHS-TEXTCARD // VOL. 2026', width - 45, 75);
-            
+            ctx.fillStyle = decorativeColor; ctx.font = 'bold 12px serif';
+            ctx.textAlign = 'left'; ctx.fillText('EDITORIAL', 45, 75);
+            ctx.fillStyle = CanvasUtils.hexToRgba(decorativeColor, 0.6); ctx.font = 'italic 10px serif';
+            ctx.textAlign = 'right'; ctx.fillText('COLLECTION // VOL. 2026', width - 45, 75);
             ctx.restore();
-
-            // 页码 - 标准样式
-            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, { x: width - 45, y: height - 35 });
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#1A1A1A';
             const textColor = config.textColor || '#1A1A1A';
             if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.isHighlight || segment.headingLevel) {
-                return { 
-                    textColor: accentColor, 
-                    highlightColor: CanvasUtils.hexToRgba(accentColor, 0.15)
-                };
-            }
-            return { textColor };
-        }
-    },
-
-    'polaroid': {
-        /**
-         * 拍立得相纸 - 复古留白，情绪碎片
-         */
-        getContentBox: (config, width, height) => {
-            // 文字区域被约束在拍立得的灰色"相片"区
-            const padding = parseFloat(config.textPadding) || 30;
-            const photoX = 40;
-            const photoY = 40;
-            const photoW = width - 80;
-            const photoH = height - 200; // 底部留出160px的拍立得大留白
-            return {
-                x: photoX + padding,
-                y: photoY + padding,
-                width: photoW - (padding * 2),
-                height: photoH - (padding * 2)
-            };
-        },
-        drawBackground: (ctx, width, height) => {
-            // 背景固定为深灰色桌面/墙面质感
-            ctx.save();
-            ctx.fillStyle = '#D1D5DB';
-            ctx.fillRect(0, 0, width, height);
-            ctx.restore();
-        },
-        drawTextAreaBackground: (ctx, rect, config) => {
-            ctx.save();
-            
-            // 1. 绘制白色拍立得相纸主体
-            const cardX = 20;
-            const cardY = 20;
-            const cardW = PREVIEW_WIDTH - 40;
-            const cardH = PREVIEW_HEIGHT - 60;
-            
-            ctx.shadowColor = 'rgba(0,0,0,0.15)';
-            ctx.shadowBlur = 20;
-            ctx.shadowOffsetY = 10;
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(cardX, cardY, cardW, cardH);
-            
-            // 2. 绘制内部相片区（文字实际所在的深色区域）
-            ctx.shadowColor = 'transparent';
-            const photoX = 40;
-            const photoY = 40;
-            const photoW = PREVIEW_WIDTH - 80;
-            const photoH = PREVIEW_HEIGHT - 200;
-            
-            ctx.fillStyle = config.bgColor || '#1C1C1E';
-            ctx.fillRect(photoX, photoY, photoW, photoH);
-            
-            // 给相片区加一个微弱的内阴影（通过边框模拟）
-            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(photoX, photoY, photoW, photoH);
-            
-            ctx.restore();
-        },
-        drawForeground: (ctx, width, height, index, totalCount, config) => {
-            // 如果开启了页码，以手写风格写在右下角的拍立得留白处
-            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
-                color: '#999999',
-                font: '16px "LXGW WenKai Screen", cursive, sans-serif',
-                textAlign: 'right',
-                x: width - 40,
-                y: height - 90
-            });
-            
-            // 如果开启了签名，可以模拟相纸底部的日期或手写文字
-            if (config.hasSignature && config.signatureText) {
-                ctx.save();
-                ctx.fillStyle = config.signatureColor || '#666666';
-                ctx.font = '24px "LXGW WenKai Screen", cursive, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(config.signatureText, width / 2, height - 120);
-                ctx.restore();
-                
-                // 覆盖默认签名渲染
-                config._polaroid_signature_drawn = true;
-            }
-        },
-        getTextStyles: (segment, config) => {
-            const accentColor = config.accentColor || '#FF2D55';
-            const textColor = config.textColor || '#F5F5F5';
-            if (segment.isHighlight) {
-                return { 
-                    textColor: '#1C1C1E', 
-                    highlightColor: accentColor 
-                };
-            }
-            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
-                return { textColor: accentColor };
-            }
-            return { textColor };
-        }
-    },
-
-    'polaroid': {
-        /**
-         * 复古拍立得 - 相纸留白与复古手写感
-         */
-        getContentBox: (config, width, height) => {
-            const padding = parseFloat(config.textPadding) || 60;
-            const marginX = 50;
-            const marginY = 60;
-            // 拍立得照片区域在上面，文字留白在底部
-            // 假设相框底部留白高度为 400
-            const bottomBlankHeight = 450;
-            const photoHeight = height - (marginY * 2) - bottomBlankHeight;
-            
-            return {
-                x: marginX + padding,
-                // 文字从照片下方开始，稍微留点边距
-                y: marginY + photoHeight + 40,
-                width: width - (marginX * 2) - (padding * 2),
-                height: bottomBlankHeight - 40 - (config.hasSignature ? 80 : 40)
-            };
-        },
-        drawBackground: (ctx, width, height, config) => {
-            // 背景：深灰或桌面颜色
-            ctx.save();
-            ctx.fillStyle = config.bgColor || '#D6D6D6';
-            ctx.fillRect(0, 0, width, height);
-            
-            // 可选：添加噪点纹理增加复古感
-            ctx.globalAlpha = 0.03;
-            for (let i = 0; i < 5000; i++) {
-                ctx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
-                ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
-            }
-            ctx.restore();
-        },
-        drawTextAreaBackground: (ctx, rect, config) => {
-            // 绘制拍立得白色相纸
-            const marginX = 50;
-            const marginY = 60;
-            const paperWidth = PREVIEW_WIDTH - (marginX * 2);
-            const paperHeight = PREVIEW_HEIGHT - (marginY * 2);
-            
-            ctx.save();
-            // 相纸阴影
-            ctx.shadowColor = 'rgba(0,0,0,0.15)';
-            ctx.shadowBlur = 30;
-            ctx.shadowOffsetY = 15;
-            
-            // 相纸本体
-            ctx.fillStyle = '#FAFAFA'; // 略微泛黄的白
-            ctx.fillRect(marginX, marginY, paperWidth, paperHeight);
-            ctx.shadowColor = 'transparent';
-            
-            // 照片显影区域（深灰色占位或者渐变），高度大概是总高度的 65%
-            const photoMargin = 30;
-            const photoWidth = paperWidth - (photoMargin * 2);
-            const photoHeight = paperHeight - 450; // 底部留出 450px 给文字
-            
-            ctx.fillStyle = '#2C2C2C';
-            ctx.fillRect(marginX + photoMargin, marginY + photoMargin, photoWidth, photoHeight);
-            
-            // 照片内高光反光效果（玻璃质感）
-            const grad = ctx.createLinearGradient(
-                marginX + photoMargin, marginY + photoMargin, 
-                marginX + photoMargin + photoWidth, marginY + photoMargin + photoHeight
-            );
-            grad.addColorStop(0, 'rgba(255,255,255,0.1)');
-            grad.addColorStop(0.3, 'rgba(255,255,255,0)');
-            ctx.fillStyle = grad;
-            ctx.fillRect(marginX + photoMargin, marginY + photoMargin, photoWidth, photoHeight);
-
-            ctx.restore();
-        },
-        drawForeground: (ctx, width, height, index, totalCount, config) => {
-            // 胶带效果 (Tape) - 顶端居中
-            ctx.save();
-            ctx.translate(width / 2, 45);
-            ctx.rotate(-0.05); // 稍微倾斜
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-            ctx.shadowColor = 'rgba(0,0,0,0.1)';
-            ctx.shadowBlur = 5;
-            ctx.shadowOffsetY = 2;
-            ctx.fillRect(-80, -20, 160, 40);
-            ctx.restore();
-        },
-        getTextStyles: (segment, config) => {
-            const accentColor = config.accentColor || '#D9534F'; // 红色马克笔感觉
-            const textColor = config.textColor || '#2B2B2B';
-            
-            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
-                return { textColor: accentColor };
-            }
-            if (segment.isHighlight) {
-                return { 
-                    textColor: textColor, 
-                    highlightColor: CanvasUtils.hexToRgba(accentColor, 0.2) 
-                };
+                return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.15) };
             }
             return { textColor };
         }
@@ -454,72 +271,42 @@ const TemplateDefinitions = {
 
     'ios-memo': {
         /**
-         * 苹果备忘录 - 还原拟物感与高效记录的氛围
+         * 苹果备忘录
          */
         getContentBox: (config, width, height) => {
             const paperX = 15, paperY = 55, paperW = width - 30, paperH = height - 110;
             const internalPadding = Math.max(10, parseFloat(config.textPadding) || 20); 
-            return {
-                x: paperX + internalPadding,
-                y: paperY + internalPadding,
-                width: paperW - (internalPadding * 2),
-                height: paperH - (internalPadding * 2)
-            };
+            return { x: paperX + internalPadding, y: paperY + internalPadding, width: paperW - (internalPadding * 2), height: paperH - (internalPadding * 2) };
         },
         drawTextAreaBackground: (ctx, rect, config) => {
             const paperX = 15, paperY = 55, paperW = PREVIEW_WIDTH - 30, paperH = PREVIEW_HEIGHT - 110;
             ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.05)';
-            ctx.shadowBlur = 20;
-            ctx.shadowOffsetY = 5;
+            ctx.shadowColor = 'rgba(0,0,0,0.05)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 5;
             CanvasUtils.drawRoundedRect(ctx, paperX, paperY, paperW, paperH, 12, '#ffffff');
             ctx.restore();
-            
-            ctx.save();
-            ctx.strokeStyle = '#F2F2F7';
-            ctx.lineWidth = 1;
+            ctx.save(); ctx.strokeStyle = '#F2F2F7'; ctx.lineWidth = 1;
             const lineSpacing = (parseFloat(config.fontSize) || 18) * (parseFloat(config.lineHeight) || 1.6);
             for (let y = rect.y + lineSpacing; y < rect.y + rect.height; y += lineSpacing) {
                 if (y > paperY + paperH) break;
-                ctx.beginPath();
-                ctx.moveTo(paperX, y);
-                ctx.lineTo(paperX + paperW, y);
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(paperX, y); ctx.lineTo(paperX + paperW, y); ctx.stroke();
             }
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const decorativeColor = '#8E8E93'; 
             const iosOrange = '#FF9500'; 
             ctx.save();
-            ctx.fillStyle = iosOrange;
-            ctx.font = '500 17px -apple-system, sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText('完成', width - 25, 35);
-            ctx.textAlign = 'left';
-            ctx.beginPath();
-            ctx.strokeStyle = iosOrange;
-            ctx.lineWidth = 2.5;
-            ctx.moveTo(25, 33); ctx.lineTo(18, 26); ctx.lineTo(25, 19);
-            ctx.stroke();
+            ctx.fillStyle = iosOrange; ctx.font = '500 17px sans-serif'; ctx.textAlign = 'right';
+            ctx.fillText('完成', width - 25, 35); ctx.textAlign = 'left';
+            ctx.beginPath(); ctx.strokeStyle = iosOrange; ctx.lineWidth = 2.5; ctx.moveTo(25, 33); ctx.lineTo(18, 26); ctx.lineTo(25, 19); ctx.stroke();
             ctx.fillText('备忘录', 32, 35);
-            
-            // 动态生成当前日期
             const now = new Date();
             const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-            
-            ctx.fillStyle = decorativeColor; 
-            ctx.font = '500 12px -apple-system, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(dateStr, width / 2, 35);
+            ctx.fillStyle = '#8E8E93'; ctx.font = '500 12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(dateStr, width / 2, 35);
             ctx.restore();
-
-            // 页码 - 标准样式
-            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, { x: width - 25, y: height - 25 });
         },
         getTextStyles: (segment, config) => {
-            const accentColor = config.accentColor || '#FF9500';
-            const textColor = config.textColor || '#1C1C1E';
+            const accentColor = config.accentColor || '#FF9500', textColor = config.textColor || '#1C1C1E';
             if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.isHighlight || segment.headingLevel) {
                 return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.15) };
             }
@@ -529,26 +316,18 @@ const TemplateDefinitions = {
 
     'pro-doc': {
         /**
-         * 大厂文档 - 秩序、专业与权威的呈现方式
+         * 大厂文档
          */
         getContentBox: (config, width, height) => {
             const winX = 15, winW = width - 30, winY = 40; 
             const winBottomMargin = config.hasSignature ? 60 : 35;
             const winH = height - winY - winBottomMargin;
             const headerHeight = 30, gapBelowHeader = 20;
-            const contentTopStart = winY + headerHeight + gapBelowHeader;
             const padding = parseFloat(config.textPadding) || 35;
-            return {
-                x: winX + padding,
-                y: contentTopStart + (padding / 2),
-                width: winW - (padding * 2),
-                height: (winH - headerHeight - gapBelowHeader) - padding - (padding / 2)
-            };
+            return { x: winX + padding, y: winY + headerHeight + gapBelowHeader + (padding / 2), width: winW - (padding * 2), height: (winH - headerHeight - gapBelowHeader) - padding };
         },
         drawBackground: (ctx, width, height) => {
-            ctx.save();
-            ctx.strokeStyle = 'rgba(0,102,255,0.02)';
-            ctx.lineWidth = 0.5;
+            ctx.save(); ctx.strokeStyle = 'rgba(0,102,255,0.02)'; ctx.lineWidth = 0.5;
             for(let i=0; i<width; i+=20){ ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,height); ctx.stroke(); }
             for(let j=0; j<height; j+=20){ ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(width,j); ctx.stroke(); }
             ctx.restore();
@@ -558,54 +337,41 @@ const TemplateDefinitions = {
             const winBottomMargin = config.hasSignature ? 60 : 35;
             const winH = PREVIEW_HEIGHT - winY - winBottomMargin;
             const headerHeight = 30, textColor = config.textColor || '#111827';
-
             ctx.save();
             ctx.shadowColor = 'rgba(0,0,0,0.08)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10;
             CanvasUtils.drawRoundedRect(ctx, winX, winY, winW, winH, 12, '#ffffff', true, 'rgba(0,0,0,0.05)');
             ctx.restore();
-
             ctx.save();
             CanvasUtils.drawRoundedRect(ctx, winX, winY, winW, headerHeight, {tl: 12, tr: 12, bl: 0, br: 0}, CanvasUtils.hexToRgba(textColor, 0.05));
             const btnY = winY + headerHeight / 2;
             ctx.fillStyle = '#FF5F56'; ctx.beginPath(); ctx.arc(winX + 20, btnY, 5, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = '#FFBD2E'; ctx.beginPath(); ctx.arc(winX + 38, btnY, 5, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = '#27C93F'; ctx.beginPath(); ctx.arc(winX + 56, btnY, 5, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.4); 
-            ctx.font = '700 10px -apple-system, sans-serif'; ctx.textAlign = 'center';
+            ctx.fillStyle = CanvasUtils.hexToRgba(textColor, 0.4); ctx.font = '700 10px sans-serif'; ctx.textAlign = 'center';
             ctx.fillText('DOCUMENT VIEWER', winX + winW/2, btnY + 4);
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const decorativeColor = '#6B7280';
-            ctx.save();
-            ctx.fillStyle = decorativeColor;
-            ctx.font = '700 9px -apple-system, sans-serif'; ctx.textAlign = 'right';
+            ctx.save(); ctx.fillStyle = '#6B7280'; ctx.font = '700 9px sans-serif'; ctx.textAlign = 'right';
             ctx.fillText('CONFIDENTIAL / INTERNAL USE ONLY', width - 25, 25);
             ctx.restore();
-
-            // 页码 - 标准样式
             TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#0066FF', textColor = config.textColor || '#111827';
-            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.isHighlight || segment.headingLevel) {
-                return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.08) };
-            }
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.isHighlight || segment.headingLevel) return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.08) };
             return { textColor };
         }
     },
 
     'deep-night': {
         /**
-         * 暗夜深思 - 赛博朋克感的深度思考空间
+         * 暗夜深思
          */
         getContentBox: (config, width, height) => {
             const cardX = 20, cardY = 30, cardBottomMargin = config.hasSignature ? 60 : 35;
             const padding = parseFloat(config.textPadding) || 35;
-            return {
-                x: cardX + padding, y: cardY + padding,
-                width: width - 40 - (padding * 2), height: height - cardY - cardBottomMargin - (padding * 2)
-            };
+            return { x: cardX + padding, y: cardY + padding, width: width - 40 - (padding * 2), height: height - cardY - cardBottomMargin - (padding * 2) };
         },
         drawBackground: (ctx, width, height, config) => {
             const accentColor = config.accentColor || '#00F5FF';
@@ -629,21 +395,12 @@ const TemplateDefinitions = {
             ctx.restore();
         },
         drawForeground: (ctx, width, height, index, totalCount, config) => {
-            const decorativeColor = '#E5E5E5'; // 固定颜色，不随配置改变
-            ctx.save();
-            ctx.fillStyle = CanvasUtils.hexToRgba(decorativeColor, 0.3); ctx.font = '800 10px Inter, sans-serif'; 
+            ctx.save(); ctx.fillStyle = 'rgba(229, 229, 229, 0.3)'; ctx.font = '800 10px Inter, sans-serif'; 
             ctx.textAlign = 'right'; ctx.fillText('// THOUGHT MODE ON', width - 25, 25);
-            ctx.strokeStyle = CanvasUtils.hexToRgba(decorativeColor, 0.2); ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(229, 229, 229, 0.2)'; ctx.lineWidth = 1;
             ctx.beginPath(); ctx.moveTo(25, height - 60); ctx.lineTo(width - 25, height - 60); ctx.stroke();
             ctx.restore();
-
-            // 页码 - 移至左上方，常规样式 (固定颜色)
-            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
-                color: 'rgba(255, 255, 255, 0.3)',
-                textAlign: 'left',
-                x: 25,
-                y: 25
-            });
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, { color: 'rgba(255, 255, 255, 0.3)', textAlign: 'left', x: 25, y: 25 });
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#00F5FF', textColor = config.textColor || '#E5E5E5';
@@ -655,21 +412,17 @@ const TemplateDefinitions = {
                 };
             }
             return { textColor };
-        },
-        terminalStyles: (config) => ({ bg: '#050505', text: '#39FF14' })
+        }
     },
 
     'aura-gradient': {
         /**
-         * 灵感弥散 - 柔和的渐变与光影效果
+         * 灵感弥散
          */
         getContentBox: (config, width, height) => {
             const cardX = 25, cardY = 30, cardBottomMargin = config.hasSignature ? 60 : 35;
             const padding = parseFloat(config.textPadding) || 35;
-            return {
-                x: cardX + padding, y: cardY + padding,
-                width: width - 50 - (padding * 2), height: height - cardY - cardBottomMargin - (padding * 2)
-            };
+            return { x: cardX + padding, y: cardY + padding, width: width - 50 - (padding * 2), height: height - cardY - cardBottomMargin - (padding * 2) };
         },
         drawBackground: (ctx, width, height) => {
             ctx.save();
@@ -685,16 +438,14 @@ const TemplateDefinitions = {
             });
             ctx.globalAlpha = 0.02;
             for (let i = 0; i < 2000; i++) {
-                ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000';
-                ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
+                ctx.fillStyle = Math.random() > 0.5 ? '#fff' : '#000'; ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
             }
             ctx.restore();
         },
         drawTextAreaBackground: (ctx, rect, config) => {
             const cardX = 25, cardY = 30, cardBottomMargin = config.hasSignature ? 60 : 35;
             const cardW = PREVIEW_WIDTH - 50, cardH = PREVIEW_HEIGHT - cardY - cardBottomMargin;
-            ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.03)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 10;
+            ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.03)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = 10;
             CanvasUtils.drawRoundedRect(ctx, cardX, cardY, cardW, cardH, 28, 'rgba(255, 255, 255, 0.5)', true, 'rgba(255, 255, 255, 0.4)');
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'; ctx.lineWidth = 1.5;
             CanvasUtils.drawRoundedRect(ctx, cardX, cardY, cardW, cardH, 28, null, true);
@@ -705,16 +456,14 @@ const TemplateDefinitions = {
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#2D3436', textColor = config.textColor || '#2D3436';
-            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.isHighlight || segment.headingLevel) {
-                return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.2) };
-            }
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.isHighlight || segment.headingLevel) return { textColor: accentColor, highlightColor: CanvasUtils.hexToRgba(accentColor, 0.2) };
             return { textColor };
-        },
+        }
     },
 
     'swiss-studio': {
         /**
-         * 苏黎世工作室 - 极致的网格系统与平面秩序
+         * 苏黎世工作室
          */
         getContentBox: (config, width, height) => {
              const padding = parseFloat(config.textPadding) || 35;
@@ -722,13 +471,10 @@ const TemplateDefinitions = {
              return { x: padding, y: padding, width: width - (padding * 2), height: height - padding - bottomOffset };
         },
         drawBackground: (ctx, width, height, config) => {
-            ctx.save();
-            ctx.fillStyle = config.accentColor || '#FF4500'; ctx.fillRect(0, 0, 6, height);
-            ctx.restore();
+            ctx.save(); ctx.fillStyle = config.accentColor || '#FF4500'; ctx.fillRect(0, 0, 6, height); ctx.restore();
         },
         drawTextAreaBackground: (ctx, rect, config) => {
-            ctx.save();
-            ctx.strokeStyle = 'rgba(0,0,0,0.03)'; ctx.lineWidth = 0.5;
+            ctx.save(); ctx.strokeStyle = 'rgba(0,0,0,0.03)'; ctx.lineWidth = 0.5;
             for(let x = 0; x < PREVIEW_WIDTH; x += 40) {
                 if (x < 10) continue;
                 ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, PREVIEW_HEIGHT); ctx.stroke();
@@ -742,48 +488,31 @@ const TemplateDefinitions = {
             ctx.fillText('REF. CH-8004', width - 25, 25);
             ctx.beginPath(); ctx.rect(width - 40, height - 40, 15, 15); ctx.strokeStyle = accentColor; ctx.lineWidth = 2; ctx.stroke();
             ctx.restore();
-
-            // 页码 - 瑞士风 (移至左下角，与红条对齐)
             TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
-                color: '#1A1A1A', // 固定颜色
-                font: '700 10px Helvetica',
-                padZero: true,
-                textAlign: 'left',
-                x: 25,
-                y: height - 25
+                color: '#1A1A1A', font: '700 10px Helvetica', padZero: true, textAlign: 'left', x: 25, y: height - 25
             });
         },
         getTextStyles: (segment, config) => {
             const accentColor = config.accentColor || '#FF4500', textColor = config.textColor || '#1A1A1A';
-            if (segment.headingLevel || segment.fontWeight === '700' || segment.fontWeight === '800') {
-                return { textColor: accentColor };
-            }
-            if (segment.isHighlight) {
-                return { highlightColor: accentColor, textColor: '#FFFFFF' };
-            }
+            if (segment.headingLevel || segment.fontWeight === '700' || segment.fontWeight === '800') return { textColor: accentColor };
+            if (segment.isHighlight) return { highlightColor: accentColor, textColor: '#FFFFFF' };
             return { textColor };
-        },
+        }
     },
 
     /**
      * 获取内容区域的精确位置和大小
-     * 这是布局的唯一真理来源，TextSplitter 和 CanvasRenderer 必须都使用此方法
      */
     getContentBox: (templateId, config, width, height) => {
-        // 优先使用模板自定义的 getContentBox
         if (TemplateDefinitions[templateId] && TemplateDefinitions[templateId].getContentBox) {
             return TemplateDefinitions[templateId].getContentBox(config, width, height);
         }
-
         const padding = parseFloat(config.textPadding) || 35;
         let topOffset = padding;
-        
-        // 底部预留空间 (比如签名栏)
         let bottomOffset = padding;
         if (config.hasSignature) {
-            bottomOffset = Math.max(padding, 60); // 签名栏至少需要60px
+            bottomOffset = Math.max(padding, 60);
         }
-
         return {
             x: padding,
             y: topOffset,

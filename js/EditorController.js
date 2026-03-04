@@ -339,6 +339,22 @@ class EditorController {
                 this.notifyConfigChange();
             });
         });
+
+        // 重置所有设置
+        const resetBtn = document.getElementById('reset-storage-btn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (confirm('确定要重置所有设置吗？这将删除所有本地保存的模板配置并刷新页面。')) {
+                    // 遍历 localStorage，删除所有以 xhs_tpl_config_ 开头的项
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('xhs_tpl_config_') || key === 'xhs_last_template_id') {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    window.location.reload();
+                }
+            });
+        }
     }
 
     updateConfigAndNotify(cfg, rawValue) {
