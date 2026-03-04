@@ -1,0 +1,32 @@
+{
+  "name": "复古拍立得",
+  "description": "相纸留白与复古手写感，定格记忆与歌词",
+  "author": "geekfoxcharlie",
+  "version": "1.0",
+  "config": {
+    "coverImage": "assets/cover-polaroid.jpg",
+    "coverFontSize": 40,
+    "bgColor": "#D6D6D6",
+    "textColor": "#2B2B2B",
+    "fontSize": 18,
+    "lineHeight": 1.8,
+    "letterSpacing": 1.0,
+    "textPadding": 60,
+    "fontFamily": "'LXGW WenKai Screen', 'Kaiti SC', 'STKaiti', cursive",
+    "hasWatermark": false,
+    "watermarkText": "极客狐",
+    "watermarkColor": "rgba(0, 0, 0, 0.05)",
+    "hasSignature": true,
+    "signatureText": "极客狐",
+    "signatureColor": "#8C8C8C",
+    "signaturePosition": "bottom",
+    "signatureStyle": "minimal",
+    "h1Scale": 1.4,
+    "h2Scale": 1.2,
+    "h3Scale": 1.1,
+    "accentColor": "#D9534F",
+    "showPageNumber": false,
+    "hasSocialIcons": true,
+    "selectedSocialIcons": ["xiaohongshu"]
+  }
+}

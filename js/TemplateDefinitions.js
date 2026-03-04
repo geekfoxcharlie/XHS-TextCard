@@ -60,6 +60,131 @@ const TemplateDefinitions = {
         }
     },
 
+    'notion-style': {
+        /**
+         * 效率笔记 (Notion风) - 面包屑导航与极简知识库
+         */
+        getContentBox: (config, width, height) => {
+            const padding = parseFloat(config.textPadding) || 40;
+            const topMargin = 120; // 为面包屑留出空间
+            const bottomMargin = config.hasSignature ? 80 : 50;
+            return {
+                x: padding,
+                y: topMargin,
+                width: width - (padding * 2),
+                height: height - topMargin - bottomMargin
+            };
+        },
+        drawForeground: (ctx, width, height, index, totalCount, config) => {
+            const textColor = config.textColor || '#37352F';
+            const mutedColor = CanvasUtils.hexToRgba(textColor, 0.5);
+            
+            // 绘制顶部面包屑导航
+            ctx.save();
+            ctx.font = '14px ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            
+            const padding = parseFloat(config.textPadding) || 40;
+            const startY = 60;
+            
+            // Emoji 占位
+            ctx.fillText('📖', padding, startY);
+            
+            ctx.fillStyle = mutedColor;
+            ctx.fillText(' /  Workspace  /  Notes', padding + 25, startY);
+            
+            // 底部横线（可选）
+            ctx.strokeStyle = CanvasUtils.hexToRgba(textColor, 0.1);
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(padding, 90);
+            ctx.lineTo(width - padding, 90);
+            ctx.stroke();
+            
+            ctx.restore();
+
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config);
+        },
+        getTextStyles: (segment, config) => {
+            const accentColor = config.accentColor || '#0F7B6C';
+            const textColor = config.textColor || '#37352F';
+            if (segment.isHighlight) {
+                return { 
+                    textColor: accentColor, 
+                    highlightColor: CanvasUtils.hexToRgba(accentColor, 0.15) 
+                };
+            }
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
+                return { textColor: accentColor };
+            }
+            return { textColor };
+        }
+    },
+
+    'elegant-book': {
+        /**
+         * 书籍内页 - 优雅的复古出版物排版
+         */
+        getContentBox: (config, width, height) => {
+            const padding = parseFloat(config.textPadding) || 55;
+            const topMargin = 110;
+            const bottomMargin = config.hasSignature ? 100 : 80;
+            return {
+                x: padding,
+                y: topMargin,
+                width: width - (padding * 2),
+                height: height - topMargin - bottomMargin
+            };
+        },
+        drawForeground: (ctx, width, height, index, totalCount, config) => {
+            const textColor = config.textColor || '#2B2B2B';
+            const mutedColor = CanvasUtils.hexToRgba(textColor, 0.4);
+            const padding = parseFloat(config.textPadding) || 55;
+            
+            ctx.save();
+            // 页眉装饰线与文字
+            ctx.strokeStyle = CanvasUtils.hexToRgba(textColor, 0.2);
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(padding, 65);
+            ctx.lineTo(width - padding, 65);
+            ctx.stroke();
+            
+            ctx.fillStyle = mutedColor;
+            ctx.font = '10px "Noto Serif SC", "Source Han Serif SC", serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText('• XHS-TEXTCARD CLASSIC COLLECTION •', width / 2, 55);
+
+            // 复古页码
+            if (config.showPageNumber) {
+                const pageNum = config.hasCover ? index : index + 1;
+                const totalPage = config.hasCover ? totalCount - 1 : totalCount;
+                if (totalPage > 0) {
+                    ctx.font = 'italic 12px serif';
+                    ctx.fillText(`— ${pageNum} —`, width / 2, height - 35);
+                }
+            }
+            ctx.restore();
+        },
+        getTextStyles: (segment, config) => {
+            const accentColor = config.accentColor || '#8C3A3A';
+            const textColor = config.textColor || '#2B2B2B';
+            
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
+                return { textColor: accentColor };
+            }
+            if (segment.isHighlight) {
+                return { 
+                    textColor: accentColor, 
+                    highlightColor: CanvasUtils.hexToRgba(accentColor, 0.1) 
+                };
+            }
+            return { textColor };
+        }
+    },
+
     'minimalist-magazine': {
         /**
          * 极简杂志 - 现代社论排版美学，让文字拥有纸质出版物的质感
@@ -123,6 +248,204 @@ const TemplateDefinitions = {
                 return { 
                     textColor: accentColor, 
                     highlightColor: CanvasUtils.hexToRgba(accentColor, 0.15)
+                };
+            }
+            return { textColor };
+        }
+    },
+
+    'polaroid': {
+        /**
+         * 拍立得相纸 - 复古留白，情绪碎片
+         */
+        getContentBox: (config, width, height) => {
+            // 文字区域被约束在拍立得的灰色"相片"区
+            const padding = parseFloat(config.textPadding) || 30;
+            const photoX = 40;
+            const photoY = 40;
+            const photoW = width - 80;
+            const photoH = height - 200; // 底部留出160px的拍立得大留白
+            return {
+                x: photoX + padding,
+                y: photoY + padding,
+                width: photoW - (padding * 2),
+                height: photoH - (padding * 2)
+            };
+        },
+        drawBackground: (ctx, width, height) => {
+            // 背景固定为深灰色桌面/墙面质感
+            ctx.save();
+            ctx.fillStyle = '#D1D5DB';
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+        },
+        drawTextAreaBackground: (ctx, rect, config) => {
+            ctx.save();
+            
+            // 1. 绘制白色拍立得相纸主体
+            const cardX = 20;
+            const cardY = 20;
+            const cardW = PREVIEW_WIDTH - 40;
+            const cardH = PREVIEW_HEIGHT - 60;
+            
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 10;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(cardX, cardY, cardW, cardH);
+            
+            // 2. 绘制内部相片区（文字实际所在的深色区域）
+            ctx.shadowColor = 'transparent';
+            const photoX = 40;
+            const photoY = 40;
+            const photoW = PREVIEW_WIDTH - 80;
+            const photoH = PREVIEW_HEIGHT - 200;
+            
+            ctx.fillStyle = config.bgColor || '#1C1C1E';
+            ctx.fillRect(photoX, photoY, photoW, photoH);
+            
+            // 给相片区加一个微弱的内阴影（通过边框模拟）
+            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(photoX, photoY, photoW, photoH);
+            
+            ctx.restore();
+        },
+        drawForeground: (ctx, width, height, index, totalCount, config) => {
+            // 如果开启了页码，以手写风格写在右下角的拍立得留白处
+            TemplateDefinitions._drawPageNumber(ctx, width, height, index, totalCount, config, {
+                color: '#999999',
+                font: '16px "LXGW WenKai Screen", cursive, sans-serif',
+                textAlign: 'right',
+                x: width - 40,
+                y: height - 90
+            });
+            
+            // 如果开启了签名，可以模拟相纸底部的日期或手写文字
+            if (config.hasSignature && config.signatureText) {
+                ctx.save();
+                ctx.fillStyle = config.signatureColor || '#666666';
+                ctx.font = '24px "LXGW WenKai Screen", cursive, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(config.signatureText, width / 2, height - 120);
+                ctx.restore();
+                
+                // 覆盖默认签名渲染
+                config._polaroid_signature_drawn = true;
+            }
+        },
+        getTextStyles: (segment, config) => {
+            const accentColor = config.accentColor || '#FF2D55';
+            const textColor = config.textColor || '#F5F5F5';
+            if (segment.isHighlight) {
+                return { 
+                    textColor: '#1C1C1E', 
+                    highlightColor: accentColor 
+                };
+            }
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
+                return { textColor: accentColor };
+            }
+            return { textColor };
+        }
+    },
+
+    'polaroid': {
+        /**
+         * 复古拍立得 - 相纸留白与复古手写感
+         */
+        getContentBox: (config, width, height) => {
+            const padding = parseFloat(config.textPadding) || 60;
+            const marginX = 50;
+            const marginY = 60;
+            // 拍立得照片区域在上面，文字留白在底部
+            // 假设相框底部留白高度为 400
+            const bottomBlankHeight = 450;
+            const photoHeight = height - (marginY * 2) - bottomBlankHeight;
+            
+            return {
+                x: marginX + padding,
+                // 文字从照片下方开始，稍微留点边距
+                y: marginY + photoHeight + 40,
+                width: width - (marginX * 2) - (padding * 2),
+                height: bottomBlankHeight - 40 - (config.hasSignature ? 80 : 40)
+            };
+        },
+        drawBackground: (ctx, width, height, config) => {
+            // 背景：深灰或桌面颜色
+            ctx.save();
+            ctx.fillStyle = config.bgColor || '#D6D6D6';
+            ctx.fillRect(0, 0, width, height);
+            
+            // 可选：添加噪点纹理增加复古感
+            ctx.globalAlpha = 0.03;
+            for (let i = 0; i < 5000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#000' : '#fff';
+                ctx.fillRect(Math.random() * width, Math.random() * height, 1.5, 1.5);
+            }
+            ctx.restore();
+        },
+        drawTextAreaBackground: (ctx, rect, config) => {
+            // 绘制拍立得白色相纸
+            const marginX = 50;
+            const marginY = 60;
+            const paperWidth = PREVIEW_WIDTH - (marginX * 2);
+            const paperHeight = PREVIEW_HEIGHT - (marginY * 2);
+            
+            ctx.save();
+            // 相纸阴影
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.shadowBlur = 30;
+            ctx.shadowOffsetY = 15;
+            
+            // 相纸本体
+            ctx.fillStyle = '#FAFAFA'; // 略微泛黄的白
+            ctx.fillRect(marginX, marginY, paperWidth, paperHeight);
+            ctx.shadowColor = 'transparent';
+            
+            // 照片显影区域（深灰色占位或者渐变），高度大概是总高度的 65%
+            const photoMargin = 30;
+            const photoWidth = paperWidth - (photoMargin * 2);
+            const photoHeight = paperHeight - 450; // 底部留出 450px 给文字
+            
+            ctx.fillStyle = '#2C2C2C';
+            ctx.fillRect(marginX + photoMargin, marginY + photoMargin, photoWidth, photoHeight);
+            
+            // 照片内高光反光效果（玻璃质感）
+            const grad = ctx.createLinearGradient(
+                marginX + photoMargin, marginY + photoMargin, 
+                marginX + photoMargin + photoWidth, marginY + photoMargin + photoHeight
+            );
+            grad.addColorStop(0, 'rgba(255,255,255,0.1)');
+            grad.addColorStop(0.3, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(marginX + photoMargin, marginY + photoMargin, photoWidth, photoHeight);
+
+            ctx.restore();
+        },
+        drawForeground: (ctx, width, height, index, totalCount, config) => {
+            // 胶带效果 (Tape) - 顶端居中
+            ctx.save();
+            ctx.translate(width / 2, 45);
+            ctx.rotate(-0.05); // 稍微倾斜
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 5;
+            ctx.shadowOffsetY = 2;
+            ctx.fillRect(-80, -20, 160, 40);
+            ctx.restore();
+        },
+        getTextStyles: (segment, config) => {
+            const accentColor = config.accentColor || '#D9534F'; // 红色马克笔感觉
+            const textColor = config.textColor || '#2B2B2B';
+            
+            if (segment.fontWeight === '700' || segment.fontWeight === '800' || segment.headingLevel) {
+                return { textColor: accentColor };
+            }
+            if (segment.isHighlight) {
+                return { 
+                    textColor: textColor, 
+                    highlightColor: CanvasUtils.hexToRgba(accentColor, 0.2) 
                 };
             }
             return { textColor };

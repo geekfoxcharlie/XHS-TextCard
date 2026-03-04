@@ -1,0 +1,31 @@
+{
+  "name": "书籍内页",
+  "description": "优雅的泛黄纸张与衬线体，复刻经典出版物质感",
+  "author": "geekfoxcharlie",
+  "version": "1.0",
+  "config": {
+    "coverImage": "assets/cover-blank.jpg",
+    "coverFontSize": 52,
+    "bgColor": "#FDFBF7",
+    "textColor": "#2B2B2B",
+    "fontSize": 18,
+    "lineHeight": 2.0,
+    "letterSpacing": 1.0,
+    "textPadding": 55,
+    "fontFamily": "'Noto Serif SC', 'Source Han Serif SC', serif",
+    "hasWatermark": false,
+    "watermarkText": "极客狐",
+    "watermarkColor": "rgba(0, 0, 0, 0.02)",
+    "hasSignature": true,
+    "signatureText": "极客狐",
+    "signatureColor": "#A09A8E",
+    "signaturePosition": "bottom",
+    "signatureStyle": "elegant-serif",
+    "h1Scale": 1.4,
+    "h2Scale": 1.2,
+    "h3Scale": 1.1,
+    "accentColor": "#8C3A3A",
+    "showPageNumber": true,
+    "hasSocialIcons": false
+  }
+}

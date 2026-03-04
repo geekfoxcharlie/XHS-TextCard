@@ -1,6 +1,18 @@
 {
   "templates": [
     {
+      "id": "polaroid",
+      "name": "复古拍立得"
+    },
+    {
+      "id": "notion-style",
+      "name": "效率笔记"
+    },
+    {
+      "id": "elegant-book",
+      "name": "书籍内页"
+    },
+    {
       "id": "ios-memo",
       "name": "苹果备忘录"
     },
@@ -28,5 +40,7 @@
       "id": "blank",
       "name": "空白模板"
     }
+  ]
+}
   ]
 }
