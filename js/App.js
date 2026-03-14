@@ -14,7 +14,7 @@ class App {
         this.downloadManager = new DownloadManager();
         this.editorController = new EditorController();
 
-        this.currentTemplate = 'ios-memo';
+        this.currentTemplate = 'polaroid';
         this.currentTemplateConfig = null;
         this.splitPages = [];
         
@@ -162,7 +162,7 @@ class App {
     async loadTemplates() {
         await this.templateManager.init();
         this.renderTemplateList();
-        await this.selectTemplate('ios-memo');
+        await this.selectTemplate('polaroid');
     }
 
     renderTemplateList() {

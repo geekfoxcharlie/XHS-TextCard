@@ -7,7 +7,7 @@
  * 3. 语义化分页：支持 Markdown 分割线 (---) 作为强制分页符。
  */
 class TextSplitter {
-    constructor(config, templateId = 'ios-memo') {
+    constructor(config, templateId = 'polaroid') {
         this.config = config;
         this.templateId = templateId;
         this.engine = new CanvasTextEngine(config);
