@@ -1,11 +1,12 @@
 /* ========================================
- * 面板布局样式
+ * 面板布局样式 - 玻璃拟态增强版
  * ======================================== */
 
 /* === 输入区域 === */
 .input-section {
   padding: var(--spacing-xl);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .input-section:last-child {
@@ -23,7 +24,10 @@
 }
 
 .section-title i {
-  color: var(--color-primary);
+  background: var(--color-primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   width: 16px;
   text-align: center;
 }
@@ -32,21 +36,22 @@
   width: 100%;
   min-height: 400px;
   padding: var(--spacing-lg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: var(--radius-lg);
   font-size: var(--font-size-base);
   line-height: 1.6;
   font-family: inherit;
   resize: vertical;
-  transition: all var(--transition-normal);
-  background-color: #fcfcfc;
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
 }
 
 #text-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  background-color: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), var(--shadow-md);
 }
 
 /* === 模板选择器 === */
@@ -73,7 +78,7 @@
 }
 
 .template-list::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: linear-gradient(180deg, var(--color-primary-light), var(--color-primary));
   border-radius: 2px;
 }
 
@@ -81,7 +86,7 @@
   display: flex;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
-  border-bottom: 2px solid var(--color-secondary);
+  border-bottom: 2px solid rgba(226, 232, 240, 0.5);
 }
 
 .template-category {
@@ -93,16 +98,19 @@
   color: var(--color-text-secondary);
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
-  transition: all var(--transition-normal);
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
 }
 
 .template-category:hover {
-  color: var(--color-text-primary);
+  color: var(--color-primary);
 }
 
 .template-category.active {
-  color: var(--color-primary);
+  background: var(--color-primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   border-bottom-color: var(--color-primary);
   font-weight: 600;
 }
@@ -111,78 +119,131 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
+  overflow-x: hidden;
 }
 
 .template-item {
   padding: var(--spacing-lg);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: 2px solid rgba(226, 232, 240, 0.6);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all var(--transition-normal);
-  background: white;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.95);
   position: relative;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+  min-height: 80px;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.template-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+  transition: left 0.5s ease;
 }
 
 .template-item:hover {
   border-color: var(--color-primary);
-  background: #f8f9ff;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.template-item:hover::before {
+  left: 100%;
 }
 
 .template-item.active {
   border-color: var(--color-primary);
-  background: #f0f4ff;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .template-item-name {
   font-weight: 600;
   font-size: var(--font-size-base);
   color: var(--color-text-primary);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .template-item-desc {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   margin-top: var(--spacing-xs);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 /* === 预览区域 === */
 .preview-panel {
   gap: var(--panel-gap);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
 }
 
 .preview-header {
   padding: var(--spacing-lg) var(--spacing-xl);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .preview-title {
   font-size: var(--font-size-xl);
   font-weight: 600;
   color: var(--color-text-primary);
+  background: var(--color-primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .preview-count {
   font-size: var(--font-size-base);
-  color: var(--color-text-secondary);
-  background: var(--color-secondary);
+  color: white;
+  background: var(--color-primary-gradient);
   padding: var(--spacing-xs) var(--spacing-md);
   border-radius: var(--radius-sm);
   font-weight: 500;
+  box-shadow: var(--shadow-sm);
 }
 
 .preview-list {
   flex: 1;
-  padding: var(--spacing-lg);
+  padding: var(--spacing-xl);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
+}
+
+.preview-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.preview-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-primary-light), var(--color-primary-dark));
+  border-radius: 3px;
 }
 
 .preview-item {
@@ -191,11 +252,13 @@
   align-items: center;
   gap: 0;
   padding: var(--spacing-xl) var(--spacing-lg);
-  transition: all var(--transition-normal);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .preview-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 .preview-item-header {
@@ -204,11 +267,11 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-sm) var(--spacing-md);
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--glass-border);
   border-bottom: none;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
 }
 
@@ -224,21 +287,27 @@
 }
 
 .btn-small {
-  padding: 4px 12px;
+  padding: 6px 14px;
   font-size: var(--font-size-xs);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  background: white;
+  background: rgba(255, 255, 255, 0.8);
   color: var(--color-text-primary);
-  transition: all var(--transition-normal);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
 }
 
 .btn-small:hover {
-  background: var(--color-primary);
+  background: var(--color-primary-gradient);
   color: white;
-  border-color: var(--color-primary);
+  border-color: transparent;
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 /* === 预览图片包装器 === */
@@ -249,9 +318,18 @@
   position: relative;
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--glass-border);
   box-sizing: border-box;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.preview-image-wrapper:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: scale(1.01);
 }
 
 .preview-image-wrapper .template-layer {
@@ -266,11 +344,13 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow-x: hidden;
 }
 
 .editor-content {
   display: none;
   flex: 1;
+  overflow-x: hidden;
   overflow-y: auto;
   padding-right: 4px;
   min-height: 0;
@@ -281,7 +361,7 @@
 }
 
 .editor-content::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: linear-gradient(180deg, var(--color-primary-light), var(--color-primary));
   border-radius: 2px;
 }
 
@@ -289,30 +369,37 @@
   display: flex;
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
-  border-bottom: 2px solid var(--color-secondary);
+  border-bottom: 2px solid rgba(226, 232, 240, 0.5);
+  background: rgba(255, 255, 255, 0.3);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
 }
 
 .editor-tab {
-  padding: var(--spacing-sm) var(--spacing-lg);
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
   border: none;
   background: none;
   cursor: pointer;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: all var(--transition-normal);
+  border-radius: var(--radius-sm);
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
 }
 
 .editor-tab:hover {
-  color: var(--color-text-primary);
+  color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.1);
 }
 
 .editor-tab.active {
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
+  background: var(--color-primary-gradient);
+  color: white;
   font-weight: 600;
+  box-shadow: var(--shadow-sm);
 }
 
 .editor-content {

@@ -1,6 +1,10 @@
 {
   "templates": [
     {
+      "id": "starry-night",
+      "name": "星光质感"
+    },
+    {
       "id": "polaroid",
       "name": "复古拍立得"
     },

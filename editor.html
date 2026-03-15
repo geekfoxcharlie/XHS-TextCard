@@ -75,6 +75,9 @@
                     <img src="logo.png" alt="XHS-TextCard" width="20" height="20">
                     工作台
                 </div>
+                <button class="edit-mode-toggle" id="edit-mode-toggle" title="专注编辑模式">
+                    <i class="fas fa-expand-alt"></i>
+                </button>
             </div>
             <div class="input-section">
                 <div class="section-title">
@@ -188,7 +191,7 @@
                             <i class="fas fa-fill-drip"></i> 背景颜色 / 渐变
                         </label>
                         <div class="color-presets" id="bg-color-presets" role="group" aria-label="背景颜色选择">
-                            <!-- 纯色预设 (莫兰迪色系) -->
+                            <!-- 纯色预设 (莫兰迪色系 + 活力色系) -->
                             <div class="solid-presets">
                                 <div class="color-preset" data-color="#ffffff" title="纯白" role="button" aria-label="白色背景" tabindex="0"></div>
                                 <div class="color-preset" data-color="#E8D5C4" title="浅杏" role="button" aria-label="浅杏色背景" tabindex="0"></div>
@@ -198,8 +201,12 @@
                                 <div class="color-preset" data-color="#9290C3" title="莫兰紫" role="button" aria-label="莫兰紫色背景" tabindex="0"></div>
                                 <div class="color-preset" data-color="#7C9D96" title="灰绿" role="button" aria-label="灰绿色背景" tabindex="0"></div>
                                 <div class="color-preset" data-color="#1a1a1b" title="暗黑" role="button" aria-label="暗黑色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#667eea" title="渐变蓝" role="button" aria-label="渐变蓝色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#f472b6" title="玫瑰粉" role="button" aria-label="玫瑰粉色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#22d3ee" title="赛博青" role="button" aria-label="赛博青色背景" tabindex="0"></div>
+                                <div class="color-preset" data-color="#0f172a" title="深空蓝" role="button" aria-label="深空蓝背景" tabindex="0"></div>
                             </div>
-                            <!-- 渐变预设 (初始隐藏) -->
+                            <!-- 渐变预设 -->
                             <div class="gradient-presets">
                                 <div class="color-preset" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" data-color="linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)" title="晨曦" role="button" aria-label="晨曦渐变" tabindex="0"></div>
                                 <div class="color-preset" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)" data-color="linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)" title="晴空" role="button" aria-label="晴空渐变" tabindex="0"></div>
@@ -207,6 +214,12 @@
                                 <div class="color-preset" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" data-color="linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)" title="梦幻" role="button" aria-label="梦幻渐变" tabindex="0"></div>
                                 <div class="color-preset" style="background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)" data-color="linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%)" title="木质" role="button" aria-label="木质渐变" tabindex="0"></div>
                                 <div class="color-preset" style="background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" data-color="linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%)" title="素雅" role="button" aria-label="素雅渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)" data-color="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" title="流光" role="button" aria-label="流光渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" data-color="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" title="粉橙" role="button" aria-label="粉橙渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" data-color="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" title="赛博" role="button" aria-label="赛博渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" data-color="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" title="星空" role="button" aria-label="星空渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%)" data-color="linear-gradient(135deg, #fa709a 0%, #fee140 100%)" title="日出" role="button" aria-label="日出渐变" tabindex="0"></div>
+                                <div class="color-preset" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" data-color="linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)" title="樱花" role="button" aria-label="樱花渐变" tabindex="0"></div>
                             </div>
                             <div class="color-picker-wrapper" id="bg-color-picker-container">
                                 <div id="bg-color-picker"></div>
@@ -272,6 +285,8 @@
                                 <div class="color-preset" style="background-color: #00F5FF" title="赛博青" data-color="#00F5FF" role="button" aria-label="青色强调" tabindex="0"></div>
                                 <div class="color-preset" style="background-color: #FF4500" title="瑞士红" data-color="#FF4500" role="button" aria-label="橙红色强调" tabindex="0"></div>
                                 <div class="color-preset" style="background-color: #000000" title="纯黑" data-color="#000000" role="button" aria-label="黑色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #fbbf24" title="星光金" data-color="#fbbf24" role="button" aria-label="金色强调" tabindex="0"></div>
+                                <div class="color-preset" style="background-color: #f472b6" title="玫瑰粉" data-color="#f472b6" role="button" aria-label="粉色强调" tabindex="0"></div>
                                 <div class="color-picker-wrapper" id="accent-color-picker-container">
                                     <div id="accent-color-picker"></div>
                                     <i class="fas fa-plus"></i>

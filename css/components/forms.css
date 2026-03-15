@@ -42,7 +42,9 @@
   border-radius: var(--radius-md);
   font-size: var(--font-size-base);
   background-color: #fcfcfc;
-  transition: all var(--transition-normal);
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--color-text-primary);
 }
 
@@ -50,7 +52,7 @@
   outline: none;
   border-color: var(--color-primary);
   background-color: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .form-input::placeholder {
@@ -89,12 +91,12 @@
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  transition: all var(--transition-normal);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-range::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
 }
 
 .form-range::-moz-range-thumb {
@@ -105,12 +107,12 @@
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  transition: all var(--transition-normal);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-range::-moz-range-thumb:hover {
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
 }
 
 /* === 范围值显示 === */

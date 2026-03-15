@@ -11,7 +11,8 @@
   height: 100vh;
   min-width: 1200px;
   padding: var(--container-padding);
-  background-color: var(--color-background);
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+  position: relative;
 }
 
 /* === 面板基础样式 === */
@@ -19,9 +20,10 @@
 .preview-panel,
 .template-panel,
 .editor-panel {
-  background: white;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -36,8 +38,9 @@
 /* === 中间预览面板 === */
 .preview-panel {
   overflow: hidden;
-  background-color: var(--color-background);
-  box-shadow: none; 
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .template-panel {
@@ -74,10 +77,17 @@
     grid-template-rows: auto 1fr;
     height: auto;
     overflow: auto;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
   }
   
   .left-panel, .preview-panel, .template-panel, .editor-panel {
     height: 600px;
+    border-radius: var(--radius-lg);
+  }
+  
+  .preview-panel {
+    background: transparent;
+    border: none;
   }
 }
 
@@ -97,5 +107,7 @@
   
   .preview-panel {
     min-height: 500px;
+    background: transparent;
+    border: none;
   }
 }

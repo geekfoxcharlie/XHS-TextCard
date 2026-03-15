@@ -488,8 +488,8 @@ class CanvasRenderer {
         // 如果社交图标在底部居中，则将签名上移，确保图标在最底部且紧密连接
         let bottomOffset = 0;
         if (config.hasSocialIcons && config.selectedSocialIcons && config.selectedSocialIcons.length > 0 && config.socialIconPosition === 'bottom-center') {
-            // 针对特定模板（备忘录、大厂文档、苏黎世）增加额外偏移，防止与自带 UI 重叠
-            const extraTemplates = ['ios-memo', 'pro-doc', 'swiss-studio'];
+            // 针对特定模板（备忘录、大厂文档、苏黎世、星光质感）增加额外偏移，防止与自带 UI 重叠
+            const extraTemplates = ['ios-memo', 'pro-doc', 'swiss-studio', 'starry-night'];
             bottomOffset = extraTemplates.includes(templateId) ? 35 : 12; 
         }
 

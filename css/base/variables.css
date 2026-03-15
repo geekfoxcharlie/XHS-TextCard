@@ -1,5 +1,5 @@
 /* ========================================
- * CSS变量和设计令牌系统
+ * CSS变量和设计令牌系统 - 视觉增强版
  * ======================================== */
 
 :root {
@@ -22,14 +22,25 @@
   --panel-gap: 12px;
   --container-padding: 12px;
   
-  /* === 设计令牌 === */
-  --color-primary: #667eea;
-  --color-primary-dark: #764ba2;
-  --color-secondary: #f0f0f0;
-  --color-text-primary: #333333;
-  --color-text-secondary: #666666;
-  --color-border: #e0e0e0;
-  --color-background: #f5f5f5;
+  /* === 设计令牌 - 视觉增强 === */
+  --color-primary: #6366f1;
+  --color-primary-light: #818cf8;
+  --color-primary-dark: #4f46e5;
+  --color-primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+  --color-accent: #f472b6;
+  --color-accent-gradient: linear-gradient(135deg, #f472b6 0%, #fb923c 100%);
+  
+  --color-secondary: #f8fafc;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-border: #e2e8f0;
+  --color-background: #f1f5f9;
+  
+  /* === 玻璃拟态系统 - 性能优化版 === */
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-bg-strong: rgba(255, 255, 255, 0.98);
+  --glass-border: rgba(226, 232, 240, 0.8);
+  --glass-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   
   /* === 间距系统 === */
   --spacing-xs: 4px;
@@ -48,22 +59,26 @@
   --font-size-xl: 18px;
   --font-size-xxl: 20px;
   
-  /* === 阴影系统 === */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.2);
+  /* === 阴影系统 - 性能优化版 === */
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 12px rgba(99, 102, 241, 0.2);
+  --shadow-glow-accent: 0 0 12px rgba(244, 114, 182, 0.2);
   
   /* === 边框半径 === */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-xxl: 16px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-xxl: 28px;
   
   /* === 动画系统 === */
   --transition-fast: 0.15s ease;
-  --transition-normal: 0.2s ease;
-  --transition-slow: 0.3s ease;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* === 模板配置变量（动态设置）=== */

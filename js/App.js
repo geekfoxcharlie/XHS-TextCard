@@ -14,9 +14,10 @@ class App {
         this.downloadManager = new DownloadManager();
         this.editorController = new EditorController();
 
-        this.currentTemplate = 'polaroid';
+        this.currentTemplate = 'starry-night';
         this.currentTemplateConfig = null;
         this.splitPages = [];
+        this.splitter = null;
         
         this.elements = {};
         this.debounceTimer = null;
@@ -31,6 +32,21 @@ class App {
         this.bindEvents();
         this.loadTemplates();
         this.setDefaultText();
+        this.restoreEditMode();
+    }
+
+    restoreEditMode() {
+        const savedEditMode = localStorage.getItem('xhs_edit_mode');
+        if (savedEditMode === 'true') {
+            const body = document.body;
+            body.classList.add('edit-mode');
+            const toggle = this.elements.editModeToggle;
+            if (toggle) {
+                toggle.classList.add('active');
+                toggle.innerHTML = '<i class="fas fa-compress-alt"></i>';
+                toggle.title = '退出专注模式';
+            }
+        }
     }
 
     async setDefaultText() {
@@ -77,7 +93,8 @@ class App {
             signatureTextInput: document.getElementById('signature-text'),
             hasCoverCheck: document.getElementById('has-cover'),
             coverTitleInput: document.getElementById('cover-title'),
-            coverFontSizeInput: document.getElementById('cover-font-size')
+            coverFontSizeInput: document.getElementById('cover-font-size'),
+            editModeToggle: document.getElementById('edit-mode-toggle')
         };
 
         this.downloadManager.setLoadingElement(this.elements.loading);
@@ -106,10 +123,12 @@ class App {
     }
 
     bindEvents() {
-        this.elements.textInput.addEventListener('input', () => this.schedulePreview(300));
+        this.elements.textInput.addEventListener('input', () => this.schedulePreview(500));
         this.elements.downloadAllBtn.addEventListener('click', () => this.downloadAllImages());
         this.elements.resetTemplateBtn.addEventListener('click', () => this.resetTemplate());
-        this.elements.previewList.addEventListener('scroll', () => this.updateActiveIndicator());
+        this.elements.previewList.addEventListener('scroll', 
+            () => requestAnimationFrame(() => this.updateActiveIndicator())
+        );
 
         this.elements.previewPrev.addEventListener('click', () => {
             this.elements.previewList.scrollLeft -= this.elements.previewList.clientWidth;
@@ -118,6 +137,26 @@ class App {
         this.elements.previewNext.addEventListener('click', () => {
             this.elements.previewList.scrollLeft += this.elements.previewList.clientWidth;
         });
+
+        if (this.elements.editModeToggle) {
+            this.elements.editModeToggle.addEventListener('click', () => this.toggleEditMode());
+        }
+    }
+
+    toggleEditMode() {
+        const body = document.body;
+        const isEditMode = body.classList.toggle('edit-mode');
+        const toggle = this.elements.editModeToggle;
+        
+        if (toggle) {
+            toggle.classList.toggle('active', isEditMode);
+            toggle.innerHTML = isEditMode 
+                ? '<i class="fas fa-compress-alt"></i>' 
+                : '<i class="fas fa-expand-alt"></i>';
+            toggle.title = isEditMode ? '退出专注模式' : '专注编辑模式';
+        }
+
+        localStorage.setItem('xhs_edit_mode', isEditMode ? 'true' : 'false');
     }
 
     updateActiveIndicator() {
@@ -154,7 +193,7 @@ class App {
         }
     }
 
-    schedulePreview(delay = DEFAULT_DEBOUNCE_DELAY) {
+    schedulePreview(delay = 500) {
         clearTimeout(this.debounceTimer);
         this.debounceTimer = setTimeout(() => this.generatePreview(), delay);
     }
@@ -162,7 +201,7 @@ class App {
     async loadTemplates() {
         await this.templateManager.init();
         this.renderTemplateList();
-        await this.selectTemplate('polaroid');
+        await this.selectTemplate(this.currentTemplate);
     }
 
     renderTemplateList() {
@@ -231,11 +270,13 @@ class App {
 
         const scrollLeft = this.elements.previewList.scrollLeft;
         this.elements.loading.classList.add('active');
-        // 不立即清空，防止闪烁，等到新内容准备好再替换
-        // this.elements.previewList.innerHTML = ''; 
-
-        const splitter = new TextSplitter(this.currentTemplateConfig, this.currentTemplate);
-        this.splitPages = await splitter.split(text);
+        
+        if (!this.splitter) {
+            this.splitter = new TextSplitter(this.currentTemplateConfig, this.currentTemplate);
+        } else {
+            this.splitter.updateConfig(this.currentTemplateConfig, this.currentTemplate);
+        }
+        this.splitPages = await this.splitter.split(text);
 
         this.elements.previewCount.textContent = `共 ${this.splitPages.length} 张图片`;
 

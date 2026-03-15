@@ -1,0 +1,33 @@
+{
+  "name": "星光质感",
+  "description": "暗黑星空+粒子效果，浪漫治愈风格",
+  "author": "geekfoxcharlie",
+  "version": "1.0",
+  "config": {
+    "coverImage": "assets/cover-starry-night.jpg",
+    "coverFontSize": 48,
+    "bgColor": "#0c1445",
+    "bgMode": "solid",
+    "textColor": "#e2e8f0",
+    "fontSize": 17,
+    "lineHeight": 1.8,
+    "letterSpacing": 0.5,
+    "textPadding": 45,
+    "fontFamily": "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+    "hasWatermark": false,
+    "watermarkText": "",
+    "watermarkColor": "rgba(251, 191, 36, 0.2)",
+    "hasSignature": true,
+    "signatureText": "",
+    "signatureColor": "#fbbf24",
+    "signaturePosition": "bottom",
+    "signatureStyle": "modern-pill",
+    "h1Scale": 1.6,
+    "h2Scale": 1.4,
+    "h3Scale": 1.2,
+    "accentColor": "#fbbf24",
+    "showPageNumber": true,
+    "hasSocialIcons": false,
+    "selectedSocialIcons": []
+  }
+}
