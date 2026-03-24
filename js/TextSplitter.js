@@ -49,10 +49,19 @@ class TextSplitter {
      * 执行分页算法
      */
     async split(text) {
-        if (!text.trim()) return [];
-        if (typeof marked === 'undefined') return [];
+        if (!text || !text.trim()) return [];
+        if (typeof marked === 'undefined') {
+            throw new Error('Markdown 解析库 (marked.js) 未加载，请检查网络或浏览器设置。');
+        }
 
-        const tokens = marked.lexer(text);
+        let tokens = [];
+        try {
+            tokens = marked.lexer(text);
+        } catch (e) {
+            console.error('[TextSplitter] Marked lexer failed:', e);
+            throw new Error('Markdown 解析失败，请检查输入内容是否有特殊字符。');
+        }
+        
         const pages = [];
         
         // 1. 注入封面页

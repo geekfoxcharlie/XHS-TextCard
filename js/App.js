@@ -25,27 +25,36 @@ class App {
     }
 
     init() {
-        if (typeof MarkdownParser !== 'undefined') {
-            MarkdownParser.init();
+        try {
+            if (typeof MarkdownParser !== 'undefined') {
+                MarkdownParser.init();
+            }
+            this.initElements();
+            this.bindEvents();
+            this.loadTemplates();
+            this.setDefaultText();
+            this.restoreEditMode();
+        } catch (error) {
+            console.error('[App] Initialization failed:', error);
+            alert('应用初始化失败，请检查浏览器插件或设置是否禁用了脚本运行。');
         }
-        this.initElements();
-        this.bindEvents();
-        this.loadTemplates();
-        this.setDefaultText();
-        this.restoreEditMode();
     }
 
     restoreEditMode() {
-        const savedEditMode = localStorage.getItem('xhs_edit_mode');
-        if (savedEditMode === 'true') {
-            const body = document.body;
-            body.classList.add('edit-mode');
-            const toggle = this.elements.editModeToggle;
-            if (toggle) {
-                toggle.classList.add('active');
-                toggle.innerHTML = '<i class="fas fa-compress-alt"></i>';
-                toggle.title = '退出专注模式';
+        try {
+            const savedEditMode = localStorage.getItem('xhs_edit_mode');
+            if (savedEditMode === 'true') {
+                const body = document.body;
+                body.classList.add('edit-mode');
+                const toggle = this.elements.editModeToggle;
+                if (toggle) {
+                    toggle.classList.add('active');
+                    toggle.innerHTML = '<i class="fas fa-compress-alt"></i>';
+                    toggle.title = '退出专注模式';
+                }
             }
+        } catch (e) {
+            console.warn('[App] LocalStorage access denied for edit mode');
         }
     }
 
@@ -199,12 +208,24 @@ class App {
     }
 
     async loadTemplates() {
-        await this.templateManager.init();
-        this.renderTemplateList();
-        await this.selectTemplate(this.currentTemplate);
+        try {
+            await this.templateManager.init();
+            this.renderTemplateList();
+            
+            let lastId = this.currentTemplate;
+            try {
+                lastId = localStorage.getItem('xhs_last_template_id') || this.currentTemplate;
+            } catch (e) {}
+            
+            await this.selectTemplate(lastId);
+        } catch (error) {
+            console.error('[App] Failed to load templates:', error);
+            this.showEmptyState(`模板初始化失败: ${error.message}`);
+        }
     }
 
     renderTemplateList() {
+        if (!this.elements.templateList) return;
         this.elements.templateList.innerHTML = '';
         const templates = this.templateManager.getAllTemplates();
 
@@ -229,34 +250,48 @@ class App {
     }
 
     async selectTemplate(templateId) {
-        const template = await this.templateManager.loadTemplate(templateId);
-        if (!template) return;
+        try {
+            const template = await this.templateManager.loadTemplate(templateId);
+            if (!template) {
+                console.error(`[App] Template not found: ${templateId}`);
+                return;
+            }
 
-        this.currentTemplate = templateId;
-        
-        // 尝试从本地存储加载用户自定义配置
-        const savedConfig = localStorage.getItem(`xhs_tpl_config_${templateId}`);
-        
-        // 使用深度克隆防止污染 templateManager 中的原始配置
-        const baseConfig = JSON.parse(JSON.stringify(template.config));
-
-        if (savedConfig) {
+            this.currentTemplate = templateId;
+            
+            // 尝试从本地存储加载用户自定义配置
+            let savedConfig = null;
             try {
-                this.currentTemplateConfig = { ...baseConfig, ...JSON.parse(savedConfig) };
+                savedConfig = localStorage.getItem(`xhs_tpl_config_${templateId}`);
+                localStorage.setItem('xhs_last_template_id', templateId);
             } catch (e) {
+                console.warn('[App] LocalStorage access denied');
+            }
+            
+            // 使用深度克隆防止污染 templateManager 中的原始配置
+            const baseConfig = JSON.parse(JSON.stringify(template.config));
+
+            if (savedConfig) {
+                try {
+                    this.currentTemplateConfig = { ...baseConfig, ...JSON.parse(savedConfig) };
+                } catch (e) {
+                    console.error('[App] Failed to parse saved config:', e);
+                    this.currentTemplateConfig = baseConfig;
+                }
+            } else {
                 this.currentTemplateConfig = baseConfig;
             }
-        } else {
-            this.currentTemplateConfig = baseConfig;
-        }
 
-        this.renderTemplateList();
-        this.editorController.setConfig(this.currentTemplateConfig);
-        this.generatePreview();
+            this.renderTemplateList();
+            this.editorController.setConfig(this.currentTemplateConfig);
+            this.generatePreview();
+        } catch (error) {
+            console.error('[App] selectTemplate failed:', error);
+        }
     }
 
     async generatePreview() {
-        const text = this.elements.textInput.value.trim();
+        const text = this.elements.textInput.value;
         if (!text) {
             this.showEmptyState('请输入文字内容');
             this.elements.previewCount.textContent = '共 0 张图片';
@@ -266,60 +301,72 @@ class App {
             return;
         }
 
+        if (typeof marked === 'undefined') {
+            this.showEmptyState('Markdown 解析器 (marked.js) 加载失败，请检查网络或刷新重试。');
+            console.error('[App] marked library is missing');
+            return;
+        }
+
         if (!this.currentTemplateConfig) return;
 
         const scrollLeft = this.elements.previewList.scrollLeft;
         this.elements.loading.classList.add('active');
         
-        if (!this.splitter) {
-            this.splitter = new TextSplitter(this.currentTemplateConfig, this.currentTemplate);
-        } else {
-            this.splitter.updateConfig(this.currentTemplateConfig, this.currentTemplate);
-        }
-        this.splitPages = await this.splitter.split(text);
-
-        this.elements.previewCount.textContent = `共 ${this.splitPages.length} 张图片`;
-
-        if (this.splitPages.length === 0) {
-            this.elements.previewList.innerHTML = '';
-            this.showEmptyState('没有可生成的内容');
-            this.elements.loading.classList.remove('active');
-            this.elements.downloadAllBtn.disabled = true;
-            this.renderIndicators(0);
-            return;
-        }
-
-        this.elements.downloadAllBtn.disabled = false;
-        this.renderIndicators(this.splitPages.length);
-
-        const renderPromises = this.splitPages.map(async (pageLayouts, index) => {
-            const previewItem = await this.previewGenerator.createPreviewItem(
-                pageLayouts,
-                index,
-                this.splitPages.length,
-                this.currentTemplate,
-                this.currentTemplateConfig,
-                (idx) => this.downloadSingleImage(idx)
-            );
-            return previewItem;
-        });
-
-        const items = await Promise.all(renderPromises);
-        
-        // 渲染完成后一次性更新 DOM
-        this.elements.previewList.innerHTML = '';
-        items.forEach(item => this.elements.previewList.appendChild(item));
-        this.elements.loading.classList.remove('active');
-        
-        requestAnimationFrame(() => {
-            if (this.shouldScrollToStart) {
-                this.elements.previewList.scrollLeft = 0;
-                this.shouldScrollToStart = false;
+        try {
+            if (!this.splitter) {
+                this.splitter = new TextSplitter(this.currentTemplateConfig, this.currentTemplate);
             } else {
-                this.elements.previewList.scrollLeft = scrollLeft;
+                this.splitter.updateConfig(this.currentTemplateConfig, this.currentTemplate);
             }
-            this.updateActiveIndicator();
-        });
+            this.splitPages = await this.splitter.split(text);
+
+            this.elements.previewCount.textContent = `共 ${this.splitPages.length} 张图片`;
+
+            if (this.splitPages.length === 0) {
+                this.elements.previewList.innerHTML = '';
+                this.showEmptyState('没有可生成的内容，请检查输入格式。');
+                this.elements.loading.classList.remove('active');
+                this.elements.downloadAllBtn.disabled = true;
+                this.renderIndicators(0);
+                return;
+            }
+
+            this.elements.downloadAllBtn.disabled = false;
+            this.renderIndicators(this.splitPages.length);
+
+            const renderPromises = this.splitPages.map(async (pageLayouts, index) => {
+                const previewItem = await this.previewGenerator.createPreviewItem(
+                    pageLayouts,
+                    index,
+                    this.splitPages.length,
+                    this.currentTemplate,
+                    this.currentTemplateConfig,
+                    (idx) => this.downloadSingleImage(idx)
+                );
+                return previewItem;
+            });
+
+            const items = await Promise.all(renderPromises);
+            
+            // 渲染完成后一次性更新 DOM
+            this.elements.previewList.innerHTML = '';
+            items.forEach(item => this.elements.previewList.appendChild(item));
+            this.elements.loading.classList.remove('active');
+            
+            requestAnimationFrame(() => {
+                if (this.shouldScrollToStart) {
+                    this.elements.previewList.scrollLeft = 0;
+                    this.shouldScrollToStart = false;
+                } else {
+                    this.elements.previewList.scrollLeft = scrollLeft;
+                }
+                this.updateActiveIndicator();
+            });
+        } catch (error) {
+            console.error('[App] Preview generation failed:', error);
+            this.elements.loading.classList.remove('active');
+            this.showEmptyState(`生成预览出错: ${error.message}`);
+        }
     }
 
     showEmptyState(message) {
@@ -360,6 +407,21 @@ class App {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 全局错误捕获
+    window.onerror = function(message, source, lineno, colno, error) {
+        console.error('[Global Error]', message, error);
+        // 如果渲染卡住了，尝试恢复 UI
+        const loading = document.getElementById('loading');
+        if (loading) loading.classList.remove('active');
+        return false;
+    };
+
+    window.onunhandledrejection = function(event) {
+        console.error('[Unhandled Rejection]', event.reason);
+        const loading = document.getElementById('loading');
+        if (loading) loading.classList.remove('active');
+    };
+
     const app = new App();
     app.init();
 });
