@@ -298,6 +298,13 @@ class CanvasTextEngine {
                     style.isHighlight = true;
                 }
 
+                if (token.type === 'br') {
+                    if (currentLine.length > 0) lines.push(currentLine);
+                    currentLine = [];
+                    currentLineWidth = 0;
+                    continue;
+                }
+
                 if (token.tokens && token.tokens.length > 0) {
                     processTokens(token.tokens, style);
                 } else {
